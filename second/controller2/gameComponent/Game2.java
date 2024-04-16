@@ -23,7 +23,7 @@ import static second.controller2.gameComponent.utils.Constant.PANEL_SIZE;
 import static second.controller2.gameComponent.utils.Variables.*;
 
 public class Game2{
-    private Display display;
+    private static Display display;
     public static ArrayList<GameObject> gameObjects;
     private Input input;
     public static LinkedList<YellowEnemyModel> yellowEnemies;
@@ -156,6 +156,9 @@ public class Game2{
         display.render(this);
     }
 
+    public static Display getDisplay() {
+        return display;
+    }
 
     public ArrayList<GameObject> getGameObjects() {
         return gameObjects;

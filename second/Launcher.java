@@ -12,6 +12,7 @@ public class Launcher {
     public static void main(String[] args) {
         CENTRAL_THREAD = new Thread(new GameLoop2(new Game2(new Dimension(PANEL_SIZE))));
         CENTRAL_THREAD.start();
+
 //        Display display = new Display(PANEL_SIZE);
     }
 }
