@@ -10,8 +10,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import static controller1.Constant.SPEED;
-import static controller1.Utils.addVectors;
-import static controller1.Utils.multiplyVector;
+import static controller1.Utils1.addVectors;
+import static controller1.Utils1.multiplyVector;
 
 public class EpsilonModel implements Movable,Entity{
     Direction direction;

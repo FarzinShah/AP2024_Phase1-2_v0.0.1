@@ -12,8 +12,7 @@ public class Game {
 
 
     public Game() {
-//        gameFrame = new GameFrame();
-//        intersection = new Intersection(gameFrame.getMagnet());
+
         inputListener = new InputListener(GameFrame.getINSTANCE());
     }
 

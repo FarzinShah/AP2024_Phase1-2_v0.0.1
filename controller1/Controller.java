@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-import static controller1.Utils.relativeLocation;
+import static controller1.Utils1.relativeLocation;
 
 public abstract class Controller {
     public static Point2D calculateViewLocation(Component component, String id){
