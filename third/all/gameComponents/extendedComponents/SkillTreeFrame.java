@@ -1,5 +1,6 @@
 package third.all.gameComponents.extendedComponents;
 
+import third.all.data.Properties;
 import third.all.utils.ImageAddressses;
 import third.all.gameComponents.preGameComponent.IdentifierPanel;
 import third.all.gameComponents.preGameComponent.StarterPanel;
@@ -9,7 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static third.all.controller.Constants.XP;
+
 import static third.all.controller.Constants.is_Writ_Of_Ares;
 import static third.all.controller.Constants.is_Writ_Of_Aceso;
 import static third.all.controller.Constants.is_Writ_Of_Proteus;
@@ -48,9 +49,9 @@ public class SkillTreeFrame extends JFrame implements Runnable{
         Writ_Of_Ares.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=750){
+                if(Properties.getInstance().XP>=750){
                     is_Writ_Of_Ares = true;
-                    XP-=750;
+                    Properties.getInstance(). XP-=750;
                 }
                 dispose();
             }
@@ -64,8 +65,8 @@ public class SkillTreeFrame extends JFrame implements Runnable{
         Writ_Of_Aceso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=500){
-                    XP-=500;
+                if(Properties.getInstance().XP>=500){
+                    Properties.getInstance().XP-=500;
                     is_Writ_Of_Aceso = true;
                 }
                 dispose();
@@ -80,9 +81,9 @@ public class SkillTreeFrame extends JFrame implements Runnable{
         Writ_Of_Proteus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=1000){
+                if(Properties.getInstance().XP>=1000){
                     is_Writ_Of_Proteus = true;
-                    XP=-1000;
+                    Properties.getInstance().XP=-1000.0;
                 }
                 dispose();
             }

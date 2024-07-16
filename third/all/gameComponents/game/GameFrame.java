@@ -9,6 +9,7 @@ import third.all.controller.movement.MovementOfGreenEnemy;
 import third.all.controller.movement.MovementOfYellowEnemy;
 import third.all.controller.movement.Position;
 import third.all.controller.movement.Vector2D;
+import third.all.data.Properties;
 import third.all.model.ShotOfEpsilon;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.InformationsOfSettings;
@@ -18,7 +19,6 @@ import third.all.gameComponents.preGameComponent.Timer1;
 
 
 import javax.sound.sampled.*;
-import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,23 +29,24 @@ import java.util.*;
 
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
+import static third.all.data.Properties.*;
 import static third.all.gameComponents.preGameComponent.MapGenerator.yellowEnemies;
 import static third.all.gameComponents.preGameComponent.MapGenerator.yellowEnemies_triangles;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
 import static third.all.gameComponents.preGameComponent.Timer1.*;
 
 
-public class GameFrame extends JPanel implements KeyListener, ActionListener, MouseMotionListener, MouseListener {
-//    JPanel panel = new JPanel();
+public class GameFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener {
+    public MyPanel panel;
+    public MyFrame frame;
     public static boolean play = false; // for starting
     public static GameFrame INSTANCE;
     public static int score = 0;
-    JFrame frame = new JFrame();
     private Timer time;
     private int delay = 0;
     public static Clip clip;
     boolean isUnvisible = true;
-    private Timer1 timerOfGame;
+    private static Timer1 timerOfGame;
 
     private int numberOfRun = 0;
     private int elapsedTime1 = 0;
@@ -97,8 +98,8 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
     private boolean[] activateMechanismOfCollectiblesItem;
 
 
-    private double playerX = GLASS_FRAME_DIMENSION_WIDTH - 450; //350
-    private double playerY = GLASS_FRAME_DIMENSION_HEIGHT - 300;
+    private double playerX = Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 450; //350
+    private double playerY =Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT - 300;
     private final LinkedList<Integer> counters = new LinkedList<>();
     HashMap<Integer,Integer> startFromCollision = new HashMap<>();
     private Integer stateCounter;
@@ -142,10 +143,23 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
     public GameFrame() throws UnsupportedAudioFileException, IOException {
         yellowEnemies_triangles.clear();
         yellowEnemies.clear();
+        int SCREEN_WIDTH = 1440;
+        int SCREEN_HEIGHT = 815;
+        int maxSize = Math.max(SCREEN_WIDTH, SCREEN_HEIGHT) / 3;
+        panel.setSize(maxSize, maxSize);
+        panel.setLocation(SCREEN_WIDTH / 2 - maxSize / 2, SCREEN_HEIGHT / 2 - maxSize / 2);
+        frame.setUndecorated(true);
+        frame.setSize(panel.getSize());
+        frame.setLocation(panel.getLocation());
+        frame.add(panel);
+//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addKeyListener(this);
+        frame.setVisible(true);
+
 
         setDefaultShots();
         input = new Input();
-        addKeyListener(input);
+        panel.addKeyListener(input);
 
         if (informationsOfSettings.isPlay()) {
             playMusic(informationsOfSettings.isPlay());
@@ -155,12 +169,16 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         twm_item_model = new TWM_Item_Model(new Point2D.Double(rng(50.0, 300.0), rng(50.0, 300.0)));
         shot_item_model = new Shot_Item_Model(new Point2D.Double(230.0, 330.0));
         gameObjects = new ArrayList<>();
+        frame.add(panel);
+//        panel.setSize(500, 500);
 
-        frame.setLocation(500, 500);
-        frame.setUndecorated(true);
-        frame.setVisible(true);
-        frame.add(this);
+//        frame.setLocation(500, 500);
+//        frame.setUndecorated(true);
+//        frame.setVisible(true);
+//        panel.setBackground(new Color(0,0,0,0));
         map = new MapGenerator();
+
+//        frame.setSize(panel.getSize());
 
         counters.add(0);
         counters.add(1);
@@ -178,19 +196,19 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         }
         stateCounter = counters.get(0);
 
-        addKeyListener(this);
-        setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
+        panel.addKeyListener(this);
+        panel.setFocusable(true);
+        panel.setFocusTraversalKeysEnabled(false);
         time = new Timer(delay, this);
         time.start();
         timer1 = new Timer(0, this);
-        addMouseListener(this);
-        addMouseMotionListener(this);
-        addMouseListener(targetWithMouse);
-        addMouseMotionListener(targetWithMouse);
+        panel.addMouseListener(this);
+        panel.addMouseMotionListener(this);
+        panel.addMouseListener(targetWithMouse);
+        panel.addMouseMotionListener(targetWithMouse);
 
 
-        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+//        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
 
         gameObjects.add(new EpsilonModel(new EpsilonController(input), 230, 330));
         for (int i = 0; i < 2; i++) { // 10
@@ -211,15 +229,14 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
             isCollidedEnemies.add(i, false);
         }
     }
-
-    public void paint(Graphics g) {
+    protected void paintComponent(Graphics g) {
         if (timer1Starter) {
             timerOfGame.start();
             timer1Starter = false;
         }
         //background:
         g.setColor(backGround);
-        g.fillRect(1, 1, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+        g.fillRect(1, 1, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
         // drawing map:
         map.draw((Graphics2D) g);
         // item pointer of mouse:
@@ -239,16 +256,16 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
 
         // borders:
         g.setColor(Color.ORANGE);
-        g.fillRect(0, 0, 3, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-        g.fillRect(0, 0, (int) GLASS_FRAME_DIMENSION_WIDTH, 3);
-        g.fillRect((int) (GLASS_FRAME_DIMENSION_WIDTH - 3), 0, 3, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-        g.fillRect(0, (int) (GLASS_FRAME_DIMENSION_HEIGHT - 3), (int) GLASS_FRAME_DIMENSION_WIDTH, 3);
+        g.fillRect(0, 0, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+        g.fillRect(0, 0, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
+        g.fillRect((int) (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 3), 0, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+        g.fillRect(0, (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 3), (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
 
         //Showing the scores:
         g.setColor(Color.white);
         g.setFont(new Font("serif", Font.BOLD, 25));
-        ((Graphics2D) g).drawString("HP: " + XXED, (int) (GLASS_FRAME_DIMENSION_WIDTH - 125), 30);
-        ((Graphics2D) g).drawString("XP: " + XP, (int) (GLASS_FRAME_DIMENSION_WIDTH - 225), 30);
+        ((Graphics2D) g).drawString("HP: " + Properties.getInstance().HP, (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 125), 30);
+        ((Graphics2D) g).drawString("XP: " + Properties.getInstance().XP, (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 225), 30);
 
         g.setColor(Color.white);
         g.setFont(new Font("serif", Font.BOLD, 25));
@@ -300,11 +317,11 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
 
     public void update() {
         gameObjects.forEach(GameObject::update);
-
+//        frame.update();
         //Wave 1: start from releasing key "R". It takes 5 minutes, unless all the enemies being killed.
         // in this wave, every 30 seconds one enemy comes. Totally 3 enemies from each group.
 
-        if(STATE == 1){
+        if(Properties.getInstance().STATE == 1){
             if(spentMilliSecond %29000 == 0 && spentMilliSecond < 150000){
                 gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
             }
@@ -330,7 +347,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                     if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItems[i].getCenterX()) * (centerOfEpsilonX - collectibleItems[i].getCenterX())) + ((centerOfEpsilonY - collectibleItems[i].getCenterY()) * (centerOfEpsilonY - collectibleItems[i].getCenterY())))) {
                         showOfCollectiblesHelper[i] = false;
                         showOfCollectibles[i] = false;
-                        XP+=5;
+                        Properties.getInstance().XP+=5;
                     }
 
                 }
@@ -355,10 +372,10 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
             } else lineShower = false;
 
             if (spentMilliSecond < 2000) {
-                if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT--;
-                    GLASS_FRAME_DIMENSION_WIDTH--;
-                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
+                    Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT--;
+                    Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH--;
+                    frame.setSize((int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT);
                     isValidStore = false;
 
                 }
@@ -366,21 +383,21 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
             }
 
             if (spentMilliSecond % 5000 == 0 && spentMilliSecond >= 5000) {
-                System.out.println(GLASS_FRAME_DIMENSION_HEIGHT);
-                if (GLASS_FRAME_DIMENSION_HEIGHT < GLASS_FRAME_DIMENSION_MAX_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT++;
-                    GLASS_FRAME_DIMENSION_WIDTH++;
-                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                System.out.println(Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+                if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT < GLASS_FRAME_DIMENSION_MAX_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH) {
+                    Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT++;
+                    Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH++;
+                    frame.setSize((int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT);
                     isValidStore = false;
                 }
 //            time.restart();
             }
 
             if (spentMilliSecond % 5000 == 3000 && spentMilliSecond >= 5000) {
-                if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT--;
-                    GLASS_FRAME_DIMENSION_WIDTH--;
-                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
+                    Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT--;
+                    Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH--;
+                    frame.setSize((int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                     isValidStore = false;
                 }
 //            time.restart();
@@ -456,7 +473,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                     }
                 }
 
-                if(XXED<=0){
+                if(Properties.getInstance().HP <=0){
                     ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setHeight(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getHeight()+1);
                     ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setWidth(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getWidth()+1);
                 }
@@ -474,29 +491,29 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                         shotsOfEpsilons.get(i).setPlaceY(1000000);
                     }
                     if (shotsOfEpsilons.get(i).getPlaceX() == 2) {
-                        if (GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
-                            GLASS_FRAME_DIMENSION_WIDTH += 5;
+                        if (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
+                            Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH += 5;
                             boundX -= 5;
-                            frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                            frame.setBounds((int) boundX, (int) boundY, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                             System.out.println("\u001B[41m" + i + "\u001B[0m");
 
                         }
-                        if (GLASS_FRAME_DIMENSION_WIDTH > 20) {
-                            GLASS_FRAME_DIMENSION_WIDTH -= 5;
+                        if (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > 20) {
+                            Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH -= 5;
 //                        boundX+=5;
-                            frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                            frame.setBounds((int) boundX, (int) boundY, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
 
                         }
                     }
-                    if (shotsOfEpsilons.get(i).getPlaceX() == GLASS_FRAME_DIMENSION_WIDTH - 10) {
+                    if (shotsOfEpsilons.get(i).getPlaceX() == Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 10) {
                         boundX += 5;
-                        GLASS_FRAME_DIMENSION_WIDTH--;
-                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                        Properties.getInstance().  GLASS_FRAME_DIMENSION_WIDTH--;
+                        frame.setBounds((int) boundX, (int) boundY, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
 
 
                     }
                     if (shotsOfEpsilons.get(i).getPlaceX() <= 0 || shotsOfEpsilons.get(i).getPlaceY() <= -8 ||
-                            shotsOfEpsilons.get(i).getPlaceY() >= GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= GLASS_FRAME_DIMENSION_WIDTH))
+                            shotsOfEpsilons.get(i).getPlaceY() >= Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH))
                         shotsOfEpsilons.get(i).setNumberOfCollision(shotsOfEpsilons.get(i).getNumberOfCollision() + 1);
 
 
@@ -528,7 +545,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                                 < 5.0 + ((GreenEnemyModel) gameObjects.get(j)).getRadius()) {
                             // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
                             ((GreenEnemyModel) gameObjects.get(j)).setLifeValue(((GreenEnemyModel) gameObjects.get(j)).getLifeValue()-1);
-                            XXED++;
+                            Properties.getInstance().HP++;
                             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                             shotsOfEpsilons.get(i).setPlaceX(1000000);
                             shotsOfEpsilons.get(i).setPlaceY(1000000);
@@ -654,7 +671,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
 //
                             ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
                             ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                            XXED -=6;
+                            Properties.getInstance(). HP -=6;
                             stateCounterG = counters.get(1);
                             isCollided.set(i, true);
                             gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
@@ -717,7 +734,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                             ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
                             ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                             startFromCollision.put(i,spentMilliSecond);
-                            XXED-=5;
+                            Properties.getInstance(). HP -=5;
                             stateCounter = counters.get(1);
                             isCollided.set(i, true);
                             gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
@@ -793,7 +810,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                 if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItems[i].getCenterX()) * (centerOfEpsilonX - collectibleItems[i].getCenterX())) + ((centerOfEpsilonY - collectibleItems[i].getCenterY()) * (centerOfEpsilonY - collectibleItems[i].getCenterY())))) {
                     showOfCollectiblesHelper[i] = false;
                     showOfCollectibles[i] = false;
-                    XP+=5;
+                    Properties.getInstance(). XP+=5;
                 }
 
             }
@@ -818,10 +835,10 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         } else lineShower = false;
 
         if (spentMilliSecond < 2000) {
-            if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                GLASS_FRAME_DIMENSION_HEIGHT--;
-                GLASS_FRAME_DIMENSION_WIDTH--;
-                frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+            if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
+                Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT--;
+                Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH--;
+                frame.setSize((int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                 isValidStore = false;
 
             }
@@ -829,21 +846,21 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         }
 
         if (spentMilliSecond % 5000 == 0 && spentMilliSecond >= 5000) {
-            System.out.println(GLASS_FRAME_DIMENSION_HEIGHT);
-            if (GLASS_FRAME_DIMENSION_HEIGHT < GLASS_FRAME_DIMENSION_MAX_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH) {
-                GLASS_FRAME_DIMENSION_HEIGHT++;
-                GLASS_FRAME_DIMENSION_WIDTH++;
-                frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+            System.out.println(Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+            if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT < GLASS_FRAME_DIMENSION_MAX_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH) {
+                Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT++;
+                Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH++;
+                frame.setSize((int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                 isValidStore = false;
             }
 //            time.restart();
         }
 
         if (spentMilliSecond % 5000 == 3000 && spentMilliSecond >= 5000) {
-            if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                GLASS_FRAME_DIMENSION_HEIGHT--;
-                GLASS_FRAME_DIMENSION_WIDTH--;
-                frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+            if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
+                Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT--;
+                Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH--;
+                frame.setSize((int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                 isValidStore = false;
             }
 //            time.restart();
@@ -919,7 +936,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                 }
             }
 
-            if(XXED<=0){
+            if(Properties.getInstance().HP <=0){
                 ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setHeight(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getHeight()+1);
                 ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setWidth(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getWidth()+1);
             }
@@ -937,29 +954,29 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                     shotsOfEpsilons.get(i).setPlaceY(1000000);
                 }
                 if (shotsOfEpsilons.get(i).getPlaceX() == 2) {
-                    if (GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
-                        GLASS_FRAME_DIMENSION_WIDTH += 5;
+                    if (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
+                        Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH += 5;
                         boundX -= 5;
-                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                        frame.setBounds((int) boundX, (int) boundY, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
                         System.out.println("\u001B[41m" + i + "\u001B[0m");
 
                     }
-                    if (GLASS_FRAME_DIMENSION_WIDTH > 20) {
-                        GLASS_FRAME_DIMENSION_WIDTH -= 5;
+                    if (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > 20) {
+                        Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH -= 5;
 //                        boundX+=5;
-                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                        frame.setBounds((int) boundX, (int) boundY, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
 
                     }
                 }
-                if (shotsOfEpsilons.get(i).getPlaceX() == GLASS_FRAME_DIMENSION_WIDTH - 10) {
+                if (shotsOfEpsilons.get(i).getPlaceX() == Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 10) {
                     boundX += 5;
-                    GLASS_FRAME_DIMENSION_WIDTH--;
-                    frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
+                    Properties.getInstance(). GLASS_FRAME_DIMENSION_WIDTH--;
+                    frame.setBounds((int) boundX, (int) boundY, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
 
 
                 }
                 if (shotsOfEpsilons.get(i).getPlaceX() <= 0 || shotsOfEpsilons.get(i).getPlaceY() <= -8 ||
-                        shotsOfEpsilons.get(i).getPlaceY() >= GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= GLASS_FRAME_DIMENSION_WIDTH))
+                        shotsOfEpsilons.get(i).getPlaceY() >= Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH))
                     shotsOfEpsilons.get(i).setNumberOfCollision(shotsOfEpsilons.get(i).getNumberOfCollision() + 1);
 
 
@@ -991,7 +1008,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                             < 5.0 + ((GreenEnemyModel) gameObjects.get(j)).getRadius()) {
                         // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
                         ((GreenEnemyModel) gameObjects.get(j)).setLifeValue(((GreenEnemyModel) gameObjects.get(j)).getLifeValue()-1);
-                        XXED++;
+                        Properties.getInstance().HP++;
                         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         shotsOfEpsilons.get(i).setPlaceX(1000000);
                         shotsOfEpsilons.get(i).setPlaceY(1000000);
@@ -1117,7 +1134,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
 //
                         ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
                         ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                        XXED -=6;
+                            Properties.getInstance(). HP -=6;
                         stateCounterG = counters.get(1);
                         isCollided.set(i, true);
                         gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
@@ -1180,7 +1197,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
                         ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
                         ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                         startFromCollision.put(i,spentMilliSecond);
-                        XXED-=5;
+                        Properties.getInstance(). HP -=5;
                         stateCounter = counters.get(1);
                         isCollided.set(i, true);
                         gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
@@ -1223,7 +1240,7 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         if( isUnvisible&& ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getWidth() >= PANEL_SIZE.getWidth()){
             play = false;
             if (isValid8) {
-                setVisible(false);
+                panel.setVisible(false);
 //                frame.dispose();
                 disposer();
                 new GameOverFrame();
@@ -1235,7 +1252,8 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         }
 
         time.restart();
-        repaint();
+        panel.repaint();
+        frame.repaint();
     }
 
     @Override
@@ -1430,12 +1448,12 @@ public class GameFrame extends JPanel implements KeyListener, ActionListener, Mo
         timerOfGame.reset();
         timerOfGame.stop();
 //        INSTANCE = null;
-        removeAll();
+        panel.removeAll();
 //        gameObjects.clear();
 //        shotsOfEpsilons.clear();
 //        currentShots.clear();
-        XXED = 100;
-        XP= 0;
+        Properties.getInstance(). HP = 100;
+        Properties.getInstance(). XP= 0.0;
 //        timerOfGame = null;
     }
     public void makeInvisible(){

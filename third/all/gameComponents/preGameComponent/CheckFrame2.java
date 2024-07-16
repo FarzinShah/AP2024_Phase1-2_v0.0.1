@@ -70,7 +70,7 @@ public class CheckFrame2 extends JFrame implements Runnable {
                         count++;
                     }
                     if(count!=0){
-                        getINSTANCE().setVisible(true);
+                        getINSTANCE().panel.setVisible(true);
                     }
                 });
 

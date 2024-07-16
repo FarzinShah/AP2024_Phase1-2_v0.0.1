@@ -1,5 +1,6 @@
 package third.all.gameComponents.extendedComponents;
 
+import third.all.data.Properties;
 import third.all.utils.ImageAddressses;
 import third.all.gameComponents.preGameComponent.IdentifierPanel;
 import third.all.gameComponents.preGameComponent.StarterPanel;
@@ -8,9 +9,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static third.all.controller.Constants.XP;
-import static third.all.controller.Constants.XXED;
 import static third.all.controller.Constants.waveOHB;
+
 
 
 public class StoreFrame extends JFrame implements Runnable{
@@ -47,9 +47,9 @@ public class StoreFrame extends JFrame implements Runnable{
         OHB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=100){
+                if(Properties.getInstance().XP>=100){
                     waveOHB = true;
-                    XP-=100;
+                    Properties.getInstance(). XP-=100;
                     GameFrame.play = true;
                 }
                 dispose();
@@ -64,8 +64,8 @@ public class StoreFrame extends JFrame implements Runnable{
         OAE.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=75){
-                    XP-=75;
+                if(Properties.getInstance().XP>=75){
+                    Properties.getInstance().XP-=75;
 //                    mechanismOAE= true;
                 }
                 dispose();
@@ -80,9 +80,9 @@ public class StoreFrame extends JFrame implements Runnable{
         OAH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(XP>=50){
-                    XP-=50;
-                    XXED+=10;
+                if(Properties.getInstance().XP>=50){
+                    Properties.getInstance().XP-=50;
+                    Properties.getInstance().HP +=10;
                 }
                 dispose();
             }

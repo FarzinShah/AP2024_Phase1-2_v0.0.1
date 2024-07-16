@@ -21,6 +21,9 @@ public class TKM2_Item_Model {
         radius = SIZE_OF_TWM_ITEM/2;
 
     }
+    public TKM2_Item_Model(){
+        radius = SIZE_OF_TWM_ITEM/2;
+    }
     public void draw(Graphics2D g){
         Rectangle rectangle = new Rectangle((int) nodeOfRectangle2.getX(), (int) nodeOfRectangle2.getY(), (int) SIZE_OF_TWM_ITEM, (int) SIZE_OF_TWM_ITEM);
         g.fill(rectangle);
@@ -40,5 +43,9 @@ public class TKM2_Item_Model {
 
     public double getRadius() {
         return radius;
+    }
+
+    public void setNodeOfRectangle(Position nodeOfRectangle2) {
+        this.nodeOfRectangle2 = nodeOfRectangle2;
     }
 }

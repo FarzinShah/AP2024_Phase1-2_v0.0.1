@@ -20,6 +20,7 @@ public abstract class MovingEnemy extends GameObject {
 
     @Override
     public void update(){
+
         movementOfYellowEnemy.update(controller3);
         position.applyOfYellowEnemy(movementOfYellowEnemy);
         movementOfGreenEnemy.update(controller3);

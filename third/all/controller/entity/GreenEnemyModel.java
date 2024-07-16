@@ -29,6 +29,7 @@ public class GreenEnemyModel extends MovingEnemy {
 
     private Integer lifeValue = 10;
     private boolean isAlive = true;
+    private int length;
 
 
 
@@ -43,6 +44,7 @@ public class GreenEnemyModel extends MovingEnemy {
         this.controller3 = controller3;
         this.GE_posX1 = posCenterX;
         this.GE_posY1 = posCenterY + (radius);
+        this.length = 25;
     }
 
     @Override
@@ -55,12 +57,25 @@ public class GreenEnemyModel extends MovingEnemy {
         BufferedImage image = new BufferedImage((int) sizeOfGE.getWidth(), (int) sizeOfGE.getHeight(),BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         g.setColor(new Color(0xCD00FC04, true));
-        Rectangle rectangle = new Rectangle(0,0,25,25);
+        if(lifeValue<8){
+            g.setColor(new Color(0x4A1CD907, true));
+
+        }
+        if(lifeValue<=0){
+            g.setColor(Color.BLACK);
+        }
+        Rectangle rectangle = new Rectangle(0,0,length,length);
+        if(length==25) {
+            g.setFont(new Font("calibri", Font.BOLD, 10));
+            ((Graphics2D) g).drawString(Integer.toString(lifeValue), 5, 25);
+        }
         g.draw(rectangle);
         g.dispose();
         return image;
     }
-
+    public Rectangle getBounds() {
+        return new Rectangle((int) posX, (int) posY, 25, 25);
+    }
     public double getRadius() {
         return radius;
     }
@@ -115,6 +130,14 @@ public class GreenEnemyModel extends MovingEnemy {
 
     public double getGE_posY3() {
         return GE_posY3;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public void setGE_posY3(double GE_posY3) {

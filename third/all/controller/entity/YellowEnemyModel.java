@@ -26,7 +26,7 @@ public class YellowEnemyModel extends MovingEnemy {
     private final double posY;
     private final double posCenterX;
     private final double posCenterY;
-    private final Controller3 controller3;
+    private Controller3 controller3;
     private Integer lifeValue = 15;
     private boolean isAlive = true;
 
@@ -65,7 +65,21 @@ public class YellowEnemyModel extends MovingEnemy {
         Graphics2D g = image.createGraphics();
 //        image.getGraphics().drawImage(null, 0, 0, null);
 
-        g.setColor(new Color(0xCDD98F07, true));
+        g.setColor(new Color(0xBAD98F07, true));
+        if(lifeValue<8){
+            g.setColor(new Color(0x6CD98F07, true));
+
+        }
+
+//        if(length==25) {
+            if(lifeValue>0){
+            g.setFont(new Font("calibri", Font.BOLD, 20));
+            ((Graphics2D) g).drawString(Integer.toString(lifeValue), 10, 25);
+            }
+            if(lifeValue<=0){
+                
+                isAlive = false;
+            }
 //        for (GameObject gameObject : gameObjects) {
 //            if (gameObject instanceof YellowEnemyModel) {
 //                System.out.println("??");
@@ -162,5 +176,21 @@ public class YellowEnemyModel extends MovingEnemy {
 
     public void setYE_posY3(double YE_posY3) {
         this.YE_posY3 = YE_posY3;
+    }
+
+    public double getPosX() {
+        return posX;
+    }
+
+    public double getPosY() {
+        return posY;
+    }
+
+    public Controller3 getController3() {
+        return controller3;
+    }
+
+    public void setController3(Controller3 controller3) {
+        this.controller3 = controller3;
     }
 }

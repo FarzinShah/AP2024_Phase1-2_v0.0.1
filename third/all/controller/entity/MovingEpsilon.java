@@ -19,8 +19,17 @@ public abstract class MovingEpsilon extends GameObject {
 
     @Override
     public void update(){
+
         movementOfEpsilon.update(controller3);
         position.applyOfEpsilon(movementOfEpsilon);
 
+    }
+
+    public MovementOfEpsilon getMovementOfEpsilon() {
+        return movementOfEpsilon;
+    }
+
+    public void setMovementOfEpsilon(MovementOfEpsilon movementOfEpsilon) {
+        this.movementOfEpsilon = movementOfEpsilon;
     }
 }
