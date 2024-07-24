@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
-import static third.all.data.Properties.*;
 
 public class PanelsData {
     public static PanelsData instance;
@@ -28,7 +27,8 @@ public class PanelsData {
         redZone = new Panel((int)rng(STARTING_POINT.x,STARTING_POINT.x+300),(int)rng(STARTING_POINT.y,STARTING_POINT.y+300),60,60);
         wyrm = new Panel(Wyrm.getInstance().getLocation().x,Wyrm.getInstance().getLocation().y,80,80);
         barricados = new Panel(Barricados.getInstance().getLocation().x,Barricados.getInstance().getLocation().y,80,80);
-        bossPanel = new Panel(350,150,825,500);
+        bossPanel = new Panel(Properties.getInstance().locationOfBossPanel.x,Properties.getInstance().locationOfBossPanel.y,Properties
+                .getInstance().sizeOfBossPanel.getWidth(),Properties.getInstance().sizeOfBossPanel.getHeight());
 
         panels.add(0,new Panel(STARTING_POINT.x , STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
         panels.add(1,new Panel((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2,Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2));

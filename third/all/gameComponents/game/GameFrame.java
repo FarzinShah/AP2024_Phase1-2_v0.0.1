@@ -238,7 +238,6 @@ public class GameFrame implements KeyListener, ActionListener, MouseMotionListen
         g.setColor(backGround);
         g.fillRect(1, 1, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
         // drawing map:
-        map.draw((Graphics2D) g);
         // item pointer of mouse:
         if (showOfPointerItem) {
             System.out.println("???");

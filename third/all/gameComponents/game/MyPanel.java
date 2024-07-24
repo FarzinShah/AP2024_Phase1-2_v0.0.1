@@ -3,12 +3,11 @@ package third.all.gameComponents.game;
 import third.all.controller.componentController.Input;
 import third.all.controller.componentController.TWM_Item_Model;
 import third.all.controller.entity.EpsilonModel;
-import third.all.data.BooleansOf_IsValidToShow;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.CollectablesOfEnemies;
 import third.all.data.PanelsData;
 import third.all.data.Properties;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
-import third.all.gameComponents.preGameComponent.MapGenerator;
 import third.all.gameComponents.preGameComponent.Timer1;
 import third.all.model.*;
 import third.all.model.boss.Head;
@@ -23,11 +22,12 @@ import java.util.ArrayList;
 
 import static third.all.controller.Constants.*;
 
+import static third.all.data.Properties.*;
 import static third.all.gameComponents.game.FunctionalMethods.showOptionPane;
 import static third.all.gameComponents.game.GameFrame2.*;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
 import static third.all.gameComponents.preGameComponent.Timer1.elapsedTime;
-import static third.all.data.Booleans.*;
+import static third.all.data.booleans.Booleans.*;
 
 public class MyPanel extends JPanel implements Runnable{
     public static boolean timer1Starter = false;
@@ -35,7 +35,6 @@ public class MyPanel extends JPanel implements Runnable{
     private final Color backGroundTest = Color.GRAY;
 
     public static Timer1 timerOfGame;
-    private MapGenerator map; // is needed?
     public static boolean showOfPointerItem;
     int record = 0;
 
@@ -68,7 +67,6 @@ public class MyPanel extends JPanel implements Runnable{
         addKeyListener(input);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        map = new MapGenerator();
 
 
     }
@@ -81,7 +79,7 @@ public class MyPanel extends JPanel implements Runnable{
         }
         //background:
         g.setColor(backGround);
-        if(!BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
+        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
             synchronized (panels.get(0)) {
                 panels.set(0, new Panel(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
                 panels.get(0).draw(g);
@@ -136,7 +134,7 @@ public class MyPanel extends JPanel implements Runnable{
                 PanelsData.getInstance().getBlackOrbPanels().get(4).draw(g);
             }
         }
-        if(!BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()){
+        if(BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()){
             synchronized (PanelsData.getInstance().getBossPanel()) {
                 PanelsData.getInstance().getBossPanel().drawBossPanel(g);
             }
@@ -148,7 +146,6 @@ public class MyPanel extends JPanel implements Runnable{
         //todo: با چندتا if زدن درمیاد انشاالله.
 //        g.fillRect(900,50,300,300);//todo
         // drawing map:
-        map.draw((Graphics2D) g);
         g.setColor(BLUE_BACKGROUND);
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(0)){
             g.fillRect(1000,10,220,50);
@@ -177,10 +174,10 @@ public class MyPanel extends JPanel implements Runnable{
             Barricados.draw(g,this);
         }
 
-        if(!BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
-            g.drawImage(LEFT_HAND, LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y, LeftHand.getInstance().getSize(), LeftHand.getInstance().getSize(), this);
-            g.drawImage(RIGHT_HAND, RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y, RightHand.getInstance().getSize(), RightHand.getInstance().getSize(), this);
-            g.drawImage(HEAD, Head.getInstance().getLocation().x, Head.getInstance().getLocation().y, Head.getInstance().getSize(), Head.getInstance().getSize(), this);
+        if(BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
+            RightHand.getInstance().draw(g,this);
+            LeftHand.getInstance().draw(g,this);
+            Head.getInstance().draw(g,this);
         }
 
 //        g.drawImage(BEAUTIFUL_HEART,600,200,50,50,this);
@@ -227,12 +224,15 @@ public class MyPanel extends JPanel implements Runnable{
 
 
         // borders:
-        g.setColor(Color.ORANGE);
-        g.fillRect(STARTING_POINT.x-1, STARTING_POINT.y-1, 3, (int)Properties.getInstance(). GLASS_FRAME_DIMENSION_HEIGHT);
-        g.fillRect(STARTING_POINT.x-1, STARTING_POINT.y-1, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
-        g.fillRect( STARTING_POINT.x-1 + (int)(Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 3), STARTING_POINT.y-1, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
-        g.fillRect(STARTING_POINT.x-1, STARTING_POINT.y-1 +(int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 3), (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
-
+        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
+            g.setColor(Color.ORANGE);
+            synchronized (PanelsData.getInstance().getPanels().get(1)) {
+                g.fillRect(STARTING_POINT.x - 1, STARTING_POINT.y - 1, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+                g.fillRect(STARTING_POINT.x - 1, STARTING_POINT.y - 1, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
+                g.fillRect(STARTING_POINT.x - 1 + (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 3), STARTING_POINT.y - 1, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+                g.fillRect(STARTING_POINT.x - 1, STARTING_POINT.y - 1 + (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 3), (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
+            }
+        }
         //Showing the scores:
         g.setColor(new Color(0x0B0B7C));
         g.fillRect(300-1+ (600 - 360),15,430,40);
@@ -242,6 +242,7 @@ public class MyPanel extends JPanel implements Runnable{
         ((Graphics2D) g).drawString("HP: " +Properties.getInstance(). HP,300-1+ (600 - 150), 40);
         ((Graphics2D) g).drawString("XP: " + Properties.getInstance().XP, 300-1+ (600 - 250), 40);
         ((Graphics2D) g).drawString("Wave: " + Properties.getInstance().WAVE, 300-1+ (600-25), 40);
+        ((Graphics2D) g).drawString("Head: " + Head.getInstance().getHP(), 50, 500);
 
         g.setColor(Color.white);
         g.setFont(new Font("serif", Font.BOLD, 25));
@@ -264,6 +265,16 @@ public class MyPanel extends JPanel implements Runnable{
         }
         synchronized (bulletsOfWyrm) {
             for (Bullet bullet : bulletsOfWyrm) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (bulletsOfLeftHand) {
+            for (Bullet bullet : bulletsOfLeftHand) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (bulletsOfRightHand) {
+            for (Bullet bullet : bulletsOfRightHand) {
                 bullet.draw(g);
             }
         }

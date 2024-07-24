@@ -44,15 +44,31 @@ public class Constants {
     public static final String LOULOU_PATH = "src\\main\\java\\third\\all\\utils\\p2Enemies\\loulou.png";
     public static final String BARRICADOS_PATH = "src\\main\\java\\third\\all\\utils\\p2Enemies\\Barricados.png";
     public static final String ORB_PATH = "src\\main\\java\\third\\all\\utils\\p2Enemies\\Orb.png";
-    public static final String HEAD_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\HeadEmoji.png";
-    public static final String LEFT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\Hand2.png";
-    public static final String RIGHT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\RightHand2.png";
+    public static final String HEAD_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\HeadEmoji.png";
+    public static final String LEFT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\Hand2.png";
+    public static final String RIGHT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\RightHand2.png";
+    public static final String FIST_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\BossFist.png";
+
     public static final String SAVING_DATA_PATH = "src\\main\\java\\third\\all\\data\\savingPath\\gameState.json";
+    public static final String SAVING_DATA_PATH_WP = "src\\main\\java\\third\\all\\data\\savingPath\\gameStateWP.json";
+
 
     //todo: Alerts:
     public static final String SavingOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\SavingOption.png";
     public static final String CollectibleOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\CollectibleOption.png";
     public static final String LaserOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\LaserOption.png";
+
+    //todo: BossNotice:
+    public static final String AnnihilatorAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\AnnihilatorAttack.png";
+    public static final String PowerPunchAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\PowerPunchAttack.png";
+    public static final String ProjectileAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\ProjectileAttack.png";
+    public static final String QuakeAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\QuakeAttack.png";
+    public static final String RapidFireAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\RapidFireAttack.png";
+    public static final String SlapAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\SlapAttack.png";
+    public static final String SqueezeAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\SqueezeAttack.png";
+    public static final String VomitAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\VomitAttack.png";
+
+    public static final String BOSS_MUSIC_PATH = "src\\main\\java\\third\\all\\utils\\bossFightSong.mp3";
 
 
     public static final Image OMENOCT = new ImageIcon(OMENOCT_PATH).getImage();
@@ -66,6 +82,7 @@ public class Constants {
     public static final Image HEAD = new ImageIcon(HEAD_PATH).getImage();
     public static final Image LEFT_HAND = new ImageIcon(LEFT_HAND_PATH).getImage();
     public static final Image RIGHT_HAND = new ImageIcon(RIGHT_HAND_PATH).getImage();
+    public static final Image FIST = new ImageIcon(FIST_PATH).getImage();
 
 
 
@@ -73,11 +90,18 @@ public class Constants {
     public static final Image COLLECTIBLE_OPTION = new ImageIcon(CollectibleOption_PATH).getImage();
     public static final Image LASER_OPTION = new ImageIcon(LaserOption_PATH).getImage();
 
+    public static final Image AnnihilatorAttack = new ImageIcon(AnnihilatorAttack_PATH).getImage();
+    public static final Image PowerPunchAttack = new ImageIcon(PowerPunchAttack_PATH).getImage();
+    public static final Image ProjectileAttack = new ImageIcon(ProjectileAttack_PATH).getImage();
+    public static final Image QuakeAttack = new ImageIcon(QuakeAttack_PATH).getImage();
+    public static final Image RapidFireAttack = new ImageIcon(RapidFireAttack_PATH).getImage();
+    public static final Image SlapAttack = new ImageIcon(SlapAttack_PATH).getImage();
+    public static final Image SqueezeAttack = new ImageIcon(SqueezeAttack_PATH).getImage();
+    public static final Image VomitAttack = new ImageIcon(VomitAttack_PATH).getImage();
 
-    public static ArrayList<Bullet> bullets = new ArrayList<>();
-    public static ArrayList<Bullet> bulletsOfOmenoct = new ArrayList<>();
-    public static ArrayList<Bullet> bulletsOfWyrm = new ArrayList<>();
-    public static ArrayList<Bullet> bulletsOfNecropick = new ArrayList<>();
+
+
+
 
 
     //TODO: P2 Enemies:

@@ -1,10 +1,8 @@
 package third.all.model;
 
 import third.all.controller.entity.EpsilonModel;
-import third.all.data.BooleansOfEnemies;
 
 import java.awt.*;
-import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 import static third.all.controller.Constants.EPSILON_LENGTH;

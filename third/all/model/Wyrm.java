@@ -1,13 +1,10 @@
 package third.all.model;
 
-import third.all.data.BooleansOf_IsValidToShow;
-import third.all.data.PanelsData;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.util.ArrayList;
 
-import static third.all.controller.Constants.NECROPICK;
 import static third.all.controller.Constants.WYRM;
 
 public class Wyrm implements NormalEnemyModel{

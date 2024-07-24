@@ -1,8 +1,9 @@
 package third.all.data;
 
 import third.all.controller.entity.GameObject;
-import third.all.gameComponents.game.Panel;
-import third.all.gameComponents.preGameComponent.Timer1;
+import third.all.data.booleans.BooleansOfCollectibles;
+import third.all.data.booleans.BooleansOfEnemies;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
 
 import java.awt.*;
 import java.util.ArrayList;

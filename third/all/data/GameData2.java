@@ -1,5 +1,8 @@
 package third.all.data;
 
+import third.all.data.booleans.BooleansOfEnemies;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
+
 public class GameData2 {
     private TimerData timerData;
     private BooleansOf_IsValidToShow booleansOfIsValidToShow;

@@ -13,5 +13,7 @@ public class Timers {
     public static Timer addBlackOrbsTimer;
     public static Timer barricadosValidatorTimer;
     public static Timer cerberusAttackTimer;
+    public static Timer orbitalMovement;
+    public static Timer handsShooter;
 
 }

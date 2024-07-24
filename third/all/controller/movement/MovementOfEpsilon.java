@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import third.all.controller.componentController.Controller3;
 import third.all.controller.entity.EpsilonModel;
-import third.all.data.BooleansOf_IsValidToShow;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
+import third.all.data.PanelsData;
 import third.all.data.Properties;
-import third.all.gameComponents.game.GameFrame2;
 
 import java.awt.*;
 
@@ -25,6 +25,8 @@ public class MovementOfEpsilon {
     Rectangle bossPanel;
     Rectangle thirdPanel;
 
+    boolean test = true;
+
 
     public MovementOfEpsilon(double speed) {
         this.speed = speed;
@@ -37,32 +39,89 @@ public class MovementOfEpsilon {
         epsilon = new Rectangle((int) gameObjects.get(0).getPosition().getX(), (int) gameObjects.get(0).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         mainPanel = new Rectangle(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
         thirdPanel = new Rectangle((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2);
-        bossPanel = panels.get(0).getRectangle();
+        bossPanel =  PanelsData.getInstance().getBossPanel().getRectangle();
         Rectangle temp3 = new Rectangle(thirdPanel);
         int deltaX = 0, deltaY = 0;
 
-        if (controller.idRequestingEsc()) {
-            System.exit(4);
-        }
-        if (controller.idRequestingUp()) {
-            logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
-            deltaY = -2;
-        }
-        if (controller.idRequestingDown()) {
-            logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
-            deltaY += 2;
-        }
-        if ((controller.idRequestingRight())) {
-            logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
 
-            deltaX += 2;
-        }
-        if (controller.idRequestingLeft()) {
-            logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)){
+            if (controller.idRequestingEsc()) {
+                System.exit(4);
+            }
+            if (controller.idRequestingUp()) {
+                logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
+                deltaY = -2;
+            }
+            if (controller.idRequestingDown()) {
+                logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
+                deltaY += 2;
+            }
+            if ((controller.idRequestingRight())) {
+                logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
 
-            deltaX = -2;
+                deltaX += 2;
+            }
+            if (controller.idRequestingLeft()) {
+                logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+
+                deltaX = -2;
+            }
         }
 
+        if(BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
+
+            if (controller.idRequestingEsc()) {
+                System.exit(4);
+            }
+            if (controller.idRequestingUp()) {
+                logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
+                deltaY = -2;
+            }
+            if (controller.idRequestingDown()) {
+                logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
+                deltaY += 2;
+            }
+            if ((controller.idRequestingRight())) {
+                logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
+
+                deltaX += 2;
+            }
+            if (controller.idRequestingLeft()) {
+                logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+
+                deltaX = -2;
+            }
+        }
+        if(!BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
+//            if(test) {
+//                gameObjects.get(0).setPosition(new Position(PanelsData.getInstance().getBossPanel().getX(), PanelsData.getInstance().getBossPanel().getY()));
+//            test = false;
+//            }
+//            if(bossPanel.contains(epsilon)) {
+//
+//                if (controller.idRequestingEsc()) {
+//                    System.exit(4);
+//                }
+//                if (controller.idRequestingUp()) {
+//                    logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
+//                    deltaY = -2;
+//                }
+//                if (controller.idRequestingDown()) {
+//                    logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
+//                    deltaY += 2;
+//                }
+//                if ((controller.idRequestingRight())) {
+//                    logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
+//
+//                    deltaX += 2;
+//                }
+//                if (controller.idRequestingLeft()) {
+//                    logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+//
+//                    deltaX = -2;
+//                }
+//            }
+        }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
             if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
                 if (thirdPanel.contains(epsilon)) {

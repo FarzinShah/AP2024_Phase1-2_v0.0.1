@@ -86,6 +86,7 @@ public class SkillTreeFrame extends JFrame implements Runnable{
                     Properties.getInstance().XP=-1000.0;
                 }
                 dispose();
+
             }
         });
 

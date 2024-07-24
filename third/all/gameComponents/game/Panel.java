@@ -46,6 +46,16 @@ public class Panel {
         return y;
     }
 
+    public Panel setX(int x) {
+        this.x = x;
+        return this;
+    }
+
+    public Panel setY(int y) {
+        this.y = y;
+        return this;
+    }
+
     public Rectangle getRectangle(){
         return new Rectangle(x, y, (int) width, (int) height);
     }

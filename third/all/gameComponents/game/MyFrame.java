@@ -4,7 +4,7 @@ import third.all.data.Properties;
 
 import javax.swing.*;
 
-import static third.all.data.Booleans.isRightPanel2;
+import static third.all.data.booleans.Booleans.isRightPanel2;
 
 public class MyFrame extends JFrame {
 //    public MyFrame(MyPanel panel){

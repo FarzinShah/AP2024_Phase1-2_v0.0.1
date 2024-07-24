@@ -4,8 +4,11 @@ import third.all.data.Properties;
 import third.all.model.Omenoct;
 
 import java.awt.*;
+import java.awt.image.ImageObserver;
 
-public class Head {
+import static third.all.controller.Constants.HEAD;
+
+public class Head implements Boss {
     public static Head instance;
     private Point location;
     private int size;
@@ -45,13 +48,22 @@ public class Head {
         return this;
     }
 
+    @Override
     public Rectangle getRectangle(){
         return new Rectangle(location.x,location.y,size,size);
     }
 
+    @Override
+    public void draw(Graphics g, ImageObserver i) {
+        if(HP>0)
+        g.drawImage(HEAD, Head.getInstance().getLocation().x, Head.getInstance().getLocation().y, Head.getInstance().getSize(), Head.getInstance().getSize(), i);
+
+    }
+
+
     public static Head getInstance(){
         if(instance==null) {
-            instance = new Head(new Point(650,200),250, Properties.getInstance().headOfBossHP);
+            instance = new Head(Properties.getInstance().locationOfHead,250, Properties.getInstance().headOfBossHP);
             return instance;
         }
         return instance;

@@ -23,6 +23,8 @@ public class Timer1 {
     public static int spentMilliSecondW3 = 0;
     public static int spentMilliSecondW4 = 0;
     public static int spentMilliSecondW5 = 0;
+    public static int spentMilliSecondW6 = 0; // BossFight
+
 
 
     public static int startTimeFromActivationOfPointerItem = -78;
@@ -50,6 +52,9 @@ public class Timer1 {
             }
             if(Properties.getInstance().WAVE==5){
                 spentMilliSecondW5+=1000;
+            }
+            if(Properties.getInstance().WAVE==6){
+                spentMilliSecondW6+=1000;
             }
             elapsedTime=elapsedTime-1000;
             hours = (elapsedTime/3600000);

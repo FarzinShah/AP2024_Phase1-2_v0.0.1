@@ -3,8 +3,11 @@ package third.all.model.boss;
 import third.all.data.Properties;
 
 import java.awt.*;
+import java.awt.image.ImageObserver;
 
-public class LeftHand {
+import static third.all.controller.Constants.LEFT_HAND;
+
+public class LeftHand implements Boss{
     public static LeftHand instance;
     private Point location;
     private int size;
@@ -44,13 +47,21 @@ public class LeftHand {
         return this;
     }
 
+    @Override
     public Rectangle getRectangle(){
         return new Rectangle(location.x,location.y,size,size);
     }
 
+    @Override
+    public void draw(Graphics g, ImageObserver i) {
+        if(HP>0)
+            g.drawImage(LEFT_HAND, LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y, LeftHand.getInstance().getSize(), LeftHand.getInstance().getSize(), i);
+
+    }
+
     public static LeftHand getInstance(){
         if(instance==null) {
-            instance = new LeftHand(new Point(400,200),250, Properties.getInstance().handsOfBossHP);
+            instance = new LeftHand(Properties.getInstance().locationOfLeftHand,250, Properties.getInstance().handsOfBossHP);
             return instance;
         }
         return instance;

@@ -1,7 +1,6 @@
 package third.all.model;
 
-import third.all.data.Booleans;
-import third.all.data.BooleansOf_IsValidToShow;
+import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.PanelsData;
 
 import java.awt.*;
