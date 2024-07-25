@@ -23,6 +23,7 @@ import third.all.data.booleans.HelpingBooleans;
 import third.all.model.*;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.Timer1;
+import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
@@ -63,8 +64,6 @@ public class GameFrame2 implements ActionListener {
     boolean boo = true;
 
 
-
-
     public Omenoct omenoct;
     public Necropick necropick;
     public Archmire archmire;
@@ -83,8 +82,6 @@ public class GameFrame2 implements ActionListener {
     int collidedTwo = -5;
 
 
-
-
     private final LinkedList<Integer> counters = new LinkedList<>();
     HashMap<Integer, Integer> startFromCollision = new HashMap<>();
     private Integer stateCounter;
@@ -97,8 +94,6 @@ public class GameFrame2 implements ActionListener {
 
     //helper booleans:
     int collided = -5;
-
-
 
 
     Input input;
@@ -257,11 +252,23 @@ public class GameFrame2 implements ActionListener {
                 if (HelpingBooleans.getInstance().isOnOrbit) {
                     rightHandShoot();
                     leftHandShoot();
-                };
+                }
+                ;
 //                if (Wyrm.getInstance().getHP() <= 0) wyrmShooter.stop();
             }
         });
-//        wyrmShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
+
+        headShooter = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5) && Properties.getInstance().headShooterSecondCounter > 0) {
+                    FunctionalMethods.headRapidFireShoot();
+                    Properties.getInstance().headShooterSecondCounter -= 1000;
+                }
+
+            }
+        });
+//        headShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
 
 
 //        if (informationsOfSettings.isPlay()) {
@@ -462,21 +469,21 @@ public class GameFrame2 implements ActionListener {
             //todo :YellowEnemy:
             for (int i = 0; i < yellowEnemies1.size(); i++) {
                 double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + ( yellowEnemies1.get(i)).getRadius();
+                double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
                 double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + ( yellowEnemies1.get(i)).getRadius();
+                double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
 
 
-                if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ( yellowEnemies1.get(i)).getRadius())) {
+                if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
                     System.out.println(":)");
-                    ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + yellowEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
+                    (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + yellowEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
 
-                    ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                    (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                     startFromCollision.put(i, spentMilliSecond);
                     Properties.getInstance().HP -= 5;
                     stateCounter = counters.get(1);
                     isCollidedY.set(i, true);
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
                 }
                 if (isCollidedY.get(i)) {
@@ -489,16 +496,16 @@ public class GameFrame2 implements ActionListener {
             for (int i = 0; i < yellowEnemies1.size(); i++) {
                 for (int j = i; j < yellowEnemies1.size(); j++) {
                     if (i != j) {
-                        double centerOfEnemy1X = yellowEnemies1.get(i).getPosition().getX() + ( yellowEnemies1.get(i)).getRadius();
+                        double centerOfEnemy1X = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
                         double centerOfEnemy2X = yellowEnemies1.get(j).getPosition().getX() + (yellowEnemies1.get(j)).getRadius();
-                        double centerOfEnemy1Y = yellowEnemies1.get(i).getPosition().getY() + ( yellowEnemies1.get(i)).getRadius();
-                        double centerOfEnemy2Y = yellowEnemies1.get(j).getPosition().getY() + ( yellowEnemies1.get(j)).getRadius();
+                        double centerOfEnemy1Y = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
+                        double centerOfEnemy2Y = yellowEnemies1.get(j).getPosition().getY() + (yellowEnemies1.get(j)).getRadius();
 
 
-                        if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (( yellowEnemies1.get(i)).getRadius() + ( yellowEnemies1.get(j)).getRadius())) {
+                        if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= ((yellowEnemies1.get(i)).getRadius() + (yellowEnemies1.get(j)).getRadius())) {
                             System.out.println(":)");
-                            ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-yellowEnemies1.get(i).getPosition().getX() + yellowEnemies1.get(j).getPosition().getX() + 25, -yellowEnemies1.get(j).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
-                            ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                            (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-yellowEnemies1.get(i).getPosition().getX() + yellowEnemies1.get(j).getPosition().getX() + 25, -yellowEnemies1.get(j).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
+                            (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
 //                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
 //                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
 
@@ -525,18 +532,18 @@ public class GameFrame2 implements ActionListener {
                     for (int i = 0; i < yellowEnemies1.size(); i++) {
                         if (i == j) {
                             double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + ( yellowEnemies1.get(i)).getRadius();
+                            double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
                             double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + ( yellowEnemies1.get(i)).getRadius();
+                            double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
 
                             ACCELERATION_OF_YELLOW_ENEMIES = 1;
-                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
                             if (waveOHB) {
                                 isCollidedY.set(i, true);
                                 waveOHB = false;
                             }
 
-                            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + ( yellowEnemies1.get(i)).getRadius())) {
+                            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
                                 ACCELERATION_OF_YELLOW_ENEMIES = 3;
 //                                ACCELERATION_OF_EPSILON = 4;
 
@@ -668,21 +675,20 @@ public class GameFrame2 implements ActionListener {
             //todo:collision between p1 enemies
             for (int i = 0; i < yellowEnemies1.size(); i++) {
                 for (int j = 0; j < greenEnemies1.size(); j++) {
-                    double distanceX = ((GameObject) yellowEnemies1.get(i)).getPosition().getX() - ((GameObject) greenEnemies1.get(j)).getPosition().getX();
-                    double distanceY = ((GameObject) yellowEnemies1.get(i)).getPosition().getY() - ((GameObject) greenEnemies1.get(j)).getPosition().getY();
+                    double distanceX = (yellowEnemies1.get(i)).getPosition().getX() - ((GameObject) greenEnemies1.get(j)).getPosition().getX();
+                    double distanceY = (yellowEnemies1.get(i)).getPosition().getY() - ((GameObject) greenEnemies1.get(j)).getPosition().getY();
                     double oclidianDistance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
-                    if (oclidianDistance < 2 * ((GreenEnemyModel) greenEnemies1.get(j)).getRadius() + 10) {
+                    if (oclidianDistance < 2 * ((GreenEnemyModel) greenEnemies1.get(j)).getRadius() + 20) {
 //                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().setVector1((new Vector2D(-greenEnemies1.get(j).getPosition().getX() + greenEnemies1.get(j).getPosition().getX() + 25, -greenEnemies1.get(j).getPosition().getY() + greenEnemies1.get(j).getPosition().getY() + 25)));
 //                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().getVector1().normalize();
                         isCollidedG.set(j, true);
                         isCollidedY.set(i, true);
-
                     }
                 }
             }
 
 
-            //TODO: collectable items after destruction :  Done 50%
+            //TODO: collectable items after destruction :  Done 90%
             //todo: خب باید هر آیتم رو خیلی ساده بزنیم. با فور و رندم
 
             //todo: Omenoct movement:
@@ -922,7 +928,7 @@ public class GameFrame2 implements ActionListener {
                 int count = 0;
                 for (GameObject gameObject : greenEnemies1) {
                     for (YellowEnemyModel object : yellowEnemies1) {
-                        if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && ( object).getLifeValue() > 0) {
+                        if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
                             count++;
                         }
 
@@ -1102,16 +1108,37 @@ public class GameFrame2 implements ActionListener {
                 if (!HelpingBooleans.getInstance().isEpsilonSetOnFirstPlace) {
                     gameObjects.get(0).setPosition(new Position(Head.getInstance().getLocation().x + 100, Head.getInstance().getLocation().y + 500));
                     HelpingBooleans.getInstance().isEpsilonSetOnFirstPlace = true;
+
                 }
 
-                if (spentMilliSecondW6 == 15000) {
+                if (!BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2) && spentMilliSecondW6 >= 1000 && !BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0)) {
+                    if (!HelpingBooleans.getInstance().isMovingUp && HelpingBooleans.getInstance().isMovingDown && LeftHand.getInstance().getLocation().y + LeftHand.getInstance().getSize() < PanelsData.getInstance().getBossPanel().getDownY()) {
+                        Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x, Head.getInstance().getLocation().y + 1));
+                        LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y + 1));
+                        RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y + 1));
+                    } else if (LeftHand.getInstance().getLocation().y + LeftHand.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getDownY()) {
+                        HelpingBooleans.getInstance().isMovingDown = false;
+                        HelpingBooleans.getInstance().isMovingUp = true;
+                    }
+                    if (!HelpingBooleans.getInstance().isMovingDown && HelpingBooleans.getInstance().isMovingUp && Head.getInstance().getLocation().y > PanelsData.getInstance().getBossPanel().getY()) {
+                        Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x, Head.getInstance().getLocation().y - 1));
+                        LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y - 1));
+                        RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y - 1));
+                    } else if (Head.getInstance().getLocation().y <= PanelsData.getInstance().getBossPanel().getY()) {
+                        HelpingBooleans.getInstance().isMovingDown = true;
+                        HelpingBooleans.getInstance().isMovingUp = false;
+                    }
+                }
+
+                if (spentMilliSecondW6 == 70000) {
                     BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(0, true); // todo: Squeeze
                 }
-                if (spentMilliSecondW6 == 25000) {
+                if (spentMilliSecondW6 == 90000) {
                     HelpingBooleans.getInstance().isSqueezedFinished = true; // todo: EndingOfSqueeze
                 }
 
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0)) {
+
                     if (!HelpingBooleans.getInstance().isSqueezedFinished) {
                         if (LeftHand.getInstance().getLocation().x + (2 * LeftHand.getInstance().getSize() / 5) > PanelsData.getInstance().getBossPanel().getX()) {
                             LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x - 1, LeftHand.getInstance().getLocation().y));
@@ -1125,9 +1152,10 @@ public class GameFrame2 implements ActionListener {
                     }
                 }
 
-                if (HelpingBooleans.getInstance().isSqueezedFinished) {
+                if (!BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2) && HelpingBooleans.getInstance().isSqueezedFinished) {
                     HelpingBooleans.getInstance().isSqueezed = false;
-                    if (LeftHand.getInstance().getLocation().x < Properties.getInstance().locationOfLeftHand.x) {
+
+                    if (LeftHand.getInstance().getLocation().x < Properties.getInstance().locationOfLeftHand.x + 170) {
                         LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x + 1, LeftHand.getInstance().getLocation().y));
                     } else {
                         BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(0, false); // todo: finishedSqueeze
@@ -1140,20 +1168,28 @@ public class GameFrame2 implements ActionListener {
                     }
 
                 }
-                if (spentMilliSecondW6 == 5000) {
+
+
+                if (spentMilliSecondW6 == 40000) {
+                    HelpingBooleans.getInstance().isProjectile = true;
                     BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(1, true); // todo: Projectile
                 }
+                if (spentMilliSecondW6 == 55000) {
+                    HelpingBooleans.getInstance().isProjectileFinished = true;  // todo: Projectile Finished
+                }
+
+
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(1)) {
                     if (Head.getInstance().getSize() > 100) {
                         Head.getInstance().setSize(Head.getInstance().getSize() - 2);
-                    }else HelpingBooleans.getInstance().isSmalled = true;
+                    } else HelpingBooleans.getInstance().isSmalled = true;
 
                     if (RightHand.getInstance().getSize() > 100) {
                         RightHand.getInstance().setSize(RightHand.getInstance().getSize() - 2);
-                    }else HelpingBooleans.getInstance().isSmalled = true;
+                    } else HelpingBooleans.getInstance().isSmalled = true;
                     if (LeftHand.getInstance().getSize() > 100) {
                         LeftHand.getInstance().setSize(LeftHand.getInstance().getSize() - 2);
-                    }else HelpingBooleans.getInstance().isSmalled = true;
+                    } else HelpingBooleans.getInstance().isSmalled = true;
 
                     int dX_Head = (int) (Head.getInstance().getLocation().x + Head.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
                     int dY_Head = (int) (Head.getInstance().getLocation().y + Head.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getY() - EPSILON_LENGTH);
@@ -1193,11 +1229,11 @@ public class GameFrame2 implements ActionListener {
 
                     }
 
-                    int dX_RightHand = (int) (RightHand.getInstance().getLocation().x + RightHand.getInstance().getSize()/2- gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
-                    int dY_RightHand = (int) (RightHand.getInstance().getLocation().y + RightHand.getInstance().getSize()/2- gameObjects.get(0).getPosition().getY()- EPSILON_LENGTH);
-                    double distanceRightHand  = Math.sqrt((dX_RightHand*dX_RightHand)+(dY_RightHand *dY_RightHand ));
+                    int dX_RightHand = (int) (RightHand.getInstance().getLocation().x + RightHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
+                    int dY_RightHand = (int) (RightHand.getInstance().getLocation().y + RightHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getY() - EPSILON_LENGTH);
+                    double distanceRightHand = Math.sqrt((dX_RightHand * dX_RightHand) + (dY_RightHand * dY_RightHand));
 
-                    if(distanceRightHand>Properties.getInstance().radiusOfOrbitProjectile) {
+                    if (distanceRightHand > Properties.getInstance().radiusOfOrbitProjectile) {
                         if ((RightHand.getInstance().getLocation().x > gameObjects.get(0).getPosition().getX()) && (RightHand.getInstance().getLocation().y > gameObjects.get(0).getPosition().getY())) {
                             RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x - 1, RightHand.getInstance().getLocation().y - 1));
                         }
@@ -1221,11 +1257,11 @@ public class GameFrame2 implements ActionListener {
                     }
 
 
-                    int dX_LeftHand = (int) (LeftHand.getInstance().getLocation().x + LeftHand.getInstance().getSize()/2- gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
-                    int dY_LeftHand = (int) (LeftHand.getInstance().getLocation().y + LeftHand.getInstance().getSize()/2- gameObjects.get(0).getPosition().getY()- EPSILON_LENGTH);
-                    double distanceLeftHand  = Math.sqrt((dX_LeftHand*dX_LeftHand)+(dY_LeftHand *dY_LeftHand ));
+                    int dX_LeftHand = (int) (LeftHand.getInstance().getLocation().x + LeftHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
+                    int dY_LeftHand = (int) (LeftHand.getInstance().getLocation().y + LeftHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getY() - EPSILON_LENGTH);
+                    double distanceLeftHand = Math.sqrt((dX_LeftHand * dX_LeftHand) + (dY_LeftHand * dY_LeftHand));
 
-                    if(distanceLeftHand>Properties.getInstance().radiusOfOrbitProjectile) {
+                    if (distanceLeftHand > Properties.getInstance().radiusOfOrbitProjectile) {
                         if ((LeftHand.getInstance().getLocation().x > gameObjects.get(0).getPosition().getX()) && (LeftHand.getInstance().getLocation().y > gameObjects.get(0).getPosition().getY())) {
                             LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x - 1, LeftHand.getInstance().getLocation().y - 1));
                         }
@@ -1247,6 +1283,201 @@ public class GameFrame2 implements ActionListener {
                         LeftHand.getInstance().setLocation(new Point(secX, secY));
 
                     }
+                }
+                if (HelpingBooleans.getInstance().isProjectileFinished) {
+                    handsShooter.stop();
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(1, false);
+                }
+                if (spentMilliSecondW6 == 56000) { // todo: second after finishing attack
+                    Head.getInstance().setSize(Properties.getInstance().sizeOfHead2);
+                    Head.getInstance().setLocation(new Point(Properties.getInstance().locationOfHead.x + 50, Properties.getInstance().locationOfHead.y));
+                    RightHand.getInstance().setLocation(new Point(Properties.getInstance().locationOfRightHand.x - 20, Properties.getInstance().locationOfRightHand.y + 25));
+                    LeftHand.getInstance().setLocation(new Point(Properties.getInstance().locationOfLeftHand.x + 170, Properties.getInstance().locationOfLeftHand.y));
+
+                }
+
+                if (!HelpingBooleans.getInstance().isFistLaunched && Head.getInstance().getHP() < 2 * Properties.getInstance().headOfBossHP / 3) {
+                    Fist.getInstance().setLocation(new Point(1200, 400));//todo launch fist
+                    HelpingBooleans.getInstance().isFistLaunched = true;
+                }
+
+
+                if (spentMilliSecondW6 == 120000) {
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(2, true);
+                }
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2)) { //todo: Vomit is on for 2 min's.
+                    if (spentMilliSecondW6 >= 121000) {
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit && RightHand.getInstance().getLocation().x + RightHand.getInstance().getSize() < PanelsData.getInstance().getBossPanel().getRightX()) {
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x + 1, RightHand.getInstance().getLocation().y));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x + 1, LeftHand.getInstance().getLocation().y));
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x + 1, Head.getInstance().getLocation().y));
+
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit && RightHand.getInstance().getLocation().x + RightHand.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getRightX()) {
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit = true;
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit && Head.getInstance().getLocation().y > PanelsData.getInstance().getBossPanel().getY()) {
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y - 1));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y - 1));
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x, Head.getInstance().getLocation().y - 1));
+
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit && Head.getInstance().getLocation().y <= PanelsData.getInstance().getBossPanel().getY()) {
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit = true;
+
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit && LeftHand.getInstance().getLocation().x > PanelsData.getInstance().getBossPanel().getX() + 50) {
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x - 1, RightHand.getInstance().getLocation().y));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x - 1, LeftHand.getInstance().getLocation().y));
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x - 1, Head.getInstance().getLocation().y));
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit && LeftHand.getInstance().getLocation().x <= PanelsData.getInstance().getBossPanel().getX() + 50) {
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveDown_Vomit = true;
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveDown_Vomit && LeftHand.getInstance().getLocation().y < PanelsData.getInstance().getBossPanel().getDownY() - 50) {
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y + 1));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y + 1));
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x, Head.getInstance().getLocation().y + 1));
+                        }
+                        if (HelpingBooleans.getInstance().isSmileyValidToMoveDown_Vomit && LeftHand.getInstance().getLocation().y >= PanelsData.getInstance().getBossPanel().getDownY() - 50) {
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveUp_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveDown_Vomit = false;
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight2_Vomit = true;
+                        }
+                        if (!HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit && HelpingBooleans.getInstance().isSmileyValidToMoveRight2_Vomit && Head.getInstance().getLocation().x < Properties.getInstance().locationOfHead.x + 50) {
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x + 1, RightHand.getInstance().getLocation().y));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x + 1, LeftHand.getInstance().getLocation().y));
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x + 1, Head.getInstance().getLocation().y));
+                        }
+                        if (!HelpingBooleans.getInstance().isSmileyValidToMoveLeft_Vomit && HelpingBooleans.getInstance().isSmileyValidToMoveRight2_Vomit && Head.getInstance().getLocation().x >= Properties.getInstance().locationOfHead.x + 50) {
+                            BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(2, false);
+                            HelpingBooleans.getInstance().isSmileyValidToMoveRight2_Vomit = false;
+                        }
+                    }
+                }
+
+                if (spentMilliSecondW6 == 7000) { // todo: PowerPunch
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(3, true);
+                }
+
+                if (spentMilliSecondW6 == 325000) HelpingBooleans.getInstance().startPunchRight = true;
+                if (HelpingBooleans.getInstance().startPunchRight && !HelpingBooleans.getInstance().isFistPunchedRight && HelpingBooleans.getInstance().isFistLaunched && BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3)) { //todo: Power Punch 1st
+                    if (Fist.getInstance().getLocation().x + Fist.getInstance().getSize() < PanelsData.getInstance().getBossPanel().getRightX()) {
+                        Fist.getInstance().setLocation(new Point(Fist.getInstance().getLocation().x + 1, Fist.getInstance().getLocation().y));
+                    }
+                    if (Fist.getInstance().getLocation().x + Fist.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getRightX()) {
+                        PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getWidth() - 200);
+                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getRightX() - 200, 400));
+                        HelpingBooleans.getInstance().isFistPunchedRight = true;
+
+                    }
+                }
+                if (spentMilliSecondW6 == 200000) HelpingBooleans.getInstance().startPunchLeft = true;
+                if (HelpingBooleans.getInstance().startPunchLeft && !HelpingBooleans.getInstance().isFistPunchedRight && HelpingBooleans.getInstance().isFistLaunched && BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3)) { //todo: Power Punch 1st
+                    if (Fist.getInstance().getLocation().x > PanelsData.getInstance().getBossPanel().getX()) {
+                        Fist.getInstance().setLocation(new Point(Fist.getInstance().getLocation().x - 2, Fist.getInstance().getLocation().y));
+                    }
+                    if (Fist.getInstance().getLocation().x <= PanelsData.getInstance().getBossPanel().getX()) {
+                        PanelsData.getInstance().getBossPanel().setX(PanelsData.getInstance().getBossPanel().getX() + 200);
+                        PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getWidth() - 200);
+                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX() + 50, Fist.getInstance().getLocation().y));
+                        HelpingBooleans.getInstance().isFistPunchedRight = true;
+
+                    }
+                }
+
+                if (spentMilliSecondW6 == 240000) HelpingBooleans.getInstance().startPunchUp = true;
+                if (HelpingBooleans.getInstance().startPunchUp && !HelpingBooleans.getInstance().isFistPunchedUp && HelpingBooleans.getInstance().isFistLaunched && BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3)) { //todo: Power Punch 1st
+                    if (Fist.getInstance().getLocation().y > PanelsData.getInstance().getBossPanel().getY()) {
+                        Fist.getInstance().setLocation(new Point(Fist.getInstance().getLocation().x, Fist.getInstance().getLocation().y - 2));
+                    }
+                    if (Fist.getInstance().getLocation().y <= PanelsData.getInstance().getBossPanel().getY()) {
+                        PanelsData.getInstance().getBossPanel().setY(PanelsData.getInstance().getBossPanel().getY() + 200);
+                        PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getHeight() - 200);
+                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
+                        HelpingBooleans.getInstance().isFistPunchedUp = true;
+
+                    }
+                }
+
+                if (spentMilliSecondW6 == 275000) HelpingBooleans.getInstance().startPunchDown = true;
+                if (HelpingBooleans.getInstance().startPunchDown && !HelpingBooleans.getInstance().isFistPunchedDown && HelpingBooleans.getInstance().isFistLaunched && BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3)) { //todo: Power Punch 1st
+                    if (Fist.getInstance().getLocation().y + Fist.getInstance().getSize() < PanelsData.getInstance().getBossPanel().getDownY()) {
+                        Fist.getInstance().setLocation(new Point(Fist.getInstance().getLocation().x, Fist.getInstance().getLocation().y + 2));
+                    }
+                    if (Fist.getInstance().getLocation().y + Fist.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getDownY()) {
+                        PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getHeight() - 200);
+                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
+                        HelpingBooleans.getInstance().isFistPunchedUp = true;
+
+                    }
+                }
+                //todo: Power Punch بازم جا داره اضافه بشه. if required.
+
+                //todo: Quake
+                if (spentMilliSecondW6 == 350000) {
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(4, true);
+                }
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(4)) {
+                    if (Fist.getInstance().getLocation().y + Fist.getInstance().getSize() < PanelsData.getInstance().getBossPanel().getDownY()) {
+                        Fist.getInstance().setLocation(new Point(Fist.getInstance().getLocation().x, Fist.getInstance().getLocation().y + 5));
+                    }
+                    if (Fist.getInstance().getLocation().y + Fist.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getDownY()) {
+                        double distanceFistAndEpsilon_dx = Math.abs(gameObjects.get(0).getPosition().getX() - Fist.getInstance().getLocation().x);
+                        double distanceFistAndEpsilon_dy = Math.abs(gameObjects.get(0).getPosition().getY() - Fist.getInstance().getLocation().y);
+                        double distanceFistAndEpsilon = Math.sqrt((distanceFistAndEpsilon_dx * distanceFistAndEpsilon_dx) + (distanceFistAndEpsilon_dy * distanceFistAndEpsilon_dy));
+
+                        double distanceFistAndLeftHand_dx = Math.abs(LeftHand.getInstance().getLocation().x - Fist.getInstance().getLocation().x);
+                        double distanceFistAndLeftHand_dy = Math.abs(LeftHand.getInstance().getLocation().y - Fist.getInstance().getLocation().y);
+                        double distanceFistAndLeftHand = Math.sqrt((distanceFistAndLeftHand_dx * distanceFistAndLeftHand_dx) + (distanceFistAndLeftHand_dy * distanceFistAndLeftHand_dy));
+
+                        double distanceFistAndRightHand_dx = Math.abs(RightHand.getInstance().getLocation().x - Fist.getInstance().getLocation().x);
+                        double distanceFistAndRightHand_dy = Math.abs(RightHand.getInstance().getLocation().y - Fist.getInstance().getLocation().y);
+                        double distanceFistAndRightHand = Math.sqrt((distanceFistAndRightHand_dx * distanceFistAndRightHand_dx) + (distanceFistAndRightHand_dy * distanceFistAndRightHand_dy));
+
+                        double distanceFistAndHead_dx = Math.abs(Head.getInstance().getLocation().x - Fist.getInstance().getLocation().x);
+                        double distanceFistAndHead_dy = Math.abs(Head.getInstance().getLocation().y - Fist.getInstance().getLocation().y);
+                        double distanceFistAndHead = Math.sqrt((distanceFistAndHead_dx * distanceFistAndHead_dx) + (distanceFistAndHead_dy * distanceFistAndHead_dy));
+
+                        if (distanceFistAndEpsilon < 150) {
+                            gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX() - 160, gameObjects.get(0).getPosition().getY() - 10));
+                        }
+                        if (distanceFistAndHead < 150 || distanceFistAndLeftHand < 150 || distanceFistAndRightHand < 150) { //todo: Impact
+                            Head.getInstance().setLocation(new Point(Head.getInstance().getLocation().x, Head.getInstance().getLocation().y - 150));
+                            RightHand.getInstance().setLocation(new Point(RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y - 150));
+                            LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x, LeftHand.getInstance().getLocation().y - 150));
+                        }
+                        HelpingBooleans.getInstance().startQuakeMouseAttack = true; // todo:Mouse & KeyBoard changing for 8"
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(4, false);
+
+                    }
+                }
+                if (spentMilliSecondQuake < 7000) {
+                    HelpingBooleans.getInstance().doQuakeMouseAttack = true;
+                }
+                if (spentMilliSecondQuake == 7000) {
+                    HelpingBooleans.getInstance().doQuakeMouseAttack = false;
+                    HelpingBooleans.getInstance().startQuakeMouseAttack = false; // finishing the attack
+
+                }
+
+                if (spentMilliSecondW6 == 400000) { //todo: Rapid Fire
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(5, true);
+                }
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5)) {
+                    headShooter.start();
+                }
+                if (Properties.getInstance().headShooterSecondCounter <= 0) {
+                    headShooter.stop();
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(5, false);
                 }
 
 
@@ -2387,6 +2618,12 @@ public class GameFrame2 implements ActionListener {
         for (Bullet bullet : bulletsOfNecropick) {
             bullet.move2();
         }
+        for (Bullet bullet : bulletsOfEpsilonProShoot) {
+            bullet.move2();
+        }
+        for (Bullet bullet : bulletsOfHeadRapidFireShoot) {
+            bullet.move2();
+        }
         for (Bullet bullet : bulletsOfWyrm) {
             bullet.move();
         }
@@ -2396,7 +2633,6 @@ public class GameFrame2 implements ActionListener {
         for (Bullet bullet : bulletsOfRightHand) {
             bullet.move();
         }
-
 
 
         FunctionalMethods.checkCollisions();

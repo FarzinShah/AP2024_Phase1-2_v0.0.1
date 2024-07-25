@@ -76,6 +76,9 @@ public class GameKeyListener implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_B) {
 //            disposer();
         }
+        if(e.getKeyCode() == KeyEvent.VK_9){
+            FunctionalMethods.epsilonProShoot();
+        }
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             Properties.getInstance().play = true;
 

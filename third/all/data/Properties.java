@@ -44,16 +44,25 @@ public class Properties {
     public Point locationOfRightHand;
     public int sizeOfRightHand;
     public Point locationOfHead;
-    public int sizeOfHead;
+    public Point locationOfFist;
+    public int sizeOfHead1;
+    public int sizeOfHead2;
+
     public double speedOfOrbitProjectile;
     public double angleOfOrbitProjectile;
     public double radiusOfOrbitProjectile;
+
+    public int headShooterSecondCounter;
 
 
     public static ArrayList<Bullet> bullets = new ArrayList<>();
     public static ArrayList<Bullet> bulletsOfOmenoct = new ArrayList<>();
     public static ArrayList<Bullet> bulletsOfWyrm = new ArrayList<>();
     public static ArrayList<Bullet> bulletsOfNecropick = new ArrayList<>();
+    public static ArrayList<Bullet> bulletsOfEpsilonProShoot = new ArrayList<>();
+    public static ArrayList<Bullet> bulletsOfHeadRapidFireShoot = new ArrayList<>();
+
+
     public static ArrayList<Bullet> bulletsOfRightHand = new ArrayList<>();
     public static ArrayList<Bullet> bulletsOfLeftHand = new ArrayList<>();
     public ArrayList<Integer> startedTimeOfCollectiblesG;
@@ -86,6 +95,12 @@ public class Properties {
         locationOfLeftHand = new Point(400, 200);
         locationOfRightHand = new Point(900, 173);
         locationOfHead = new Point(650, 150);
+        locationOfFist = new Point(1200, 400);
+        headShooterSecondCounter = 30000;
+
+        sizeOfHead1 = 250;
+        sizeOfHead2 = 150;
+
         speedOfOrbitProjectile = 0.5;
         angleOfOrbitProjectile = 0;
         radiusOfOrbitProjectile = 200;

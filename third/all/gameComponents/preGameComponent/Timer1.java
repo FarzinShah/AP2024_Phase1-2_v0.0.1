@@ -1,6 +1,7 @@
 package third.all.gameComponents.preGameComponent;
 
 import third.all.data.Properties;
+import third.all.data.booleans.HelpingBooleans;
 import third.all.model.Archmire;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class Timer1 {
     public static int spentMilliSecondW4 = 0;
     public static int spentMilliSecondW5 = 0;
     public static int spentMilliSecondW6 = 0; // BossFight
+    public static int spentMilliSecondQuake = 0; // BossFight - todo: Quake
 
 
 
@@ -55,6 +57,9 @@ public class Timer1 {
             }
             if(Properties.getInstance().WAVE==6){
                 spentMilliSecondW6+=1000;
+            }
+            if(HelpingBooleans.getInstance().startQuakeMouseAttack){
+                spentMilliSecondQuake+=1000;
             }
             elapsedTime=elapsedTime-1000;
             hours = (elapsedTime/3600000);

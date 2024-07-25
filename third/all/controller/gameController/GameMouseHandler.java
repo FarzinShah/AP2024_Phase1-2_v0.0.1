@@ -1,6 +1,7 @@
 package third.all.controller.gameController;
 
 import third.all.data.Properties;
+import third.all.data.booleans.HelpingBooleans;
 import third.all.gameComponents.game.ClipHandler;
 import third.all.model.Bullet;
 
@@ -19,7 +20,12 @@ public class GameMouseHandler implements MouseListener, MouseMotionListener {
 
         int targetX = e.getX();
         int targetY = e.getY();
-        bullets.add(new Bullet((int) (gameObjects.get(0).getPosition().getX() + 10), (int) (gameObjects.get(0).getPosition().getY() + 10), targetX, targetY, Color.RED));
+        if(!HelpingBooleans.getInstance().doQuakeMouseAttack) {
+            bullets.add(new Bullet((int) (gameObjects.get(0).getPosition().getX() + 10), (int) (gameObjects.get(0).getPosition().getY() + 10), targetX, targetY, Color.RED));
+        }
+        else {
+            bullets.add(new Bullet((int) (gameObjects.get(0).getPosition().getX() + 10), (int) (gameObjects.get(0).getPosition().getY() + 10), -targetX, targetY, Color.RED));
+        }
 
     }
 

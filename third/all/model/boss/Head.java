@@ -1,12 +1,12 @@
 package third.all.model.boss;
 
 import third.all.data.Properties;
-import third.all.model.Omenoct;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.HEAD;
+import static third.all.controller.Constants.SKULL;
 
 public class Head implements Boss {
     public static Head instance;
@@ -49,26 +49,29 @@ public class Head implements Boss {
     }
 
     @Override
-    public Rectangle getRectangle(){
-        return new Rectangle(location.x,location.y,size,size);
+    public Rectangle getRectangle() {
+        return new Rectangle(location.x, location.y, size, size);
     }
 
     @Override
     public void draw(Graphics g, ImageObserver i) {
-        if(HP>0)
-        g.drawImage(HEAD, Head.getInstance().getLocation().x, Head.getInstance().getLocation().y, Head.getInstance().getSize(), Head.getInstance().getSize(), i);
+        if (HP > 0)
+            g.drawImage(HEAD, Head.getInstance().getLocation().x, Head.getInstance().getLocation().y, Head.getInstance().getSize(), Head.getInstance().getSize(), i);
+        else
+            g.drawImage(SKULL, Head.getInstance().getLocation().x, Head.getInstance().getLocation().y, Head.getInstance().getSize(), Head.getInstance().getSize(), i);
 
     }
 
 
-    public static Head getInstance(){
-        if(instance==null) {
-            instance = new Head(Properties.getInstance().locationOfHead,250, Properties.getInstance().headOfBossHP);
+    public static Head getInstance() {
+        if (instance == null) {
+            instance = new Head(Properties.getInstance().locationOfHead, Properties.getInstance().sizeOfHead1, Properties.getInstance().headOfBossHP);
             return instance;
         }
         return instance;
     }
-    public static void setInstance(Head instance1){
+
+    public static void setInstance(Head instance1) {
         instance = instance1;
     }
 }

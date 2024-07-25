@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.FIST;
-import static third.all.controller.Constants.HEAD;
 
 public class Fist implements Boss{
 
@@ -17,6 +16,16 @@ public class Fist implements Boss{
     public Fist(Point location, int size){
         this.location = location;
         this.size = size;
+    }
+
+    public Fist setLocation(Point location) {
+        this.location = location;
+        return this;
+    }
+
+    public Fist setSize(int size) {
+        this.size = size;
+        return this;
     }
 
     @Override
@@ -44,7 +53,7 @@ public class Fist implements Boss{
 
     public static Fist getInstance(){
         if(instance==null) {
-//            instance = new Fist(Properties.getInstance().locationOfFist,250);
+            instance = new Fist(Properties.getInstance().locationOfFist,100);
             return instance;
         }
         return instance;

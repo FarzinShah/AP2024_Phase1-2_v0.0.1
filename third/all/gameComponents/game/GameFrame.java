@@ -284,11 +284,7 @@ public class GameFrame implements KeyListener, ActionListener, MouseMotionListen
             }
         }
 
-        if (lineShower && informationsOfSettings.isTherePointer()) {
-            g.setColor(new Color(0x7A4BA0));
-            g.drawLine((int) (gameObjects.get(0).position.getX() + 25), (int) (gameObjects.get(0).position.getY() + 25), startX, startY);
-        }
-        getGameObjects().forEach(gameObject -> g.drawImage(gameObject.getSprite(), gameObject.position.intX(), gameObject.position.intY(), null));
+        MyPanel.laserOption(g, lineShower, gameObjects, startX, startY, getGameObjects());
 
         // The Epsilon:
 

@@ -48,6 +48,8 @@ public class Constants {
     public static final String LEFT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\Hand2.png";
     public static final String RIGHT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\RightHand2.png";
     public static final String FIST_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\BossFist.png";
+    public static final String SKULL_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\Skull.png";
+
 
     public static final String SAVING_DATA_PATH = "src\\main\\java\\third\\all\\data\\savingPath\\gameState.json";
     public static final String SAVING_DATA_PATH_WP = "src\\main\\java\\third\\all\\data\\savingPath\\gameStateWP.json";
@@ -83,6 +85,7 @@ public class Constants {
     public static final Image LEFT_HAND = new ImageIcon(LEFT_HAND_PATH).getImage();
     public static final Image RIGHT_HAND = new ImageIcon(RIGHT_HAND_PATH).getImage();
     public static final Image FIST = new ImageIcon(FIST_PATH).getImage();
+    public static final Image SKULL = new ImageIcon(SKULL_PATH).getImage();
 
 
 

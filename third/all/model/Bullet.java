@@ -44,8 +44,8 @@ public class Bullet {
     }
 
     public void move2() {
-        temp2x += dx * speed2;
-        temp2y += dy * speed2;
+        temp2x += dx * 3;
+        temp2y += dy * 3;
     }
 
 
@@ -56,6 +56,14 @@ public class Bullet {
 
     public void draw2(Graphics g) {
         g.setColor(COLOR1);
+        g.fillOval(temp2x, temp2y, 10, 10);
+    }
+    public void draw3(Graphics g) {
+        g.setColor(new Color(0));
+        g.fillOval(temp2x, temp2y, 10, 10);
+    }
+    public void draw4(Graphics g) {
+        g.setColor(new Color(0x9BBB3400, true));
         g.fillOval(temp2x, temp2y, 10, 10);
     }
 

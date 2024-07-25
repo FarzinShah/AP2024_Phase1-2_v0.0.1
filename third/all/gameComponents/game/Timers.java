@@ -15,5 +15,6 @@ public class Timers {
     public static Timer cerberusAttackTimer;
     public static Timer orbitalMovement;
     public static Timer handsShooter;
+    public static Timer headShooter;
 
 }

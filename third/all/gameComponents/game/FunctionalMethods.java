@@ -355,12 +355,14 @@ public class FunctionalMethods {
                 (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.MAGENTA));
 
     }
+
     public static void rightHandShoot() {
         bulletsOfRightHand.add(new Bullet(RightHand.getInstance().getLocation().x + 50, RightHand.getInstance().getLocation().y,
                 (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
                 (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.YELLOW));
 
     }
+
     public static void leftHandShoot() {
         bulletsOfLeftHand.add(new Bullet(LeftHand.getInstance().getLocation().x + 50, LeftHand.getInstance().getLocation().y,
                 (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
@@ -483,13 +485,33 @@ public class FunctionalMethods {
     }
 
 
-
     public static void necropickShoot() {
         int[] dx = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
 
         for (int i = 0; i < 8; i++) {
             bulletsOfNecropick.add(new Bullet(Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, dx[i], dy[i]));
+        }
+
+    }
+
+
+    public static void epsilonProShoot() {
+        int[] dx = {1, 1, 0, -1, -1, -1, 0, 1};
+        int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+
+        for (int i = 0; i < 8; i++) {
+            bulletsOfEpsilonProShoot.add(new Bullet((int) (gameObjects.get(0).getPosition().getX() + (EPSILON_LENGTH / 2)), (int) (gameObjects.get(0).getPosition().getY() + (EPSILON_LENGTH / 2)), dx[i], dy[i]));
+        }
+
+    }
+
+    public static void headRapidFireShoot() {
+        int[] dx = {1, 1, 0, -1, -1, -1, 0, 1};
+        int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+
+        for (int i = 0; i < 8; i++) {
+            bulletsOfHeadRapidFireShoot.add(new Bullet((int) (Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), (int) (Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), dx[i], dy[i]));
         }
 
     }
@@ -501,7 +523,6 @@ public class FunctionalMethods {
     public static Rectangle getBoundsYellowEnemy2(int i) {
         return new Rectangle((int) ((YellowEnemyModel) yellowEnemies1.get(i)).getPosition().intX(), (int) (int) ((YellowEnemyModel) yellowEnemies1.get(i)).getPosition().intY(), 25, 25);
     }
-
 
 
     public static void checkCollisions() {
@@ -607,7 +628,6 @@ public class FunctionalMethods {
                 bulletsToRemove.add(bullet);
                 ClipHandler.getInstance().playShotMusic();
 
-
             }
         }
         for (Bullet bullet : bulletsOfWyrm) {
@@ -683,7 +703,38 @@ public class FunctionalMethods {
                     }
                 }
             }
-                for (Bullet bullet : bullets) {
+
+
+            for (Bullet bullet : bulletsOfHeadRapidFireShoot) {
+                if (bullet.getBounds2().intersects(epsilon)) {
+                    Properties.getInstance().HP -= 5;
+                    bulletsToRemove.add(bullet);
+                }
+                //todo: if required , بیام تاثیرش روی فریم باس رو هم بزنم.
+
+            }
+
+
+            for (Bullet bullet : bulletsOfEpsilonProShoot) {
+                if (bullet.getBounds2().intersects(Head.getInstance().getRectangle())) {
+                    Head.getInstance().setHP(Head.getInstance().getHP() - 1);
+                    bulletsToRemove.add(bullet);
+                }
+                if (bullet.getBounds2().intersects(RightHand.getInstance().getRectangle())) {
+                    RightHand.getInstance().setHP(RightHand.getInstance().getHP() - 1);
+                    bulletsToRemove.add(bullet);
+
+                }
+                if (bullet.getBounds2().intersects(LeftHand.getInstance().getRectangle())) {
+                    LeftHand.getInstance().setHP(LeftHand.getInstance().getHP() - 1);
+                    bulletsToRemove.add(bullet);
+
+                }
+
+
+            }
+
+            for (Bullet bullet : bullets) {
                 if (bullet.getBounds().intersects(Head.getInstance().getRectangle())) {
                     Head.getInstance().setHP(Head.getInstance().getHP() - 1);
                     bulletsToRemove.add(bullet);
@@ -720,6 +771,12 @@ public class FunctionalMethods {
                     }
                 }
 
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2)) {//todo: AOE Attack Vomit
+                    if (Head.getInstance().getRectangle().intersects(epsilon) || RightHand.getInstance().getRectangle().intersects(epsilon) || LeftHand.getInstance().getRectangle().intersects(epsilon)) {
+                        Properties.getInstance().HP -= 1;
+                    }
+                }
+
             }
         }
 
@@ -734,6 +791,9 @@ public class FunctionalMethods {
         CollectablesOfEnemies.getInstance().getCollectablesOfYE().removeAll(collectablesToRemove);
         CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().removeAll(collectablesToRemove);
         CollectablesOfEnemies.getInstance().getCollectablesOfWyrm().removeAll(collectablesToRemove);
+        bulletsOfEpsilonProShoot.removeAll(bulletsToRemove);
+        bulletsOfHeadRapidFireShoot.removeAll(bulletsToRemove);
+
 
     }
 
