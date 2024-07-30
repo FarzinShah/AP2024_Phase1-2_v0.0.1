@@ -34,6 +34,9 @@ public class Booleans {
 //    public static boolean enemy13 = true;
 //    public static boolean enemy14 = true;
     public static boolean isFinishedWave2 = false;
+    public static boolean isFinishedWave3 = false;
+    public static boolean isFinishedWave4 = false;
+    public static boolean isFinishedWave5 = false;
 
     //todo: Wave 3:
 //    public static boolean enemy15 = true;

@@ -89,6 +89,9 @@ public class Properties {
     public Properties() {
         EPSILON_PROPERTIES = new ArrayList<>();
         LOCATION_OF_PANELS = new ArrayList<>();
+        startedTimeOfCollectiblesG = new ArrayList<>();
+        startedTimeOfCollectiblesY = new ArrayList<>();
+
         isValidToChiron = false;
         isValidToAthena = false;
         isValidDeimos = false;
@@ -134,8 +137,11 @@ public class Properties {
         LOCATION_OF_PANELS.add(2, new Point((int) SECOND_FRAME_LOCATION_X, (int) SECOND_FRAME_LOCATION_Y));
         LOCATION_OF_PANELS.add(3, new Point((int) THIRD_FRAME_LOCATION_X, (int) THIRD_FRAME_LOCATION_Y));
         LOCATION_OF_PANELS.add(4, new Point((int) FOURTH_FRAME_LOCATION_X, (int) FOURTH_FRAME_LOCATION_Y));
-        LOCATION_OF_PANELS.add(5, new Point((int) FIFTH_FRAME_LOCATION_X, (int) FIFTH_FRAME_LOCATION_Y));
-
+        LOCATION_OF_PANELS.add(5, new Point( FIFTH_FRAME_LOCATION_X, FIFTH_FRAME_LOCATION_Y));
+        for (int i = 0; i < 100; i++) {
+            startedTimeOfCollectiblesG.add(i, -1);
+            startedTimeOfCollectiblesY.add(i, -1);
+        }
 
     }
 

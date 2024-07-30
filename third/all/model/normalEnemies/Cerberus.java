@@ -1,13 +1,12 @@
 package third.all.model.normalEnemies;
 
-import third.all.controller.entity.EpsilonModel;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 import static third.all.controller.Constants.EPSILON_LENGTH;
 import static third.all.controller.Constants.EPSILON_WIDTH;
-import static third.all.gameComponents.game.GameFrame2.gameObjects;
+import static third.all.gameComponents.game.GameLoop.gameObjects;
 
 public class Cerberus {
     public static ArrayList<Cerberus> instance;
@@ -49,7 +48,7 @@ public class Cerberus {
     public static ArrayList<Cerberus> getInstance() {
         if (instance == null) {
             instance = new ArrayList<>();
-            Rectangle epsilon = new Rectangle((int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(), (int) (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+            Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(),  (int) ( gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
             instance.add(0, new Cerberus(epsilon.x + 100, epsilon.y, 50));
             instance.add(1, new Cerberus(epsilon.x, epsilon.y + 100, 50));
             instance.add(2, new Cerberus(epsilon.x + 100, epsilon.y + 100, 50));

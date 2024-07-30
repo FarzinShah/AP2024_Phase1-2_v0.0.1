@@ -9,7 +9,6 @@ import third.all.data.PanelsData;
 import third.all.data.Properties;
 import third.all.data.booleans.HelpingBooleans;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
-import third.all.gameComponents.preGameComponent.Timer1;
 import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
@@ -27,8 +26,8 @@ import static third.all.controller.Constants.*;
 
 import static third.all.data.Properties.*;
 import static third.all.gameComponents.game.FunctionalMethods.showOptionPane;
-import static third.all.gameComponents.game.GameFrame2.*;
-import static third.all.gameComponents.game.Timers.addBlackOrbsTimer;
+import static third.all.gameComponents.game.GameLoop.*;
+import static third.all.gameComponents.game.Timers.*;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
 import static third.all.gameComponents.preGameComponent.Timer1.elapsedTime;
 import static third.all.data.booleans.Booleans.*;
@@ -38,7 +37,6 @@ public class MyPanel extends JPanel implements Runnable {
     private final Color backGround = Color.BLACK;
     private final Color backGroundTest = Color.GRAY;
 
-    public static Timer1 timerOfGame;
     public static boolean showOfPointerItem;
     int record = 0;
 
@@ -90,63 +88,7 @@ public class MyPanel extends JPanel implements Runnable {
             }
         }
         //todo: panels
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
-            synchronized (PanelsData.getInstance().getPanels().get(1)) {
-                PanelsData.getInstance().getPanels().set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
-                panels.set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
-                PanelsData.getInstance().getPanels().get(1).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-            synchronized (PanelsData.getInstance().getWyrm()) {
-                PanelsData.getInstance().setWyrm(new Panel(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y, 80, 80));
-                PanelsData.getInstance().getWyrm().drawWym(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(4)) {
-            synchronized (PanelsData.getInstance().getBarricados()) {
-                PanelsData.getInstance().setBarricados(new Panel(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, 80, 80));
-                PanelsData.getInstance().getBarricados().drawWym(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(0)) {
-            synchronized (redZone) {
-                redZone.drawRedZone(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(0)) {
-            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(0)) {
-                PanelsData.getInstance().getBlackOrbPanels().get(0).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(1)) {
-            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(1)) {
-                PanelsData.getInstance().getBlackOrbPanels().get(1).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(2)) {
-            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(2)) {
-                PanelsData.getInstance().getBlackOrbPanels().get(2).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(3)) {
-            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(3)) {
-                PanelsData.getInstance().getBlackOrbPanels().get(3).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(4)) {
-            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(4)) {
-                PanelsData.getInstance().getBlackOrbPanels().get(4).draw(g);
-            }
-        }
-        if (BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
-            synchronized (PanelsData.getInstance().getBossPanel()) {
-                PanelsData.getInstance().getBossPanel().drawBossPanel(g);
-            }
-
-        }
-
-
+        panelLauncher(g);
         // drawing map:
         g.setColor(BLUE_BACKGROUND);
         showAlert(g);
@@ -208,23 +150,6 @@ public class MyPanel extends JPanel implements Runnable {
 
             }
         }
-//        g.setColor(new Color(0xB08E1D));
-//        Rectangle edge1 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize()+25, 1);
-//        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize()+25);
-//        Rectangle edge3 = new Rectangle(Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize()+25, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize()+25);
-//        Rectangle edge4 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize()+25, Barricados.getInstance().getSize()+25, 1);
-//        ((Graphics2D) g).fill(edge1);
-//        ((Graphics2D) g).fill(edge2);
-//        ((Graphics2D) g).fill(edge3);
-//        ((Graphics2D) g).fill(edge4);
-
-//        for (int i = 0; i < yellowEnemies1.size(); i++) {
-//            if(showOfCollectiblesY.get(i)){
-//                g.setColor(Color.ORANGE);
-//                collectibleItemsY.get(i).draw((Graphics2D) g);
-//            }
-//        }
-
 
         // borders:
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
@@ -256,77 +181,7 @@ public class MyPanel extends JPanel implements Runnable {
             (g).drawString("Highest: " + record, 320, 30);
         }
         // shots:
-        synchronized (bullets) {
-            for (Bullet bullet : bullets) {
-                bullet.draw(g);
-            }
-        }
-        synchronized (bulletsOfOmenoct) {
-            for (Bullet bullet : bulletsOfOmenoct) {
-                bullet.draw(g);
-            }
-        }
-        synchronized (bulletsOfWyrm) {
-            for (Bullet bullet : bulletsOfWyrm) {
-                bullet.draw(g);
-            }
-        }
-        synchronized (bulletsOfLeftHand) {
-            for (Bullet bullet : bulletsOfLeftHand) {
-                bullet.draw(g);
-            }
-        }
-        synchronized (bulletsOfRightHand) {
-            for (Bullet bullet : bulletsOfRightHand) {
-                bullet.draw(g);
-            }
-        }
-        synchronized (bulletsOfNecropick) {
-            for (Bullet bullet : bulletsOfNecropick) {
-                bullet.draw2(g);
-            }
-        }
-        synchronized (bulletsOfEpsilonProShoot) {
-            for (Bullet bullet : bulletsOfEpsilonProShoot) {
-                bullet.draw3(g);
-            }
-        }
-        synchronized (bulletsOfHeadRapidFireShoot) {
-            for (Bullet bullet : bulletsOfHeadRapidFireShoot) {
-                bullet.draw4(g);
-            }
-        }
-        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct()) {
-            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct()) {
-                collectable.draw(g);
-            }
-        }
-        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfYE()) {
-            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfYE()) {
-                collectable.draw(g);
-            }
-        }
-        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfOrbs()) {
-            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfOrbs()) {
-                collectable.draw(g);
-            }
-        }
-        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfWyrm()) {
-            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfWyrm()) {
-                collectable.draw(g);
-            }
-        }
-        g.setColor(new Color(0x44981062, true));
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
-            synchronized (Archmire.getInstance().getTrails()) {
-                for (Point trail : Archmire.getInstance().getTrails()) {
-                    g.fillOval(trail.x, trail.y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize());
-                }
-            }
-            g.drawImage(ARCHMIRE, Archmire.getInstance().getLocation().x, Archmire.getInstance().getLocation().y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize(), this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
-
+        shootsLauncher(g);
 
         laserOption(g, lineShower, gameObjects, startX, startY, getGameObjects());
         getYellowObjects().forEach(gameObject -> g.drawImage(gameObject.getSprite(), gameObject.position.intX(), gameObject.position.intY(), null));
@@ -471,6 +326,140 @@ public class MyPanel extends JPanel implements Runnable {
             g.fillRect(1000, 10, 220, 50);
             g.drawImage(BlackOrbsAlert, 1000, 10, 220, 50, this);
         }
+    }
+
+
+    public void panelLauncher(Graphics g){
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
+            synchronized (PanelsData.getInstance().getPanels().get(1)) {
+                PanelsData.getInstance().getPanels().set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
+                panels.set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
+                PanelsData.getInstance().getPanels().get(1).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
+            synchronized (PanelsData.getInstance().getWyrm()) {
+                PanelsData.getInstance().setWyrm(new Panel(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y, 80, 80));
+                PanelsData.getInstance().getWyrm().drawWym(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(4)) {
+            synchronized (PanelsData.getInstance().getBarricados()) {
+                PanelsData.getInstance().setBarricados(new Panel(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, 80, 80));
+                PanelsData.getInstance().getBarricados().drawWym(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(0)) {
+            synchronized (backGround) {
+                redZone.drawRedZone(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(0)) {
+            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(0)) {
+                PanelsData.getInstance().getBlackOrbPanels().get(0).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(1)) {
+            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(1)) {
+                PanelsData.getInstance().getBlackOrbPanels().get(1).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(2)) {
+            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(2)) {
+                PanelsData.getInstance().getBlackOrbPanels().get(2).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(3)) {
+            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(3)) {
+                PanelsData.getInstance().getBlackOrbPanels().get(3).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(4)) {
+            synchronized (PanelsData.getInstance().getBlackOrbPanels().get(4)) {
+                PanelsData.getInstance().getBlackOrbPanels().get(4).draw(g);
+            }
+        }
+        if (BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
+            synchronized (PanelsData.getInstance().getBossPanel()) {
+                PanelsData.getInstance().getBossPanel().drawBossPanel(g);
+            }
+
+        }
+
+
+    }
+    public void shootsLauncher(Graphics g){
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bullets) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfOmenoct) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfWyrm) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfLeftHand) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfRightHand) {
+                bullet.draw(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfNecropick) {
+                bullet.draw2(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfEpsilonProShoot) {
+                bullet.draw3(g);
+            }
+        }
+        synchronized (backGroundTest) {
+            for (Bullet bullet : bulletsOfHeadRapidFireShoot) {
+                bullet.draw4(g);
+            }
+        }
+        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct()) {
+            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct()) {
+                collectable.draw(g);
+            }
+        }
+        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfYE()) {
+            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfYE()) {
+                collectable.draw(g);
+            }
+        }
+        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfOrbs()) {
+            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfOrbs()) {
+                collectable.draw(g);
+            }
+        }
+        synchronized (CollectablesOfEnemies.getInstance().getCollectablesOfWyrm()) {
+            for (Collectable collectable : CollectablesOfEnemies.getInstance().getCollectablesOfWyrm()) {
+                collectable.draw(g);
+            }
+        }
+        g.setColor(new Color(0x44981062, true));
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
+            synchronized (Archmire.getInstance().getTrails()) {
+                for (Point trail : Archmire.getInstance().getTrails()) {
+                    g.fillOval(trail.x, trail.y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize());
+                }
+            }
+            g.drawImage(ARCHMIRE, Archmire.getInstance().getLocation().x, Archmire.getInstance().getLocation().y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize(), this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
+
     }
 
 

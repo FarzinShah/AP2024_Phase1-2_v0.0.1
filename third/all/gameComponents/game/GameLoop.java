@@ -31,6 +31,7 @@ import javax.sound.sampled.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
@@ -41,25 +42,21 @@ import java.util.concurrent.Executors;
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
 import static third.all.data.Properties.*;
-import static third.all.gameComponents.game.FunctionalMethods.*;
 import static third.all.gameComponents.game.MyPanel.*;
-import static third.all.gameComponents.preGameComponent.MapGenerator.*;
 import static third.all.gameComponents.preGameComponent.Timer1.*;
 import static third.all.data.booleans.Booleans.*;
 import static third.all.gameComponents.game.Timers.*;
 
 
-public class GameFrame2 implements ActionListener {
+public class GameLoop implements ActionListener {
     MyPanel panel;
     MyFrame frame;
-    private static final Logger logger = LoggerFactory.getLogger(GameFrame2.class);
+    private static final Logger logger = LoggerFactory.getLogger(GameLoop.class);
 
-    public static GameFrame2 INSTANCE;
+    public static GameLoop INSTANCE;
     public static int score = 0;
-    public static Timer time;
-    private int delay = 0;
 
-    boolean isUnvisible = true;
+    boolean isInvisible = true;
     FunctionalMethods functionalMethod;
     boolean boo = true;
 
@@ -80,26 +77,14 @@ public class GameFrame2 implements ActionListener {
 
     int collidedOne = -5;
     int collidedTwo = -5;
-
-
-    private final LinkedList<Integer> counters = new LinkedList<>();
     HashMap<Integer, Integer> startFromCollision = new HashMap<>();
-    private Integer stateCounter;
-    private Integer stateCounterG;
-
-    static int numberOfShots = 100;
 
 
     public static int startX = 345, startY = 520;
 
-    //helper booleans:
-    int collided = -5;
-
-
     Input input;
     TargetWithMouse targetWithMouse;
     public static TWM_Item_Model twm_item_model; // can be singleton
-    public static Shot_Item_Model shot_item_model;// can be singleton
     public static ArrayList<TKM2_Item_Model> collectibleItems;// can't be singleton
 
     public static ArrayList<TKM2_Item_Model> collectibleItemsG;// can't be singleton
@@ -116,7 +101,7 @@ public class GameFrame2 implements ActionListener {
     Timers timerController;
 
 
-    public GameFrame2() throws UnsupportedAudioFileException, IOException {
+    public GameLoop() throws UnsupportedAudioFileException, IOException {
         frame = new MyFrame();
         ClipHandler.getInstance().playBackgroundMusic();
 
@@ -133,30 +118,18 @@ public class GameFrame2 implements ActionListener {
         archmire = Archmire.getInstance();
         archmire.setLocation(ARCHMIRE_POSITION);
         archmire.setSize(ARCHMIRE_SIZE);
-        yellowEnemies1 = new ArrayList<YellowEnemyModel>();
+        yellowEnemies1 = new ArrayList<>();
         greenEnemies1 = new ArrayList<>();
         blackOrbPanels = new ArrayList<>();
-        yellowEnemies_triangles.clear();
-        yellowEnemies.clear();
+
         input = new Input();
         panel = new MyPanel(input);
         timerController = new Timers();
 
 
-        shotTimer = new Timer(5000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                omenoct_shooter();
-            }
-        });
 //        shotTimer.start(); //todo: هرموقع وقتش شد استارتش کنم
 
-        necropickShower = new Timer(12000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                necropickHide();
-            }
-        });
+        necropickShower = new Timer(12000, e -> necropickHide());
 //        necropickShower.start(); //todo: هرموقع وقتش شد استارتش کنم
 
 
@@ -171,20 +144,9 @@ public class GameFrame2 implements ActionListener {
         frame.setVisible(true);
         frame.add(panel);
 
-
-        counters.add(0);
-        counters.add(1);
-        counters.add(2);
-        counters.add(3);
-        counters.add(4);
-        counters.add(5);
-        counters.add(6);
-        counters.add(7);
         showOfCollectiblesG = new ArrayList<>();
         showOfCollectiblesHelperG = new ArrayList<>();
-        Properties.getInstance().startedTimeOfCollectiblesG = new ArrayList<>();
         showOfCollectiblesHelperY = new ArrayList<>();
-        Properties.getInstance().startedTimeOfCollectiblesY = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             showOfCollectiblesG.add(i, false);
             showOfCollectiblesHelperG.add(i, true);
@@ -194,10 +156,6 @@ public class GameFrame2 implements ActionListener {
 
         }
 
-        for (int i = 0; i < 100; i++) {
-            Properties.getInstance().startedTimeOfCollectiblesG.add(i, -1);
-            Properties.getInstance().startedTimeOfCollectiblesY.add(i, -1);
-        }
 
 //        Arrays.fill(showOfCollectibles, false);
         collectibleItems = new ArrayList<>();
@@ -209,10 +167,10 @@ public class GameFrame2 implements ActionListener {
         for (int i = 0; i < 100; i++) {
             collectibleItemsG.add(i, new TKM2_Item_Model(new Position(-1, -1)));
         }
-        stateCounter = counters.get(0);
         gameKeyListener = new GameKeyListener(input);
         panel.addKeyListener(gameKeyListener);
 
+        int delay = 0;
         time = new Timer(delay, this);
         time.start();
         timer1 = new Timer(0, this);
@@ -228,9 +186,6 @@ public class GameFrame2 implements ActionListener {
         properties = Properties.getInstance();
         gameObjects.add(new EpsilonModel(new EpsilonController(input), 230, 330));
 
-//        for (int i = 0; i < 1; i++) {
-//            yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input),20,10, 30));
-//        }
 
         for (int i = 0; i < 2; i++) { // 10
             gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
@@ -255,33 +210,6 @@ public class GameFrame2 implements ActionListener {
         }
 
         startGameLoop();
-//        Runnable task1 = this::isValidToShowYE;
-//        Runnable task2 = this::isValidToShowGE;
-//        Runnable task3 = this::movementOfP1Enemies;
-//        Runnable task4 = this::movementOfOmenoct;
-//        Runnable task5 = this::movementOfArchmire;
-//        Runnable task6 = this::funcOfBlackOrbs;
-//        Runnable task7 = this::movementOfWyrm;
-//        Runnable task8 = this::funcOfBarricados;
-//
-//
-//        Thread thread1 = new Thread(task1);
-//        Thread thread2 = new Thread(task2);
-//        Thread thread3 = new Thread(task3);
-//        Thread thread4 = new Thread(task4);
-//        Thread thread5 = new Thread(task5);
-//        Thread thread6 = new Thread(task6);
-//        Thread thread7 = new Thread(task7);
-//        Thread thread8 = new Thread(task8);
-//
-//        thread1.start();
-//        thread2.start();
-//        thread3.start();
-//        thread4.start();
-//        thread5.start();
-//        thread6.start();
-//        thread7.start();
-//        thread8.start();
 
     }
 
@@ -295,6 +223,7 @@ public class GameFrame2 implements ActionListener {
         movementOfOmenoct();
         movementOfArchmire();
         funcOfBlackOrbs();
+        laserOfBlackOrbs();
         movementOfWyrm();
         funcOfBarricados();
 
@@ -523,20 +452,23 @@ public class GameFrame2 implements ActionListener {
                 }
 
 
-                if ((!booleansOfEnemies.getEnemyN().get(15) && !booleansOfEnemies.getEnemyN().get(16) && !booleansOfEnemies.getEnemyN().get(17) && !booleansOfEnemies.getEnemyN().get(18) && !booleansOfEnemies.getEnemyN().get(19) && !booleansOfEnemies.getEnemyN().get(20) && !booleansOfEnemies.getEnemyN().get(21) && !booleansOfEnemies.getEnemyN().get(22)) && !BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
+                if ((!booleansOfEnemies.getEnemyN().get(15) && !booleansOfEnemies.getEnemyN().get(16) && !booleansOfEnemies.getEnemyN().get(17)
+                        && !booleansOfEnemies.getEnemyN().get(18) && !booleansOfEnemies.getEnemyN().get(19)
+                        && !booleansOfEnemies.getEnemyN().get(20) && !booleansOfEnemies.getEnemyN().get(21)
+                        && !booleansOfEnemies.getEnemyN().get(22)) && !BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
                     int count = 0;
                     for (GameObject gameObject : greenEnemies1) {
-                        for (GameObject object : yellowEnemies1) {
-                            if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && ((YellowEnemyModel) object).getLifeValue() > 0) {
+                        for (YellowEnemyModel object : yellowEnemies1) {
+                            if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
                                 count++;
                             }
 
                         }
 
                     }
-                    if (count == 0) isFinishedWave2 = true;
-                    if (isFinishedWave2) {
-                        Properties.getInstance().WAVE = 3;
+                    if (count == 0) isFinishedWave3 = true;
+                    if (isFinishedWave3) {
+                        Properties.getInstance().WAVE = 4;
                     }
                 }
             }
@@ -552,6 +484,67 @@ public class GameFrame2 implements ActionListener {
            هر 30 ثانیه یه آیتم بونوس هم ظاهر میشه که با خوردنش 50 واحد به hp هاش اضافه میشه.
            زیاد شدن hp اینطوری توجیه میشه که بازی با سخت شدن و شدت حملات
         */
+            if (Properties.getInstance().WAVE == 4) {
+                if (spentMilliSecondW4 == 5000 && booleansOfEnemies.getEnemyN().get(23)) {
+                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
+                    booleansOfEnemies.getEnemyN().set(23, false);
+                }
+                if (spentMilliSecondW4 == 20000 && booleansOfEnemies.getEnemyN().get(24)) {
+                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 40, 20));
+                    booleansOfEnemies.getEnemyN().set(24, false);
+                }
+                if (spentMilliSecondW4 == 35000 && booleansOfEnemies.getEnemyN().get(25)) {
+                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
+                    booleansOfEnemies.getEnemyN().set(25, false);
+                }
+                if (spentMilliSecondW4 == 50000 && booleansOfEnemies.getEnemyN().get(26)) {
+                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 60, 10));
+                    booleansOfEnemies.getEnemyN().set(26, false);
+                }
+                if (spentMilliSecondW4 == 65000 && booleansOfEnemies.getEnemyN().get(27)) {
+                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 50, 100));
+                    booleansOfEnemies.getEnemyN().set(27, false);
+                }
+                if (spentMilliSecondW4 == 80000 && booleansOfEnemies.getEnemyN().get(28)) {
+                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 150, 78));
+                    booleansOfEnemies.getEnemyN().set(28, false);
+                }
+                if (spentMilliSecondW4 == 95000 && booleansOfEnemies.getEnemyN().get(29)) {
+                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 50, 100));
+                    booleansOfEnemies.getEnemyN().set(29, false);
+                }
+                if (spentMilliSecondW4 == 105000 && booleansOfEnemies.getEnemyN().get(30)) {
+                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 150, 78));
+                    booleansOfEnemies.getEnemyN().set(30, false);
+                }
+                if (spentMilliSecondW4 == 30000) {
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(2, true);
+                }
+                if (spentMilliSecondW4 == 150000) {
+                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, true);
+                }
+            }
+
+            if ((!booleansOfEnemies.getEnemyN().get(28) && !booleansOfEnemies.getEnemyN().get(29) && !booleansOfEnemies.getEnemyN().get(30)
+                    && !booleansOfEnemies.getEnemyN().get(26) && !booleansOfEnemies.getEnemyN().get(27)
+                    && !booleansOfEnemies.getEnemyN().get(25) && !booleansOfEnemies.getEnemyN().get(24)
+                    && !booleansOfEnemies.getEnemyN().get(23)) && !BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
+                int count = 0;
+                for (GameObject gameObject : greenEnemies1) {
+                    for (YellowEnemyModel object : yellowEnemies1) {
+                        if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
+                            count++;
+                        }
+
+                    }
+
+                }
+                if (count == 0) isFinishedWave4 = true;
+                if (isFinishedWave4) {
+                    Properties.getInstance().WAVE = 6;
+                }
+            }
+
 
 
             //Todo: BossFight
@@ -595,7 +588,7 @@ public class GameFrame2 implements ActionListener {
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0)) {
 
                     if (!HelpingBooleans.getInstance().isSqueezedFinished) {
-                        if (LeftHand.getInstance().getLocation().x + (2 * LeftHand.getInstance().getSize() / 5) > PanelsData.getInstance().getBossPanel().getX()) {
+                        if (LeftHand.getInstance().getLocation().x + (double)(2 * LeftHand.getInstance().getSize() / 5) > PanelsData.getInstance().getBossPanel().getX()) {
                             LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x - 1, LeftHand.getInstance().getLocation().y));
                         } else {
                             HelpingBooleans.getInstance().isSqueezed = true;
@@ -987,7 +980,7 @@ public class GameFrame2 implements ActionListener {
 
         if (((spentMilliSecond <= startTimeFromActivationOfPointerItem + 10000) && activateMechanismOfPointerItem) || HelpingBooleans.getInstance().lineShower2) {
             lineShower = true;
-            targetWithMouse = new TargetWithMouse(new Point2D.Double((gameObjects.get(0)).getPosition().getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+            targetWithMouse = new TargetWithMouse(new Point2D.Double((gameObjects.get(0)).getPosition().getX(), (gameObjects.get(0)).getPosition().getY()));
 
         } else lineShower = false;
         //todo: Shrinkage :
@@ -1090,7 +1083,7 @@ public class GameFrame2 implements ActionListener {
         System.out.println("x of moving epsilon: " + gameObjects.get(0).getPosition().getX());
 
 
-        if (isUnvisible && ((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.getWidth() >= PANEL_SIZE.getWidth()) {
+        if (isInvisible && ((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.getWidth() >= PANEL_SIZE.getWidth()) {
             Properties.getInstance().play = false;
             if (isValid8) {
                 panel.setVisible(false);
@@ -1098,7 +1091,7 @@ public class GameFrame2 implements ActionListener {
                 disposer();
                 new GameOverFrame();
                 isValid8 = false;
-                isUnvisible = false;
+                isInvisible = false;
 
             }
 
@@ -1160,10 +1153,10 @@ public class GameFrame2 implements ActionListener {
     }
 */
 
-    public static GameFrame2 getINSTANCE() {
+    public static GameLoop getINSTANCE() {
         if (INSTANCE == null) {
             try {
-                INSTANCE = new GameFrame2();
+                INSTANCE = new GameLoop();
             } catch (UnsupportedAudioFileException e) {
                 logger.error("singleton error");
                 e.printStackTrace();
@@ -1197,22 +1190,18 @@ public class GameFrame2 implements ActionListener {
 
         Properties.getInstance().HP = 100;
         Properties.getInstance().XP = 0.0;
-//        timerOfGame = null;
     }
 
 
     private void necropickHide() {
-        Timer colorChangeTimer = new Timer(4000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (isNecropickInRightRange()) {
-                    necropick.setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
-                } else if (isNecopickInLeftRange()) {
-                    necropick.setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
+        Timer colorChangeTimer = new Timer(4000, e -> {
+            if (isNecropickInRightRange()) {
+                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
+            } else if (isNecropickInLeftRange()) {
+                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
 
-                }
-                necropick_isVisible = true;
             }
+            necropick_isVisible = true;
         });
         necropick_isVisible = false;
         colorChangeTimer.setRepeats(false);
@@ -1223,7 +1212,7 @@ public class GameFrame2 implements ActionListener {
         return (gameObjects.get(0)).getPosition().getX() + 200 < panels.get(0).getRightX();
     }
 
-    public boolean isNecopickInLeftRange() {
+    public boolean isNecropickInLeftRange() {
         return (gameObjects.get(0)).getPosition().getX() - 200 < panels.get(0).getX();
     }
 
@@ -1249,7 +1238,7 @@ public class GameFrame2 implements ActionListener {
             if (!isCollidedY.get(i)) {
                 (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - yellowEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - yellowEnemies1.get(i).getPosition().getY())));
                 (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                (yellowEnemies1.get(i)).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                (yellowEnemies1.get(i)).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
             }
         }
 
@@ -1257,7 +1246,7 @@ public class GameFrame2 implements ActionListener {
             if (!isCollidedG.get(i)) {
                 ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - greenEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - greenEnemies1.get(i).getPosition().getY())));
                 ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                ((GreenEnemyModel) greenEnemies1.get(i)).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+                greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
             }
         }
 
@@ -1278,7 +1267,6 @@ public class GameFrame2 implements ActionListener {
                 (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                 startFromCollision.put(i, spentMilliSecond);
                 Properties.getInstance().HP -= 5;
-                stateCounter = counters.get(1);
                 isCollidedY.set(i, true);
                 yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
@@ -1310,7 +1298,7 @@ public class GameFrame2 implements ActionListener {
 //                                isCollidedEnemies.set(j, true);
                         collidedOne = i;
                         collidedTwo = j;
-                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, yellowEnemies1.get(i).getMovementOfYellowEnemy().getVector1().getX(), yellowEnemies1.get(i).getMovementOfYellowEnemy().getVector1().getY()));
 //                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
 
 
@@ -1348,7 +1336,6 @@ public class GameFrame2 implements ActionListener {
                             ACCELERATION_OF_YELLOW_ENEMIES = 1;
 //                                ACCELERATION_OF_EPSILON = 2;
                         }
-                        ;
 
                     }
 
@@ -1359,7 +1346,7 @@ public class GameFrame2 implements ActionListener {
                 for (int i = 0; i < yellowEnemies1.size(); i++) {
                     if (i == j) {
                         ACCELERATION_OF_YELLOW_ENEMIES = 2;
-                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
                     }
                 }
 
@@ -1382,7 +1369,6 @@ public class GameFrame2 implements ActionListener {
                 ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
                 startFromCollision.put(i, spentMilliSecond);
                 Properties.getInstance().HP -= 5;
-                stateCounter = counters.get(1);
                 isCollidedG.set(i, true);
                 greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
 
@@ -1487,7 +1473,7 @@ public class GameFrame2 implements ActionListener {
     public void movementOfOmenoct() {
         //todo: Omenoct movement:
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-            Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+            Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) gameObjects.get(0).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
             int leftDistance = (int) (omenoct.getLocation().x - panels.get(0).getX());
             int rightDistance = panels.get(0).getRightX() - omenoct.getLocation().x;
             int upperDistance = (int) (omenoct.getLocation().y - panels.get(0).getY());
@@ -1522,7 +1508,7 @@ public class GameFrame2 implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                        if (omenoct.getLocation().x - (double)(omenoct.getSize() / 2) < panels.get(0).getX()) {
                             omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                         }
                     }
@@ -1551,7 +1537,7 @@ public class GameFrame2 implements ActionListener {
                             omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
                         }
                     }
-                    if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                    if (omenoct.getLocation().x - (double)(omenoct.getSize() / 2) < panels.get(0).getX()) {
                         omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                     }
                     if (omenoct.getLocation().x + (omenoct.getSize() / 2) > panels.get(0).getRightX()) {
@@ -1606,7 +1592,7 @@ public class GameFrame2 implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().y - (omenoct.getSize() / 2) < panels.get(0).getY()) {
+                        if (omenoct.getLocation().y - ((double)omenoct.getSize() / 2) < panels.get(0).getY()) {
                             omenoct.setLocation(new Point((int) panels.get(0).getX(), (int) omenoct.getLocation().getY() + (omenoct.getSize() / 2)));
                         }
                     }
@@ -1631,7 +1617,7 @@ public class GameFrame2 implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                        if (omenoct.getLocation().x - ((double)omenoct.getSize() / 2) < panels.get(0).getX()) {
                             omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                         }
                     }
@@ -1732,7 +1718,7 @@ public class GameFrame2 implements ActionListener {
 
             }
             if (oDistance > 150) {
-                Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x-3,Wyrm.getInstance().getLocation().y));
+                Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x - 3, Wyrm.getInstance().getLocation().y));
 
             } else if (oDistance < 150) {
                 Wyrm.getInstance().setValidToShoot(true);
@@ -1759,7 +1745,7 @@ public class GameFrame2 implements ActionListener {
     public void funcOfBarricados() {
         Rectangle epsilon = gameObjects.get(0).getBounds();
         Rectangle edge1 = new Rectangle(Barricados.getInstance().getLocation().x - 20, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize() + 35, 1);
-        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x - 30, Barricados.getInstance().getLocation().y - (EPSILON_LENGTH / 2), 1, Barricados.getInstance().getSize() + -(EPSILON_LENGTH / 2) + 60);
+        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x - 30, Barricados.getInstance().getLocation().y - (EPSILON_LENGTH / 2), 1, Barricados.getInstance().getSize() -(EPSILON_LENGTH / 2) + 60);
         Rectangle edge3 = new Rectangle(Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize() + 20);
         Rectangle edge4 = new Rectangle(Barricados.getInstance().getLocation().x - 10, Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getSize() + 45, 1);
 
@@ -1785,8 +1771,63 @@ public class GameFrame2 implements ActionListener {
         }
     }
 
+    public void laserOfBlackOrbs() {
+        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(5)) {
+            Rectangle epsilon = gameObjects.get(0).getBounds();
+            float thickness = 10.0f;
+            BasicStroke stroke = new BasicStroke(thickness);
+            Line2D l1 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50));
+            Shape s1 = stroke.createStrokedShape(l1);
+            Line2D l2 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
+            Shape s2 = stroke.createStrokedShape(l2);
+
+            Line2D l3 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            Shape s3 = stroke.createStrokedShape(l3);
+
+            Line2D l4 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            Shape s4 = stroke.createStrokedShape(l4);
+
+            Line2D l5 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
+            Shape s5 = stroke.createStrokedShape(l5);
+
+            Line2D l6 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            Shape s6 = stroke.createStrokedShape(l6);
+
+            Line2D l7 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            Shape s7 = stroke.createStrokedShape(l7);
+
+            Line2D l8 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            Shape s8 = stroke.createStrokedShape(l8);
+
+            Line2D l9 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            Shape s9 = stroke.createStrokedShape(l9);
+
+            Line2D l10 = new Line2D.Double((int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            Shape s10 = stroke.createStrokedShape(l10);
+
+            if (shapeIntersects(epsilon, s1) || shapeIntersects(epsilon, s2) ||
+                    shapeIntersects(epsilon, s3) || shapeIntersects(epsilon, s4) ||
+                    shapeIntersects(epsilon, s5) || shapeIntersects(epsilon, s6) ||
+                    shapeIntersects(epsilon, s7) || shapeIntersects(epsilon, s8) ||
+                    shapeIntersects(epsilon, s9) || shapeIntersects(epsilon, s10)) {
+                attackOfOrbsOnEpsilon.start();
+
+            } else attackOfOrbsOnEpsilon.stop();
+        }
+    }
+
     public void startGameLoop() {
-        ExecutorService executor = Executors.newFixedThreadPool(9);
+        ExecutorService executor = Executors.newFixedThreadPool(10);
 
         executor.submit(this::isValidToShowYE);
         executor.submit(this::isValidToShowGE);
@@ -1797,7 +1838,7 @@ public class GameFrame2 implements ActionListener {
         executor.submit(this::movementOfWyrm);
         executor.submit(this::funcOfBarricados);
         executor.submit(this::funcOfBlackOrbs);
-
+        executor.submit(this::laserOfBlackOrbs);
 
 
         executor.shutdown();

@@ -1,5 +1,7 @@
 package third.all.model.epsilon;
 
+import third.all.data.PanelsData;
+
 import java.awt.*;
 
 import static third.all.controller.Constants.COLOR1;
@@ -9,7 +11,6 @@ public class Bullet {
     private int x, y;
     private int dx, dy;
     private int targetX, targetY;
-    private int speed = 5;
     int tempx = x, tempy = y;
     int temp2x = x, temp2y = y;
 
@@ -40,6 +41,7 @@ public class Bullet {
 
         double angle = Math.atan2(targetY - y, targetX - x);
 
+        int speed = 5;
         tempx += (int) (speed * Math.cos(angle));
         tempy += (int) (speed * Math.sin(angle));
     }
@@ -51,7 +53,8 @@ public class Bullet {
 
 
     public void draw(Graphics g) {
-        if (!getBounds().intersects(panels.get(1).getRectangle()) && !getBounds().intersects(panels.get(0).getRectangle())) {
+        if (!getBounds().intersects(panels.get(1).getRectangle()) && !getBounds().intersects(panels.get(0).getRectangle()) && !getBounds().intersects(PanelsData.getInstance().getBlackOrbPanels().get(0).getRectangle())
+                && !getBounds().intersects(PanelsData.getInstance().getBlackOrbPanels().get(1).getRectangle()) && !getBounds().intersects(PanelsData.getInstance().getBlackOrbPanels().get(2).getRectangle()) && !getBounds().intersects(PanelsData.getInstance().getBlackOrbPanels().get(3).getRectangle()) && !getBounds().intersects(PanelsData.getInstance().getBlackOrbPanels().get(4).getRectangle())) {
             g.setColor(new Color(0, 0, 0, 0));
         } else {
             g.setColor(color);

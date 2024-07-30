@@ -43,9 +43,9 @@ import static third.all.controller.Constants.*;
 import static third.all.data.booleans.Booleans.isCollidedY;
 import static third.all.data.booleans.Booleans.shapeIntersects;
 import static third.all.data.Properties.*;
-import static third.all.gameComponents.game.GameFrame2.*;
-import static third.all.gameComponents.game.MyPanel.timerOfGame;
+import static third.all.gameComponents.game.GameLoop.*;
 import static third.all.gameComponents.game.Timers.addBlackOrbsTimer;
+import static third.all.gameComponents.game.Timers.timerOfGame;
 import static third.all.gameComponents.preGameComponent.Timer1.*;
 
 public class FunctionalMethods {
@@ -92,7 +92,7 @@ public class FunctionalMethods {
         button2.addActionListener(e -> {
             System.out.println("Button 2 pressed");
             Properties.getInstance().play = true;
-            Properties.getInstance().XP += (double) (0.1 * Properties.getInstance().PR);
+            Properties.getInstance().XP +=  (0.1 * Properties.getInstance().PR);
             optionFrame.dispose();
 
         });
@@ -120,7 +120,7 @@ public class FunctionalMethods {
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
                         .setPosY(shot.getPosition().getY())
-                        .setRadius(((YellowEnemyModel) shot).getRadius())
+                        .setRadius(( shot).getRadius())
                         .build())
                 .collect(Collectors.toList());
 
@@ -181,7 +181,7 @@ public class FunctionalMethods {
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
                         .setPosY(shot.getPosition().getY())
-                        .setRadius(((YellowEnemyModel) shot).getRadius())
+                        .setRadius(( shot).getRadius())
                         .build())
                 .collect(Collectors.toList());
 
@@ -256,9 +256,9 @@ public class FunctionalMethods {
                 yellowEnemies1.get(i).getMovementOfYellowEnemy().setVector1(gameState.enemyDirStateList.stream()
                         .map((state -> state.dir))
                         .collect(Collectors.toList()).get(i));
-                ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                 if (isCollidedY.get(i))
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
             }
 
@@ -317,9 +317,9 @@ public class FunctionalMethods {
                 yellowEnemies1.get(i).getMovementOfYellowEnemy().setVector1(gameState.enemyDirStateList.stream()
                         .map((state -> state.dir))
                         .collect(Collectors.toList()).get(i));
-                ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                 if (isCollidedY.get(i))
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
             }
 
@@ -351,15 +351,15 @@ public class FunctionalMethods {
 
     public static void omenoct_shooter() {
         bulletsOfOmenoct.add(new Bullet(Omenoct.getInstance().getLocation().x, Omenoct.getInstance().getLocation().y,
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.ORANGE));
+                (int) (gameObjects.get(0)).getPosition().getX(),
+                (int) (gameObjects.get(0)).getPosition().getY(), Color.ORANGE));
 
     }
 
     public static void wyrmShoot() {
         bulletsOfWyrm.add(new Bullet(Wyrm.getInstance().getLocation().x + 10, Wyrm.getInstance().getLocation().y,
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.MAGENTA));
+                (int) (gameObjects.get(0)).getPosition().getX(),
+                (int) (gameObjects.get(0)).getPosition().getY(), Color.MAGENTA));
 
     }
 
@@ -378,13 +378,13 @@ public class FunctionalMethods {
     }
 
     public static void writOfAstrape() {
-        Rectangle epsilon = new Rectangle((int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(), (int) (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+        Rectangle epsilon = new Rectangle((int) ( gameObjects.get(0)).getPosition().getX(), (int) ( gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         for (YellowEnemyModel yellowEnemyModel : yellowEnemies1) {
             double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-            double centerOfEnemyX = yellowEnemyModel.getPosition().getX() + ((YellowEnemyModel) yellowEnemyModel).getRadius();
+            double centerOfEnemyX = yellowEnemyModel.getPosition().getX() + (yellowEnemyModel).getRadius();
             double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-            double centerOfEnemyY = yellowEnemyModel.getPosition().getY() + ((YellowEnemyModel) yellowEnemyModel).getRadius();
-            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((YellowEnemyModel) yellowEnemyModel).getRadius())) {
+            double centerOfEnemyY = yellowEnemyModel.getPosition().getY() + (yellowEnemyModel).getRadius();
+            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ( yellowEnemyModel).getRadius())) {
                 yellowEnemyModel.setLifeValue(yellowEnemyModel.getLifeValue() - 2);
             }
         }
@@ -518,17 +518,17 @@ public class FunctionalMethods {
         int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
 
         for (int i = 0; i < 8; i++) {
-            bulletsOfHeadRapidFireShoot.add(new Bullet((int) (Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), (int) (Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), dx[i], dy[i]));
+            bulletsOfHeadRapidFireShoot.add(new Bullet((Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), (Head.getInstance().getLocation().x + (Head.getInstance().getSize() / 2)), dx[i], dy[i]));
         }
 
     }
 
     public static Rectangle getBoundsGreenEnemy2(int i) {
-        return new Rectangle((int) ((GreenEnemyModel) greenEnemies1.get(i)).getPosition().intX(), (int) (int) ((GreenEnemyModel) greenEnemies1.get(i)).getPosition().intY(), ((GreenEnemyModel) greenEnemies1.get(i)).getLength(), ((GreenEnemyModel) greenEnemies1.get(i)).getLength());
+        return new Rectangle((greenEnemies1.get(i)).getPosition().intX(), (greenEnemies1.get(i)).getPosition().intY(), ((GreenEnemyModel) greenEnemies1.get(i)).getLength(), ((GreenEnemyModel) greenEnemies1.get(i)).getLength());
     }
 
     public static Rectangle getBoundsYellowEnemy2(int i) {
-        return new Rectangle((int) ((YellowEnemyModel) yellowEnemies1.get(i)).getPosition().intX(), (int) (int) ((YellowEnemyModel) yellowEnemies1.get(i)).getPosition().intY(), 25, 25);
+        return new Rectangle((yellowEnemies1.get(i)).getPosition().intX(), (yellowEnemies1.get(i)).getPosition().intY(), 25, 25);
     }
 
 
@@ -545,7 +545,7 @@ public class FunctionalMethods {
 
         for (Bullet bullet : bullets) {
             if (epsilon.intersects(PanelsData.getInstance().getPanels().get(0).getRectangle())) {
-                if(HelpingBooleans.getInstance().isValidToLargerMainPanel) {
+                if (HelpingBooleans.getInstance().isValidToLargerMainPanel) {
                     if (bullet.getBounds().intersects(b3)) {
                         Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH += 0.4;
                         STARTING_POINT.x += 0.2;
@@ -568,6 +568,9 @@ public class FunctionalMethods {
                 if (bullet.getBounds().intersects(getBoundsYellowEnemy2(i))) {
                     bulletsToRemove.add(bullet);
                     (yellowEnemies1.get(i)).setLifeValue((yellowEnemies1.get(i)).getLifeValue() - 1);
+                }
+                if (Wyrm.getInstance().getRectangle().contains(yellowEnemies1.get(i).getBounds())) {
+                    (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
                     if (bullet.getBounds().intersects(Omenoct.getInstance().getRectangle())) {
@@ -596,6 +599,9 @@ public class FunctionalMethods {
                 if (bullet.getBounds().intersects(getBoundsGreenEnemy2(i))) {
                     bulletsToRemove.add(bullet);
                     ((GreenEnemyModel) greenEnemies1.get(i)).setLifeValue(((GreenEnemyModel) greenEnemies1.get(i)).getLifeValue() - 1);
+                }
+                if (Wyrm.getInstance().getRectangle().contains(greenEnemies1.get(i).getBounds())) {
+                    (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
                     if (bullet.getBounds().intersects(Omenoct.getInstance().getRectangle())) {
@@ -721,6 +727,7 @@ public class FunctionalMethods {
                 }
             }
         }
+
 
         if (Properties.getInstance().WAVE == 6) {
             if (HelpingBooleans.getInstance().isOnOrbit) {

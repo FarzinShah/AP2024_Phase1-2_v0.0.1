@@ -3,6 +3,7 @@ package third.all.gameComponents.game;
 import third.all.data.Properties;
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.booleans.HelpingBooleans;
+import third.all.gameComponents.preGameComponent.Timer1;
 import third.all.model.normalEnemies.Archmire;
 import third.all.model.normalEnemies.Wyrm;
 
@@ -13,7 +14,9 @@ import java.awt.*;
 import static third.all.gameComponents.game.FunctionalMethods.*;
 
 public class Timers {
+    public static Timer time;
     public static Timer timer1;
+    public static Timer1 timerOfGame;
     public static Timer shotTimer;
     public static Timer necropickShower;
     public static Timer necropickShooter;
@@ -27,6 +30,7 @@ public class Timers {
     public static Timer handsShooter;
     public static Timer headShooter;
     public static Timer acesoTimer;
+    public static Timer attackOfOrbsOnEpsilon;
 
     public Timers() {
         barricadosValidatorTimer = new Timer(120000, e -> {
@@ -36,6 +40,9 @@ public class Timers {
                 barricadosValidatorTimer.stop();
             }
         });
+        attackOfOrbsOnEpsilon = new Timer(1000, e -> Properties.getInstance().HP -= 12);
+        shotTimer = new Timer(5000, e -> omenoct_shooter());
+
         headShooter = new Timer(1000, e -> {
             if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5) && Properties.getInstance().headShooterSecondCounter > 0) {
                 FunctionalMethods.headRapidFireShoot();
