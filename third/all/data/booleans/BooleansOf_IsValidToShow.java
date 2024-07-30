@@ -13,6 +13,7 @@ public class BooleansOf_IsValidToShow {
     private boolean isValidToShowBossPanel;
     private ArrayList<Boolean> isValidToShowStores;
     private ArrayList<Boolean> isValidToAttackBoss;
+    private ArrayList<Boolean> isEpsilonIntoPanel;
 
 
     //todo: (isValidToShowEnemies) Element Guider:
@@ -51,6 +52,16 @@ public class BooleansOf_IsValidToShow {
     // 6. isValidToAttackSlap
     // 7. isValidToAttackAnnihilator
 
+    //----------------------------------------
+    //todo: (isEpsilonIntoPanel) Element Guider:
+    // 0. isEpsilonIntoPanel0 - not needed
+    // 1. isEpsilonIntoPanel1
+    // 2. isEpsilonIntoPanel2
+    // 3. isEpsilonIntoPanel3
+    // 4. isEpsilonIntoPanel4
+    // 5. isEpsilonIntoPanel5
+
+
 
 
 
@@ -61,9 +72,10 @@ public class BooleansOf_IsValidToShow {
         isValidToShowBlackOrbPanels = new ArrayList<>();
         isValidToShowBlackOrbEntity = new ArrayList<>();
         isValidToShowStores = new ArrayList<>();
-        isValidToShowBossPanel = true; // todo: false
+        isValidToShowBossPanel = false; // todo: false
         isValidToAttackCerberus = true;
         isValidToAttackBoss = new ArrayList<>();
+        isEpsilonIntoPanel = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
             isValidToShowEnemies.add(i,false);
@@ -71,10 +83,11 @@ public class BooleansOf_IsValidToShow {
         for (int i = 0; i < 7; i++) {
             isValidToShowPanels.add(i,false);
         }
-        isValidToShowPanels.set(1,false);
+//        isValidToShowPanels.set(1,false);
 //        isValidToShowPanels.set(1,true);
         for (int i = 0; i < 5; i++) {
             isValidToCollectEnemies.add(i,false);
+            isEpsilonIntoPanel.add(i,false);
         }
         for (int i = 0; i < 6; i++) {
             isValidToShowBlackOrbPanels.add(i,false);
@@ -144,9 +157,8 @@ public class BooleansOf_IsValidToShow {
         return isValidToShowBossPanel;
     }
 
-    public BooleansOf_IsValidToShow setValidToShowBossPanel(boolean validToShowBossPanel) {
+    public void setValidToShowBossPanel(boolean validToShowBossPanel) {
         isValidToShowBossPanel = validToShowBossPanel;
-        return this;
     }
 
     public ArrayList<Boolean> getIsValidToShowStores() {
@@ -164,6 +176,15 @@ public class BooleansOf_IsValidToShow {
 
     public BooleansOf_IsValidToShow setIsValidToAttackBoss(ArrayList<Boolean> isValidToAttackBoss) {
         this.isValidToAttackBoss = isValidToAttackBoss;
+        return this;
+    }
+
+    public ArrayList<Boolean> getIsEpsilonIntoPanel() {
+        return isEpsilonIntoPanel;
+    }
+
+    public BooleansOf_IsValidToShow setIsEpsilonIntoPanel(ArrayList<Boolean> isEpsilonIntoPanel) {
+        this.isEpsilonIntoPanel = isEpsilonIntoPanel;
         return this;
     }
 

@@ -10,6 +10,7 @@ import java.awt.*;
 
 import static third.all.controller.Constants.EPSILON_LENGTH;
 import static third.all.controller.Constants.EPSILON_WIDTH;
+import static third.all.gameComponents.game.Timers.acesoTimer;
 
 public class SkillTreeGUI {
     private static final Logger logger = LoggerFactory.getLogger(SkillTreeGUI.class);
@@ -109,6 +110,17 @@ public class SkillTreeGUI {
             button3.setForeground(Color.RED);
             groupPanel.add(button3);
 
+            button.addActionListener(e -> {
+                logger.debug("Defensing --> Writ of Aceso");
+                if (Properties.getInstance().XP >= 500) {
+                    Properties.getInstance().XP -= 500;
+                    acesoTimer.start();
+                }else {
+                    logger.debug("Defensing -isFailed-> Writ of Aceso ");
+                }
+                frame.dispose();
+            });
+
             button1.addActionListener(e -> {
                 logger.debug("Defensing --> Writ of Melampus");
                 if (Properties.getInstance().XP >= 750) {
@@ -157,6 +169,17 @@ public class SkillTreeGUI {
             button2.setSize(new Dimension(100, 100));
             button2.setForeground(Color.RED);
             groupPanel.add(button2);
+            button.addActionListener(e -> {
+                if (Properties.getInstance().XP >= 1000) {
+                    logger.debug("Epsilon Shape --> Writ of Proteus");
+                    Properties.getInstance().XP -= 1000;
+                    Properties.getInstance().edgesOfEpsilon +=1; // todo: خیلی بی مزه هست. کدوم خری میره 1000 تا ایکس پی خرجش کنه خخخخخ
+
+                }else {
+                    logger.debug("Epsilon Shape -isFailed-> Writ of Proteus ");
+                }
+                frame.dispose();
+            });
             button1.addActionListener(e -> {
                 if (Properties.getInstance().XP >= 120) {
                     logger.debug("Epsilon Shape --> Writ of Empusa");

@@ -14,12 +14,12 @@ public class MyFrame extends JFrame {
 
     public void update() {
         if (!isRightPanel2){
-            Properties.getInstance().THIRD_FRAME_LOCATION_X-=0.5;
-        }else Properties.getInstance().THIRD_FRAME_LOCATION_X+=0.5;
+            Properties.getInstance().SECOND_FRAME_LOCATION_X -=0.5;
+        }else Properties.getInstance().SECOND_FRAME_LOCATION_X +=0.5;
 
-        if(Properties.getInstance().THIRD_FRAME_LOCATION_X<300){
+        if(Properties.getInstance().SECOND_FRAME_LOCATION_X <300){
             isRightPanel2 = true;
-        }else if(Properties.getInstance().THIRD_FRAME_LOCATION_X==1100){
+        }else if(Properties.getInstance().SECOND_FRAME_LOCATION_X ==1100){
             isRightPanel2 = false;
 
         }

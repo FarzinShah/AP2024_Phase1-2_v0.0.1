@@ -16,15 +16,17 @@ import third.all.data.booleans.BooleansOfCollectibles;
 import third.all.data.booleans.BooleansOfEnemies;
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.booleans.HelpingBooleans;
-import third.all.model.*;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
+import third.all.model.epsilon.Bullet;
+import third.all.model.normalEnemies.*;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.geom.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -50,6 +52,11 @@ public class FunctionalMethods {
     private static final Logger logger = LoggerFactory.getLogger(FunctionalMethods.class);
 
     public static FunctionalMethods instance;
+
+    FunctionalMethods() {
+        Thread collisionThread = new Thread(new CollisionChecker());
+        collisionThread.start();
+    }
 
 
     public static void showOptionPane() {
@@ -358,15 +365,15 @@ public class FunctionalMethods {
 
     public static void rightHandShoot() {
         bulletsOfRightHand.add(new Bullet(RightHand.getInstance().getLocation().x + 50, RightHand.getInstance().getLocation().y,
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.YELLOW));
+                (int) (gameObjects.get(0)).getPosition().getX(),
+                (int) (gameObjects.get(0)).getPosition().getY(), Color.YELLOW));
 
     }
 
     public static void leftHandShoot() {
         bulletsOfLeftHand.add(new Bullet(LeftHand.getInstance().getLocation().x + 50, LeftHand.getInstance().getLocation().y,
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(),
-                (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), Color.YELLOW));
+                (int) (gameObjects.get(0)).getPosition().getX(),
+                (int) (gameObjects.get(0)).getPosition().getY(), Color.YELLOW));
 
     }
 
@@ -528,12 +535,39 @@ public class FunctionalMethods {
     public static void checkCollisions() {
         ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
         ArrayList<Collectable> collectablesToRemove = new ArrayList<>();
-        Rectangle epsilon = new Rectangle((int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(), (int) (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+        Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+        //todo: main panel borders:
+        Rectangle b1 = new Rectangle(STARTING_POINT.x - 1, STARTING_POINT.y - 1, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+        Rectangle b2 = new Rectangle(STARTING_POINT.x - 1, STARTING_POINT.y - 1, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
+        Rectangle b3 = new Rectangle(STARTING_POINT.x - 1 + (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH - 3), STARTING_POINT.y - 1, 3, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
+        Rectangle b4 = new Rectangle(STARTING_POINT.x - 1, STARTING_POINT.y - 1 + (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT - 3), (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 3);
+
+
         for (Bullet bullet : bullets) {
+            if (epsilon.intersects(PanelsData.getInstance().getPanels().get(0).getRectangle())) {
+                if(HelpingBooleans.getInstance().isValidToLargerMainPanel) {
+                    if (bullet.getBounds().intersects(b3)) {
+                        Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH += 0.4;
+                        STARTING_POINT.x += 0.2;
+
+                    }
+                    if (bullet.getBounds().intersects(b2)) {
+                        STARTING_POINT.y -= 0.1;
+                        Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT += 0.2;
+                    }
+                    if (bullet.getBounds().intersects(b1)) {
+                        STARTING_POINT.x -= 0.2;
+                        Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH += 0.1;
+                    }
+                    if (bullet.getBounds().intersects(b4)) {
+                        Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT += 0.1;
+                    }
+                }
+            }
             for (int i = 0; i < yellowEnemies1.size(); i++) {
                 if (bullet.getBounds().intersects(getBoundsYellowEnemy2(i))) {
                     bulletsToRemove.add(bullet);
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).setLifeValue(((YellowEnemyModel) yellowEnemies1.get(i)).getLifeValue() - 1);
+                    (yellowEnemies1.get(i)).setLifeValue((yellowEnemies1.get(i)).getLifeValue() - 1);
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
                     if (bullet.getBounds().intersects(Omenoct.getInstance().getRectangle())) {
@@ -725,16 +759,30 @@ public class FunctionalMethods {
                     bulletsToRemove.add(bullet);
 
                 }
-                if (bullet.getBounds2().intersects(LeftHand.getInstance().getRectangle())) {
-                    LeftHand.getInstance().setHP(LeftHand.getInstance().getHP() - 1);
+                if (CollisionChecker.a.intersects(bullet.getBounds2())) {
+                    RightHand.getInstance().setHP(RightHand.getInstance().getHP() - 1);
                     bulletsToRemove.add(bullet);
 
                 }
+//                for (int i = 0; i < checkCollisionLeftHand().size(); i++) {
+//                    if (checkCollisionLeftHand().get(i).intersects(bullet.getBounds())) {
+//                        LeftHand.getInstance().setHP(LeftHand.getInstance().getHP() - 1);
+//                        bulletsToRemove.add(bullet);
+//
+//                    }
+//                }
 
 
             }
 
             for (Bullet bullet : bullets) {
+//                if(!PanelsData.getInstance().getPanels().get(0).getRectangle().intersects(epsilon)){
+//                    if(PanelsData.getInstance().getPanels().get(0).getRectangle().intersects(bullet.getBounds())){
+//                        if(bullet.getBounds().x==PanelsData.getInstance().getPanels().get(0).getRightX()){
+//                            Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH++;
+//                        }
+//                    }
+//                }
                 if (bullet.getBounds().intersects(Head.getInstance().getRectangle())) {
                     Head.getInstance().setHP(Head.getInstance().getHP() - 1);
                     bulletsToRemove.add(bullet);
@@ -744,11 +792,7 @@ public class FunctionalMethods {
                     bulletsToRemove.add(bullet);
 
                 }
-                if (bullet.getBounds().intersects(LeftHand.getInstance().getRectangle())) {
-                    LeftHand.getInstance().setHP(LeftHand.getInstance().getHP() - 1);
-                    bulletsToRemove.add(bullet);
 
-                }
                 if (!PanelsData.getInstance().getBossPanel().getRectangle().contains(bullet.getBounds())) {
                     bulletsToRemove.add(bullet);
                     if (!HelpingBooleans.getInstance().isSqueezed) {
@@ -795,6 +839,50 @@ public class FunctionalMethods {
         bulletsOfHeadRapidFireShoot.removeAll(bulletsToRemove);
 
 
+    }
+
+
+    public static Shape combineShapes(Shape... shapes) {
+        Area combinedArea = new Area();
+        for (Shape shape : shapes) {
+            combinedArea.add(new Area(shape));
+        }
+        return combinedArea;
+    }
+
+    private static class CollisionChecker implements Runnable { //todo: leftHand Polygonization
+        public static Shape a;
+
+        @Override
+        public void run() {
+            while (true) {
+                int xStart = LeftHand.getInstance().getLocation().x;
+                int yStart = LeftHand.getInstance().getLocation().y;
+                Rectangle r1 = new Rectangle((int) (xStart + (145 * 0.52)), (int) (yStart + (40 * 0.52)), (int) (70 * 0.52), (int) (310 * 0.52));
+                Ellipse2D.Double mainCircle = new Ellipse2D.Double(xStart + (75 * 0.52), yStart + (150 * 0.52), 330 * 0.52, 330 * 0.52);
+                Ellipse2D.Double circle1 = new Ellipse2D.Double(xStart + (40 * 0.52), yStart + (165 * 0.52), 70 * 0.52, 70 * 0.52);
+                Ellipse2D.Double circle2 = new Ellipse2D.Double(xStart + (145 * 0.52), yStart, 70 * 0.52, 70 * 0.52);
+                Ellipse2D.Double circle3 = new Ellipse2D.Double(xStart + (60 * 0.52), yStart + (210 * 0.52), 70 * 0.52, 65 * 0.52);
+                Line2D.Double line1 = new Line2D.Double(xStart + 45 * 0.52, yStart + 220 * 0.52, 80 * 0.52, 330 * 0.52);
+                Line2D.Double line2 = new Line2D.Double(xStart + 106 * 0.52, yStart + 192 * 0.52, 130 * 0.52, 235 * 0.52);
+
+                ArrayList<Shape> shapes = new ArrayList<>();
+                shapes.add(r1);
+                shapes.add(mainCircle);
+                shapes.add(circle1);
+                shapes.add(circle2);
+                shapes.add(circle3);
+
+                a = combineShapes(r1, mainCircle, circle1, circle2, circle3);
+
+
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

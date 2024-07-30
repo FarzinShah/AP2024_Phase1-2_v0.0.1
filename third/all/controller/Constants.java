@@ -1,15 +1,10 @@
 package third.all.controller;
 
 import third.all.data.Properties;
-import third.all.model.Bullet;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import static third.all.gameComponents.preGameComponent.Timer1.spentMilliSecond;
 
 public class Constants {
     public static final double GLASS_FRAME_DIMENSION_MAX_WIDTH = 600.0;
@@ -49,7 +44,13 @@ public class Constants {
     public static final String RIGHT_HAND_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\RightHand2.png";
     public static final String FIST_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\BossFist.png";
     public static final String SKULL_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossFace\\Skull.png";
-
+    public static final String PentagonalEpsilon_PATH = "src\\main\\java\\third\\all\\utils\\epsilonShapes\\PentagonalEpsilon.png";
+    public static final String HexagonalEpsilon_PATH = "src\\main\\java\\third\\all\\utils\\epsilonShapes\\HexagonalEpsilon.png";
+    public static final String TriangleEpsilon_PATH = "src\\main\\java\\third\\all\\utils\\epsilonShapes\\TriangonalEpsilon.png";
+    public static final String Background_Annihilator_1_PATH = "src\\main\\java\\third\\all\\utils\\backgroundsOfAnnihilator\\Background_Annihilator_1.png";
+    public static final String Background_Annihilator_2_PATH = "src\\main\\java\\third\\all\\utils\\backgroundsOfAnnihilator\\Background_Annihilator_2.png";
+    public static final String Background_Annihilator_3_PATH = "src\\main\\java\\third\\all\\utils\\backgroundsOfAnnihilator\\Background_Annihilator_3.png";
+    public static final String Background_Starting_PATH = "src\\main\\java\\third\\all\\utils\\images\\WelcomeImage.png";
 
     public static final String SAVING_DATA_PATH = "src\\main\\java\\third\\all\\data\\savingPath\\gameState.json";
     public static final String SAVING_DATA_PATH_WP = "src\\main\\java\\third\\all\\data\\savingPath\\gameStateWP.json";
@@ -59,6 +60,7 @@ public class Constants {
     public static final String SavingOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\SavingOption.png";
     public static final String CollectibleOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\CollectibleOption.png";
     public static final String LaserOption_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\LaserOption.png";
+    public static final String BlackOrbsAlert_PATH = "src\\main\\java\\third\\all\\utils\\optionsAlert\\BlackOrbsAlert.png";
 
     //todo: BossNotice:
     public static final String AnnihilatorAttack_PATH = "src\\main\\java\\third\\all\\utils\\bossData\\BossAttackNotice\\AnnihilatorAttack.png";
@@ -86,7 +88,9 @@ public class Constants {
     public static final Image RIGHT_HAND = new ImageIcon(RIGHT_HAND_PATH).getImage();
     public static final Image FIST = new ImageIcon(FIST_PATH).getImage();
     public static final Image SKULL = new ImageIcon(SKULL_PATH).getImage();
-
+    public static final Image PentagonalEpsilon = new ImageIcon(PentagonalEpsilon_PATH).getImage();
+    public static final Image Background_Starting = new ImageIcon(Background_Starting_PATH).getImage();
+    public static final Image BlackOrbsAlert = new ImageIcon(BlackOrbsAlert_PATH).getImage();
 
 
     public static final Image SAVING_OPTION = new ImageIcon(SavingOption_PATH).getImage();
@@ -102,7 +106,9 @@ public class Constants {
     public static final Image SqueezeAttack = new ImageIcon(SqueezeAttack_PATH).getImage();
     public static final Image VomitAttack = new ImageIcon(VomitAttack_PATH).getImage();
 
-
+    public static final Image Background_Annihilator_1 = new ImageIcon((Background_Annihilator_1_PATH)).getImage();
+    public static final Image Background_Annihilator_2 = new ImageIcon((Background_Annihilator_2_PATH)).getImage();
+    public static final Image Background_Annihilator_3 = new ImageIcon((Background_Annihilator_3_PATH)).getImage();
 
 
 

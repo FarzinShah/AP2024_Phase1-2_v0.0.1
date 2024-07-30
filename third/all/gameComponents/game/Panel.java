@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.image.ImageObserver;
 
 public class Panel {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private double width;
     private double height;
 
-    public Panel(int x, int y ,double width, double height) {
+    public Panel(double x, double y ,double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -32,7 +32,7 @@ public class Panel {
         this.height = height;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
     public int getRightX() {
@@ -42,42 +42,42 @@ public class Panel {
         return (int) (y + height);
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public Panel setX(int x) {
+    public Panel setX(double x) {
         this.x = x;
         return this;
     }
 
-    public Panel setY(int y) {
+    public Panel setY(double y) {
         this.y = y;
         return this;
     }
 
     public Rectangle getRectangle(){
-        return new Rectangle(x, y, (int) width, (int) height);
+        return new Rectangle((int) x, (int) y, (int) width, (int) height);
     }
 
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
-        g.fillRect(x, y, (int) width, (int) height);
+        g.fillRect((int) x, (int) y, (int) width, (int) height);
     }
 
     public void drawBossPanel(Graphics g) {
         g.setColor(Color.GRAY);
-        g.fillRect(x, y, (int) width, (int) height);
+        g.fillRect((int) x, (int) y, (int) width, (int) height);
 
 
     }
 
     public void drawWym(Graphics g) {
-        g.setColor(new Color(0x13000000, true));
-        g.fillRect(x, y, (int) width, (int) height);
+        g.setColor(new Color(0xD3000000, true));
+        g.fillRect((int) x, (int) y, (int) width, (int) height);
     }
     public void drawRedZone(Graphics g) {
         g.setColor(Color.RED);
-        g.fillRect(x, y, (int) width, (int) height);
+        g.fillRect((int) x, (int) y, (int) width, (int) height);
     }
 }

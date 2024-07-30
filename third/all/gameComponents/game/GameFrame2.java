@@ -16,17 +16,15 @@ import third.all.controller.movement.Vector2D;
 import third.all.data.*;
 import third.all.data.Properties;
 
-import third.all.data.booleans.BooleansOfCollectibles;
-import third.all.data.booleans.BooleansOfEnemies;
-import third.all.data.booleans.BooleansOf_IsValidToShow;
-import third.all.data.booleans.HelpingBooleans;
-import third.all.model.*;
+import third.all.data.booleans.*;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.Timer1;
 import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
+import third.all.model.epsilon.Bullet;
+import third.all.model.normalEnemies.*;
 
 
 import javax.sound.sampled.*;
@@ -37,6 +35,8 @@ import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
@@ -113,8 +113,7 @@ public class GameFrame2 implements ActionListener {
     Properties properties;
     GameKeyListener gameKeyListener;
     GameMouseHandler gameMouseHandler;
-
-    boolean cerberusBool = true;
+    Timers timerController;
 
 
     public GameFrame2() throws UnsupportedAudioFileException, IOException {
@@ -141,76 +140,8 @@ public class GameFrame2 implements ActionListener {
         yellowEnemies.clear();
         input = new Input();
         panel = new MyPanel(input);
+        timerController = new Timers();
 
-
-        addBlackOrbsTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Properties.getInstance().boHelper[0] -= 1000;
-                if (Properties.getInstance().boHelper[1] < 5) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().set(Properties.getInstance().boHelper[1], true);
-                    Properties.getInstance().boHelper[1]++;
-                } else {
-                    Properties.getInstance().boHelper[1] = 0;
-                    addBlackOrbsTimer.stop();
-                }
-                if (Properties.getInstance().boHelper[1] == 5)
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().set(5, true);
-
-                if (Properties.getInstance().boHelper[0] <= 0) {
-                    addBlackOrbsTimer.stop();
-                }
-            }
-        });
-
-
-        addArchmirePrintTimer = new Timer(250, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Archmire.getInstance().getTrails().add(new Point(archmire.getLocation().x, archmire.getLocation().y));
-
-            }
-        });
-        cerberusAttackTimer = new Timer(15000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BooleansOf_IsValidToShow.getInstance().setValidToAttackCerberus(true);
-                cerberusBool = true;
-            }
-        });
-//        addArchmirePrintTimer.start(); //todo: هرموقع وقتش شد استارتش کنم
-        archmirePrintTimer = new Timer(500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Archmire.getInstance().getTrails().size() > 2) {
-                    Archmire.getInstance().getTrails().remove(0);
-                    Archmire.getInstance().getTrails().remove(0);
-
-                }
-                if (!BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
-                    archmirePrintTimer.stop();
-                }
-            }
-        });
-
-        orbitalMovement = new Timer(10, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Properties.getInstance().angleOfOrbitProjectile += Properties.getInstance().speedOfOrbitProjectile;
-                if (Properties.getInstance().angleOfOrbitProjectile >= 360) {
-                    Properties.getInstance().angleOfOrbitProjectile = 0;
-                }
-            }
-        });
-        orbitalMovement.start();
-
-
-//        archmirePrintTimer.start();//todo: هرموقع وقتش شد استارتش کنم
-
-
-        int maxSize = Math.max(720, 1440) / 3;
-
-//        setDefaultShots();
 
         shotTimer = new Timer(5000, new ActionListener() {
             @Override
@@ -228,52 +159,7 @@ public class GameFrame2 implements ActionListener {
         });
 //        necropickShower.start(); //todo: هرموقع وقتش شد استارتش کنم
 
-        necropickShooter = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FunctionalMethods.necropickShoot();
-            }
-        });
-//        necropickShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
 
-        wyrmShooter = new Timer(700, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Wyrm.getInstance().isValidToShoot()) wyrmShoot();
-                if (Wyrm.getInstance().getHP() <= 0) wyrmShooter.stop();
-            }
-        });
-//        wyrmShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
-
-
-        handsShooter = new Timer(700, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (HelpingBooleans.getInstance().isOnOrbit) {
-                    rightHandShoot();
-                    leftHandShoot();
-                }
-                ;
-//                if (Wyrm.getInstance().getHP() <= 0) wyrmShooter.stop();
-            }
-        });
-
-        headShooter = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5) && Properties.getInstance().headShooterSecondCounter > 0) {
-                    FunctionalMethods.headRapidFireShoot();
-                    Properties.getInstance().headShooterSecondCounter -= 1000;
-                }
-
-            }
-        });
-//        headShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
-
-
-//        if (informationsOfSettings.isPlay()) {
-//            playMusic(informationsOfSettings.isPlay());
-//        }
         timerOfGame = new Timer1();
         targetWithMouse = new TargetWithMouse(new Point2D.Double(0, 0));
         twm_item_model = new TWM_Item_Model(new Point2D.Double(rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0), rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0)));
@@ -284,10 +170,6 @@ public class GameFrame2 implements ActionListener {
         frame.setBackground(new Color(0, 0, 0, 0)); // todo: همینه که کار رو درمیاره :)))))))
         frame.setVisible(true);
         frame.add(panel);
-//        frame.add(panel3);;
-//        panel3.setVisible(true);
-//        frame2.add(panel);
-//        frame.add(panel2);
 
 
         counters.add(0);
@@ -341,7 +223,7 @@ public class GameFrame2 implements ActionListener {
         panel.addMouseMotionListener(targetWithMouse);
 
 
-        frame.setBounds((int) 0, (int) 0, (int) 1440, (int) 720); // todo:
+        frame.setBounds(0, 0, 1440, 720); // todo:
 
         properties = Properties.getInstance();
         gameObjects.add(new EpsilonModel(new EpsilonController(input), 230, 330));
@@ -371,12 +253,50 @@ public class GameFrame2 implements ActionListener {
         for (int i = 0; i < 100; i++) {
             isCollidedEnemies.add(i, false);
         }
+
+        startGameLoop();
+//        Runnable task1 = this::isValidToShowYE;
+//        Runnable task2 = this::isValidToShowGE;
+//        Runnable task3 = this::movementOfP1Enemies;
+//        Runnable task4 = this::movementOfOmenoct;
+//        Runnable task5 = this::movementOfArchmire;
+//        Runnable task6 = this::funcOfBlackOrbs;
+//        Runnable task7 = this::movementOfWyrm;
+//        Runnable task8 = this::funcOfBarricados;
+//
+//
+//        Thread thread1 = new Thread(task1);
+//        Thread thread2 = new Thread(task2);
+//        Thread thread3 = new Thread(task3);
+//        Thread thread4 = new Thread(task4);
+//        Thread thread5 = new Thread(task5);
+//        Thread thread6 = new Thread(task6);
+//        Thread thread7 = new Thread(task7);
+//        Thread thread8 = new Thread(task8);
+//
+//        thread1.start();
+//        thread2.start();
+//        thread3.start();
+//        thread4.start();
+//        thread5.start();
+//        thread6.start();
+//        thread7.start();
+//        thread8.start();
+
     }
 
     public void update() {
         yellowEnemies1.forEach(GameObject::update);
         greenEnemies1.forEach(GameObject::update);
-//        frame.update();
+
+        isValidToShowYE();
+        isValidToShowGE();
+        movementOfP1Enemies();
+        movementOfOmenoct();
+        movementOfArchmire();
+        funcOfBlackOrbs();
+        movementOfWyrm();
+        funcOfBarricados();
 
         //Todo: Wave 1:
         /*todo: توی این موج، که 4 دقیقه طول می کشه، هر 30 ثانیه یه انمی ساده وارد صفحه میشه. اینجا همه چی آرومه و تازه بازی شروع شده. هنوز انمی های نرمال وارد نشدن و تنها چیزی که اعمال میشه، کوچیک و بزرگ شدن فریم اصلیه. و تنها یک فریم داریم
@@ -384,564 +304,99 @@ public class GameFrame2 implements ActionListener {
            فرایند وارد شدن انمی ها تا ثانیه 130 بازی ادامه پیدا میکنه :))
         */
         if (Properties.getInstance().STATE == 21) {
+            if (Properties.getInstance().WAVE == 1) {
+                BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(1, true);
+                HelpingBooleans.getInstance().isValidToShowStartingWelcome = false;
+                BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(0, spentMilliSecond < 11000 && spentMilliSecond >= 5000);
 
-            BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(0, spentMilliSecond < 11000 && spentMilliSecond >= 5000);
-
-            if (spentMilliSecond <= 4 * 60000) {
-                if (spentMilliSecond == 1000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(2, true);
+                if (spentMilliSecond <= 4 * 60000) {
+                    if (spentMilliSecond == 1000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(2, true);
 //                    shotTimer.start();
-                }
-                if (spentMilliSecond == 2000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, true);
-                    shotTimer.start();
-                }
-
-                if (spentMilliSecond == 2000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(4, true);
-                }
-
-                if (spentMilliSecond == 2000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(6, true);
-                }
-                if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) {
-                    writOfCerberus();
-                }
-                if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6) && !BooleansOf_IsValidToShow.getInstance().isValidToAttackCerberus() && cerberusBool) {
-                    cerberusAttackTimer.start();
-                    cerberusBool = false;
-                }
-
-                if (spentMilliSecond == 3000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(6, true);
-                    addBlackOrbsTimer.start();
-                }
-                if (spentMilliSecond == 4000) {
-                    BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(3, true);
-                }
-                if (spentMilliSecond == 5000 && booleansOfEnemies.getEnemyN().get(1)) {
-                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
-                    booleansOfEnemies.getEnemyN().set(1, false);
-                }
-                if (spentMilliSecond == 25000 && booleansOfEnemies.getEnemyN().get(2)) {
-                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 40, 20));
-                    booleansOfEnemies.getEnemyN().set(2, false);
-                }
-                if (spentMilliSecond == 50000 && booleansOfEnemies.getEnemyN().get(3)) {
-                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
-                    booleansOfEnemies.getEnemyN().set(3, false);
-                }
-                if (spentMilliSecond == 70000 && booleansOfEnemies.getEnemyN().get(4)) {
-                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 60, 10));
-                    booleansOfEnemies.getEnemyN().set(4, false);
-                }
-                if (spentMilliSecond == 100000 && booleansOfEnemies.getEnemyN().get(5)) {
-                    yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 50, 100));
-                    booleansOfEnemies.getEnemyN().set(5, false);
-                }
-                if (spentMilliSecond == 130000 && booleansOfEnemies.getEnemyN().get(6)) {
-                    greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 150, 78));
-                    booleansOfEnemies.getEnemyN().set(6, false);
-                }
-
-            }
-
-
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                if (!isCollidedY.get(i)) {
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - yellowEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - yellowEnemies1.get(i).getPosition().getY())));
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                }
-
-
-            }
-
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                if (!isCollidedG.get(i)) {
-                    ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - greenEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - greenEnemies1.get(i).getPosition().getY())));
-                    ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                    ((GreenEnemyModel) greenEnemies1.get(i)).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                }
-            }
-
-
-            //todo :YellowEnemy:
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
-                double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
-
-
-                if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
-                    System.out.println(":)");
-                    (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + yellowEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
-
-                    (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                    startFromCollision.put(i, spentMilliSecond);
-                    Properties.getInstance().HP -= 5;
-                    stateCounter = counters.get(1);
-                    isCollidedY.set(i, true);
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-
-                }
-                if (isCollidedY.get(i)) {
-                    if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) > 700) {
-                        isCollidedY.set(i, false);
-
                     }
-                }
-            }
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                for (int j = i; j < yellowEnemies1.size(); j++) {
-                    if (i != j) {
-                        double centerOfEnemy1X = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
-                        double centerOfEnemy2X = yellowEnemies1.get(j).getPosition().getX() + (yellowEnemies1.get(j)).getRadius();
-                        double centerOfEnemy1Y = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
-                        double centerOfEnemy2Y = yellowEnemies1.get(j).getPosition().getY() + (yellowEnemies1.get(j)).getRadius();
-
-
-                        if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= ((yellowEnemies1.get(i)).getRadius() + (yellowEnemies1.get(j)).getRadius())) {
-                            System.out.println(":)");
-                            (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-yellowEnemies1.get(i).getPosition().getX() + yellowEnemies1.get(j).getPosition().getX() + 25, -yellowEnemies1.get(j).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
-                            (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                            isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                            collidedOne = i;
-                            collidedTwo = j;
-                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - yellowEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - yellowEnemies1.get(i).getPosition().getY())));
-                ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-            }
-
-            for (int j = 0; j < yellowEnemies1.size(); j++) {
-                if (!isCollidedY.get(j)) {
-                    for (int i = 0; i < yellowEnemies1.size(); i++) {
-                        if (i == j) {
-                            double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
-                            double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
-
-                            ACCELERATION_OF_YELLOW_ENEMIES = 1;
-                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                            if (waveOHB) {
-                                isCollidedY.set(i, true);
-                                waveOHB = false;
-                            }
-
-                            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
-                                ACCELERATION_OF_YELLOW_ENEMIES = 3;
-//                                ACCELERATION_OF_EPSILON = 4;
-
-                            } else {
-                                ACCELERATION_OF_YELLOW_ENEMIES = 1;
-//                                ACCELERATION_OF_EPSILON = 2;
-                            }
-                            ;
-
-                        }
-
-                    }
-
-                }
-                if (isCollidedY.get(j)) {
-                    for (int i = 0; i < yellowEnemies1.size(); i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_YELLOW_ENEMIES = 2;
-                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                        }
-                    }
-
-                }
-            }
-
-            //todo :GreenEnemy:
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyX = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-                double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEnemyY = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-
-
-                double a = ((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY));
-                if (Math.sqrt(a) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius())) {
-                    System.out.println(":)");
-                    ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + greenEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + greenEnemies1.get(i).getPosition().getY() + 25)));
-
-                    ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                    startFromCollision.put(i, spentMilliSecond);
-                    Properties.getInstance().HP -= 5;
-                    stateCounter = counters.get(1);
-                    isCollidedG.set(i, true);
-                    greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-
-                }
-                if (isCollidedG.get(i)) {
-                    if (Math.sqrt(a) > 700) {
-                        isCollidedG.set(i, false);
-
-                    }
-                }
-            }
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                for (int j = i; j < greenEnemies1.size(); j++) {
-                    if (i != j) {
-                        double centerOfEnemy1X = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-                        double centerOfEnemy2X = greenEnemies1.get(j).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius();
-                        double centerOfEnemy1Y = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-                        double centerOfEnemy2Y = greenEnemies1.get(j).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius();
-
-
-                        if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((GreenEnemyModel) greenEnemies1.get(i)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius())) {
-                            System.out.println(":)");
-                            ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-greenEnemies1.get(i).getPosition().getX() + greenEnemies1.get(j).getPosition().getX() + 25, -greenEnemies1.get(j).getPosition().getY() + greenEnemies1.get(i).getPosition().getY() + 25)));
-                            ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                            isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                            collidedOne = i;
-                            collidedTwo = j;
-                            greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - greenEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - greenEnemies1.get(i).getPosition().getY())));
-                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-            }
-
-            for (int j = 0; j < greenEnemies1.size(); j++) {
-                if (!isCollidedG.get(j)) {
-                    for (int i = 0; i < greenEnemies1.size(); i++) {
-                        if (i == j) {
-                            double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyX = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-                            double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                            double centerOfEnemyY = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
-
-                            ACCELERATION_OF_GREEN_ENEMIES = 1;
-                            greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                            if (waveOHB) {
-                                isCollidedG.set(i, true);
-                                waveOHB = false;
-                            }
-
-                            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius())) {
-                                ACCELERATION_OF_GREEN_ENEMIES = 3;
-//                                ACCELERATION_OF_EPSILON = 4;
-
-                            } else {
-                                ACCELERATION_OF_GREEN_ENEMIES = 1;
-//                                ACCELERATION_OF_EPSILON = 2;
-                            }
-
-                        }
-
-                    }
-
-                }
-                if (isCollidedG.get(j)) {
-                    for (int i = 0; i < greenEnemies1.size(); i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_GREEN_ENEMIES = 2;
-                            greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, -((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), -((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                        }
-                    }
-
-                }
-            }
-
-            //todo:collision between p1 enemies
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                for (int j = 0; j < greenEnemies1.size(); j++) {
-                    double distanceX = (yellowEnemies1.get(i)).getPosition().getX() - ((GameObject) greenEnemies1.get(j)).getPosition().getX();
-                    double distanceY = (yellowEnemies1.get(i)).getPosition().getY() - ((GameObject) greenEnemies1.get(j)).getPosition().getY();
-                    double oclidianDistance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
-                    if (oclidianDistance < 2 * ((GreenEnemyModel) greenEnemies1.get(j)).getRadius() + 20) {
-//                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().setVector1((new Vector2D(-greenEnemies1.get(j).getPosition().getX() + greenEnemies1.get(j).getPosition().getX() + 25, -greenEnemies1.get(j).getPosition().getY() + greenEnemies1.get(j).getPosition().getY() + 25)));
-//                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().getVector1().normalize();
-                        isCollidedG.set(j, true);
-                        isCollidedY.set(i, true);
-                    }
-                }
-            }
-
-
-            //TODO: collectable items after destruction :  Done 90%
-            //todo: خب باید هر آیتم رو خیلی ساده بزنیم. با فور و رندم
-
-            //todo: Omenoct movement:
-            if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-                Rectangle epsilon = new Rectangle((int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(), (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
-                int leftDistance = omenoct.getLocation().x - panels.get(0).getX();
-                int rightDistance = panels.get(0).getRightX() - omenoct.getLocation().x;
-                int upperDistance = omenoct.getLocation().y - panels.get(0).getY();
-                int lowerDistance = panels.get(0).getDownY() - omenoct.getLocation().y;
-                int tempDistance = Math.min(Math.min(leftDistance, rightDistance), Math.min(upperDistance, lowerDistance));
-
-                //todo: panel.get(1)
-                int leftDistance1 = omenoct.getLocation().x - panels.get(1).getX();
-                int rightDistance1 = panels.get(1).getRightX() - omenoct.getLocation().x;
-                int upperDistance1 = omenoct.getLocation().y - panels.get(1).getY();
-                int lowerDistance1 = panels.get(1).getDownY() - omenoct.getLocation().y;
-                int tempDistance1 = Math.min(Math.min(leftDistance1, rightDistance1), Math.min(upperDistance1, lowerDistance1));
-
-                if (shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle())) {
-
-                    if (leftDistance == tempDistance) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
-                    } else if (rightDistance == tempDistance) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
-                    } else if (upperDistance == tempDistance) {
-                        if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
-
-                        }
-                        if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
-                            if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
-                                if (omenoct.getLocation().x > epsilon.x) {
-                                    omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                                } else if (omenoct.getLocation().x < epsilon.x) {
-                                    omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
-                                }
-                            }
-                        }
-                        if (panels.get(0).getRectangle().contains(epsilon)) {
-                            if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
-                                omenoct.setLocation(new Point(panels.get(0).getX() + (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
-                            }
-                        }
-                        if (panels.get(0).getRectangle().contains(epsilon)) {
-                            if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
-                                omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
-                            }
-                        }
-                        if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
-                            if (!isEnteredToPanel2_Omenoct) {
-                                omenoct.setLocation(new Point(panels.get(0).getRightX(), panels.get(1).getY() + 5));
-                                isEnteredToPanel2_Omenoct = true;
-                            }
-
-                        }
-
-
-//                                if(omenoct.getLocation().y==panels.get(1).getY()){
-//                                    if(omenoct.getLocation().x<epsilon.x){
-//                                        omenoct.setLocation(new Point(omenoct.getLocation().x+1,omenoct.getLocation().y));
-//                                    }else if(omenoct.getLocation().x>epsilon.x){
-//                                        omenoct.setLocation(new Point(omenoct.getLocation().x-1,omenoct.getLocation().y));
-//                                    }
-//                                }
-
-
-                    } else {
-                        if (omenoct.getLocation().y + 8 < panels.get(0).getDownY()) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y + 1));
-                        }
-                        if (omenoct.getLocation().y + 8 == panels.get(0).getDownY()) {
-                            if (omenoct.getLocation().x > epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                            } else if (omenoct.getLocation().x < epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
-                            }
-                        }
-                        if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
-                            omenoct.setLocation(new Point(panels.get(0).getX() + (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
-                        }
-                        if (omenoct.getLocation().x + (omenoct.getSize() / 2) > panels.get(0).getRightX()) {
-                            omenoct.setLocation(new Point(panels.get(0).getRightX() - (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
-                        }
-                    }
-
-
-                } else if (shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && !shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
-
-                    if (leftDistance1 == tempDistance1) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
-                    } else if (rightDistance1 == tempDistance1) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
-                    } else if (upperDistance1 == tempDistance1) {
-                        if (omenoct.getLocation().y - 8 > panels.get(1).getY()) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
-
-                        }
-
-                    }
-
-                    if (!panels.get(0).getRectangle().contains(omenoct.getRectangle()) && panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
-                        if (omenoct.getLocation().x < epsilon.x) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
-                        } else if (omenoct.getLocation().x > epsilon.x) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                        }
-                    }
-//                    if(panels.get(0).getRectangle().contains(epsilon)&&!panels.get(1).getRectangle().contains(epsilon)){
-//                        if(!isEnteredToPanel1_Omenoct) {
-//                            omenoct.setLocation(new Point(epsilon.x, panels.get(0).getY()));
-//                            isEnteredToPanel1_Omenoct = true;
-//                        }
+//                    if (spentMilliSecond == 2000) {
+//                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, true);
+//                        shotTimer.start();
 //                    }
-                } else if (!shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
-                    if (leftDistance == tempDistance) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
-                    } else if (rightDistance == tempDistance) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
-                    } else if (upperDistance == tempDistance) {
-                        if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
 
-                        }
-                        if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
-                            if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
-                                if (omenoct.getLocation().x > epsilon.x) {
-                                    omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                                } else if (omenoct.getLocation().x < epsilon.x) {
-                                    omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
-                                }
-                            }
-                        }
-                        if (panels.get(0).getRectangle().contains(epsilon)) {
-                            if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
-                                omenoct.setLocation(new Point(panels.get(0).getX() + (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
-                            }
-                        }
-                        if (panels.get(0).getRectangle().contains(epsilon)) {
-                            if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
-                                omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
-                            }
-                        }
-                        if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
-                            if (!isEnteredToPanel2_Omenoct) {
-                                omenoct.setLocation(new Point(panels.get(0).getRightX(), panels.get(1).getY() + 5));
-                                isEnteredToPanel2_Omenoct = true;
+                    if (spentMilliSecond == 200000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(4, true);
+                    }
+
+//                    if (spentMilliSecond == 2000) {
+//                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(6, true);
+//                    }
+//                    if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) {
+//                        writOfCerberus();
+//                    }
+//                    if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6) && !BooleansOf_IsValidToShow.getInstance().isValidToAttackCerberus() && HelpingBooleans.getInstance().cerberusBool) {
+//                        cerberusAttackTimer.start();
+//                        HelpingBooleans.getInstance().cerberusBool = false;
+//                    }
+//
+                    if (spentMilliSecond == 3000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(6, true);
+                        addBlackOrbsTimer.start();
+                    }
+                    if (spentMilliSecond == 4000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(3, true);
+                    }
+                    if (spentMilliSecond == 5000 && booleansOfEnemies.getEnemyN().get(1)) {
+                        yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
+                        booleansOfEnemies.getEnemyN().set(1, false);
+                    }
+                    if (spentMilliSecond == 25000 && booleansOfEnemies.getEnemyN().get(2)) {
+                        greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 40, 20));
+                        booleansOfEnemies.getEnemyN().set(2, false);
+                    }
+                    if (spentMilliSecond == 50000 && booleansOfEnemies.getEnemyN().get(3)) {
+                        yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 10, 10));
+                        booleansOfEnemies.getEnemyN().set(3, false);
+                    }
+                    if (spentMilliSecond == 70000 && booleansOfEnemies.getEnemyN().get(4)) {
+                        greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 60, 10));
+                        booleansOfEnemies.getEnemyN().set(4, false);
+                    }
+                    if (spentMilliSecond == 100000 && booleansOfEnemies.getEnemyN().get(5)) {
+                        yellowEnemies1.add(new YellowEnemyModel(new YellowEnemyController(input), 20, 50, 100));
+                        booleansOfEnemies.getEnemyN().set(5, false);
+                    }
+                    if (spentMilliSecond == 130000 && booleansOfEnemies.getEnemyN().get(6)) {
+                        greenEnemies1.add(new GreenEnemyModel(new GreenEnemyController(input), 20, 150, 78));
+                        booleansOfEnemies.getEnemyN().set(6, false);
+                    }
+
+                    if (spentMilliSecond == 60000) {
+                        HelpingBooleans.getInstance().isValidToLargerMainPanel = true;
+                    }
+                    if (spentMilliSecond == 120000) HelpingBooleans.getInstance().isValidToLargerMainPanel = false;
+
+                }
+
+
+                //TODO: collectable items after destruction :  Done 90%
+                //todo: خب باید هر آیتم رو خیلی ساده بزنیم. با فور و رندم
+
+
+                if (Properties.getInstance().WAVE == 1 && (!booleansOfEnemies.getEnemyN().get(1) && !booleansOfEnemies.getEnemyN().get(2) && !booleansOfEnemies.getEnemyN().get(3) && !booleansOfEnemies.getEnemyN().get(4) && !booleansOfEnemies.getEnemyN().get(5) && !booleansOfEnemies.getEnemyN().get(6))) {
+                    int count = 0;
+                    for (GameObject gameObject : greenEnemies1) {
+                        for (YellowEnemyModel object : yellowEnemies1) {
+                            if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
+                                count++;
                             }
 
                         }
 
                     }
-
-                }
-
-                if (panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
-                    isEnteredToPanel1_Omenoct = true;
-                } else if (panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
-                    isEnteredToPanel2_Omenoct = true;
-                } else if (!panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
-                    isEnteredToPanel1_Omenoct = false;
-                } else if (!panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
-                    isEnteredToPanel2_Omenoct = false;
-                }
-
-            }
-
-
-            //TODO: Archmire movement:
-            if (booleansOfIsValidToShow.getIsValidToShowEnemies().get(0)) {
-                if (archmire.getLocation().x < panels.get(0).getRightX() - archmire.getSize() - 50 && isRightMoveArchmire) {
-                    archmire.setLocation(new Point(archmire.getLocation().x + 1, archmire.getLocation().y));
-                } else if (archmire.getLocation().x == panels.get(0).getRightX() - archmire.getSize() - 50) {
-                    isRightMoveArchmire = false;
-                } else if (archmire.getLocation().x > panels.get(0).getX() && !isRightMoveArchmire) {
-                    archmire.setLocation(new Point(archmire.getLocation().x - 1, archmire.getLocation().y));
-
-                } else if (archmire.getLocation().x == panels.get(0).getX()) isRightMoveArchmire = true;
-            }
-
-
-            //todo: archmire:
-            if (booleansOfIsValidToShow.getIsValidToShowEnemies().get(0) && spentMilliSecond == 5000) {
-                archmirePrintTimer.start();
-                addArchmirePrintTimer.start();
-            }
-
-            //todo: BlackOrbs:
-            for (int i = 0; i < Orb.getInstance().size(); i++) {
-                if (Orb.getInstance().get(i).getHP() <= 0) {
-                    if (BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().get(i)) {
-                        CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                        CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x + 25, Orb.getInstance().get(i).getLocation().y - 5, 10, Color.LIGHT_GRAY));
-                        CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x + 40, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                        CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x - 5, Orb.getInstance().get(i).getLocation().y - 5, 10, Color.LIGHT_GRAY));
-                        CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x - 20, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                        BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().set(i, false);
+                    if (count == 0) isFinishedWave1 = true;
+                    if (isFinishedWave1) {
+                        Properties.getInstance().WAVE = 2;
                     }
                 }
-            }
-            //todo: Wyrm
-            if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-                double distanceX = (int) (gameObjects.get(0).getPosition().getX() - Wyrm.getInstance().getLocation().x);
-                double distanceY = (int) (gameObjects.get(0).getPosition().getY() - Wyrm.getInstance().getLocation().y);
-                double oDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-                if (oDistance > 300) {
-                    if (Wyrm.getInstance().getLocation().x > gameObjects.get(0).getPosition().getX()) {
-                        Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x - 4, Wyrm.getInstance().getLocation().y));
-                    } else if (Wyrm.getInstance().getLocation().x < gameObjects.get(0).getPosition().getX()) {
-                        Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x + 4, Wyrm.getInstance().getLocation().y));
-                    } else if (Wyrm.getInstance().getLocation().y > gameObjects.get(0).getPosition().getY()) {
-                        Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y - 4));
-                    } else if (Wyrm.getInstance().getLocation().y < gameObjects.get(0).getPosition().getY()) {
-                        Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y + 4));
-                    }
-
-                } else if (oDistance < 300) {
-                    Wyrm.getInstance().setValidToShoot(true);
+                if (Properties.getInstance().WAVE == 1 && Properties.getInstance().HP <= 0) {
+                    FunctionalMethods.loadGameState(input);
                 }
-            }
-
-            if (Wyrm.getInstance().isValidToShoot()) {
-                wyrmShooter.start();
-            }
-
-            if (Wyrm.getInstance().getHP() <= 0) {
-                BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(3, false);
-                if (BooleansOfCollectibles.getInstance().isValidToCollectWyrm()) {
-                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x - 20, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                    BooleansOfCollectibles.getInstance().setValidToCollectWyrm(false);
-                }
-                wyrmShooter.stop();
-            }
-
-
-            if (Properties.getInstance().WAVE == 1 && (!booleansOfEnemies.getEnemyN().get(1) && !booleansOfEnemies.getEnemyN().get(2) && !booleansOfEnemies.getEnemyN().get(3) && !booleansOfEnemies.getEnemyN().get(4) && !booleansOfEnemies.getEnemyN().get(5) && !booleansOfEnemies.getEnemyN().get(6))) {
-                int count = 0;
-                for (GameObject gameObject : greenEnemies1) {
-                    for (YellowEnemyModel object : yellowEnemies1) {
-                        if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
-                            count++;
-                        }
-
-                    }
-
-                }
-                if (count == 0) isFinishedWave1 = true;
-                if (isFinishedWave1) {
-                    Properties.getInstance().WAVE = 2;
-                }
-            }
-            if (Properties.getInstance().WAVE == 1 && Properties.getInstance().HP <= 0) {
-                FunctionalMethods.loadGameState(input);
             }
             //Todo: Wave 2:
         /*todo:  توی این موج، که 6 دقیقه طول می کشه، بازی رونق میگیره. اینطوریه که از زمان شروع این موج، هر 15 ثانیه انمی های ساده وارد میشن و ثانیه 30 ام بازی فریم دوم که ایزومتریه ظاهر میشه.
@@ -1005,8 +460,8 @@ public class GameFrame2 implements ActionListener {
                 if ((!booleansOfEnemies.getEnemyN().get(7) && !booleansOfEnemies.getEnemyN().get(8) && !booleansOfEnemies.getEnemyN().get(9) && !booleansOfEnemies.getEnemyN().get(10) && !booleansOfEnemies.getEnemyN().get(11) && !booleansOfEnemies.getEnemyN().get(12) && !booleansOfEnemies.getEnemyN().get(13) && !booleansOfEnemies.getEnemyN().get(14)) && !BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
                     int count = 0;
                     for (GameObject gameObject : greenEnemies1) {
-                        for (GameObject object : yellowEnemies1) {
-                            if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && ((YellowEnemyModel) object).getLifeValue() > 0) {
+                        for (YellowEnemyModel object : yellowEnemies1) {
+                            if (((GreenEnemyModel) gameObject).getLifeValue() > 0 && (object).getLifeValue() > 0) {
                                 count++;
                             }
 
@@ -1169,7 +624,6 @@ public class GameFrame2 implements ActionListener {
 
                 }
 
-
                 if (spentMilliSecondW6 == 40000) {
                     HelpingBooleans.getInstance().isProjectile = true;
                     BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().set(1, true); // todo: Projectile
@@ -1228,6 +682,7 @@ public class GameFrame2 implements ActionListener {
                         Head.getInstance().setLocation(new Point(secX, secY));
 
                     }
+
 
                     int dX_RightHand = (int) (RightHand.getInstance().getLocation().x + RightHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getX() - EPSILON_WIDTH);
                     int dY_RightHand = (int) (RightHand.getInstance().getLocation().y + RightHand.getInstance().getSize() / 2 - gameObjects.get(0).getPosition().getY() - EPSILON_LENGTH);
@@ -1388,7 +843,7 @@ public class GameFrame2 implements ActionListener {
                     if (Fist.getInstance().getLocation().x <= PanelsData.getInstance().getBossPanel().getX()) {
                         PanelsData.getInstance().getBossPanel().setX(PanelsData.getInstance().getBossPanel().getX() + 200);
                         PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getWidth() - 200);
-                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX() + 50, Fist.getInstance().getLocation().y));
+                        Fist.getInstance().setLocation(new Point((int) (PanelsData.getInstance().getBossPanel().getX() + 50), Fist.getInstance().getLocation().y));
                         HelpingBooleans.getInstance().isFistPunchedRight = true;
 
                     }
@@ -1402,7 +857,7 @@ public class GameFrame2 implements ActionListener {
                     if (Fist.getInstance().getLocation().y <= PanelsData.getInstance().getBossPanel().getY()) {
                         PanelsData.getInstance().getBossPanel().setY(PanelsData.getInstance().getBossPanel().getY() + 200);
                         PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getHeight() - 200);
-                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
+                        Fist.getInstance().setLocation(new Point((int) PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
                         HelpingBooleans.getInstance().isFistPunchedUp = true;
 
                     }
@@ -1415,7 +870,7 @@ public class GameFrame2 implements ActionListener {
                     }
                     if (Fist.getInstance().getLocation().y + Fist.getInstance().getSize() >= PanelsData.getInstance().getBossPanel().getDownY()) {
                         PanelsData.getInstance().getBossPanel().setWidth(PanelsData.getInstance().getBossPanel().getHeight() - 200);
-                        Fist.getInstance().setLocation(new Point(PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
+                        Fist.getInstance().setLocation(new Point((int) PanelsData.getInstance().getBossPanel().getX(), Fist.getInstance().getLocation().y));
                         HelpingBooleans.getInstance().isFistPunchedUp = true;
 
                     }
@@ -1484,589 +939,8 @@ public class GameFrame2 implements ActionListener {
             }
 
 
-//            for (int i = 0; i < greenEnemies1.size(); i++) {
-//
-//                if(((GreenEnemyModel)greenEnemies1.get(i)).getLifeValue() == 0){
-//                    if(((GreenEnemyModel)greenEnemies1.get(i)).isAlive()){
-//                        ((GreenEnemyModel)greenEnemies1.get(i)).setAlive(false);
-//
-//                        positionsOfCollectiblesG.add(((GreenEnemyModel)greenEnemies1.get(i)).getPosition());
-//                        collectibleItemsG.add(i,new TKM2_Item_Model(((GreenEnemyModel)greenEnemies1.get(i)).getPosition()));
-//
-//                    }
-////                    greenEnemies1.set(i,null);
-//                    ((GreenEnemyModel)greenEnemies1.get(i)).setPosition(new Position(1111111111,1111111111));
-//                    ((GreenEnemyModel)greenEnemies1.get(i)).setLength(0);
-//                    ((GreenEnemyModel)greenEnemies1.get(i)).setAlive(false);
-//                    startedTimeOfCollectiblesG.set(i, spentMilliSecond);
-//
-//                }
-//            }
-
-
-//            for (int i = 0; i < yellowEnemies1.size(); i++) {
-//                if(isCollided.get(i)) {
-//                    ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-//                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                }
-//                if(!isCollided.get(i)) {
-//                    ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-//                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                }
-//            }
-//            for (int j = 0; j < yellowEnemies1.size(); j++) {
-//                if (!isCollided.get(j)) {
-//                    for (int i = 0; i < yellowEnemies1.size(); i++) {
-//                        if (i == j) {
-//                            ACCELERATION_OF_YELLOW_ENEMIES = 2;
-//                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                            if(waveOHB){
-//                                isCollided.set(i,true);
-//                                waveOHB=false;
-//                            }
-//
-//                        }
-//
-//                    }
-//
-//                }
-//                if (isCollided.get(j)) {
-//                    for (int i = 0; i < yellowEnemies1.size(); i++) {
-//                        if (i == j) {
-//                            ACCELERATION_OF_YELLOW_ENEMIES = 4;
-//                            yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                        }
-//                    }
-//
-//                }
-//            }
-
-//            ToDo:
-
-
         }
 
-//        frame.setBackground(new Color(0,0,0,0)); // todo: همینه که کار رو درمیاره :)))))))
-
-
-        //Wave 1: start from releasing key "R". It takes 5 minutes, unless all the enemies being killed.
-        // in this wave, every 30 seconds one enemy comes. Totally 3 enemies from each group.
-
-/*        if(STATE == 1){
-            if(spentMilliSecond %29000 == 0 && spentMilliSecond < 150000){
-                gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
-            }
-            if(spentMilliSecond %29000 == 0 && spentMilliSecond > 150000 && spentMilliSecond < 300000){
-                gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
-            }
-
-            timer1Starter = true;
-            //start after second one:
-
-            // item of mouse pointer:
-
-            for (int i = 3; i < 5; i++) {
-                if(showOfCollectiblesHelper[i])  showOfCollectibles.set(i,spentMilliSecond >= startedTimeOfCollectibles[i] && spentMilliSecond <= startedTimeOfCollectibles[i] + 10000);
-
-            }
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                if(showOfCollectiblesHelperG.get(i))  showOfCollectiblesG.set(i,spentMilliSecond >= startedTimeOfCollectiblesG.get(i) && spentMilliSecond <= startedTimeOfCollectiblesG.get(i) + 10000);
-
-            }
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                if(showOfCollectiblesHelperY.get(i))  showOfCollectiblesY.set(i,spentMilliSecond >= startedTimeOfCollectiblesY.get(i) && spentMilliSecond <= startedTimeOfCollectiblesY.get(i) + 10000);
-
-            }
-            if (showOfPointerItemHelper) showOfPointerItem = spentMilliSecond >= 5000 && spentMilliSecond <= 15000;
-
-            for (int i = 3; i < 5; i++) {
-                if(showOfCollectibles.get(i)){
-                    double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItems.get(i).getCenterX()) * (centerOfEpsilonX - collectibleItems.get(i).getCenterX())) + ((centerOfEpsilonY - collectibleItems.get(i).getCenterY()) * (centerOfEpsilonY - collectibleItems.get(i).getCenterY())))) {
-                        showOfCollectiblesHelper[i] = false;
-                        showOfCollectibles.set(i,false);
-                        XP+=5;
-                    }
-
-                }
-            }
-
-            for (int i = 0; i < greenEnemies1.size(); i++) {
-                if(showOfCollectiblesG.get(i)){
-                    double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItemsG.get(i).getCenterX()) * (centerOfEpsilonX - collectibleItemsG.get(i).getCenterX())) + ((centerOfEpsilonY - collectibleItemsG.get(i).getCenterY()) * (centerOfEpsilonY - collectibleItemsG.get(i).getCenterY())))) {
-                        showOfCollectiblesHelperG.set(i ,false);
-                        showOfCollectiblesG.set(i,false);
-                        XP+=5;
-                    }
-
-                }
-            }
-            for (int i = 0; i < yellowEnemies1.size(); i++) {
-                if(showOfCollectiblesY.get(i)){
-                    double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItemsY.get(i).getCenterX()) * (centerOfEpsilonX - collectibleItemsY.get(i).getCenterX())) + ((centerOfEpsilonY - collectibleItemsY.get(i).getCenterY()) * (centerOfEpsilonY - collectibleItemsY.get(i).getCenterY())))) {
-                        showOfCollectiblesHelperY.set(i ,false);
-                        showOfCollectiblesY.set(i,false);
-                        XP+=10;
-                    }
-
-                }
-            }
-            if (showOfPointerItem) {
-                double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - twm_item_model.getCenterX()) * (centerOfEpsilonX - twm_item_model.getCenterX())) + ((centerOfEpsilonY - twm_item_model.getCenterY()) * (centerOfEpsilonY - twm_item_model.getCenterY())))) {
-                    showOfPointerItemHelper = false;
-                    showOfPointerItem = false;
-                    activateMechanismOfPointerItem = true;
-                    startTimeFromActivationOfPointerItem = spentMilliSecond;
-
-                }
-            }
-
-
-            if (((spentMilliSecond <= startTimeFromActivationOfPointerItem + 10000) && activateMechanismOfPointerItem)||lineShower2) {
-                lineShower = true;
-                targetWithMouse = new TargetWithMouse(new Point2D.Double(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-
-            } else lineShower = false;
-
-            if (spentMilliSecond < 2000) {
-                if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT--;
-                    GLASS_FRAME_DIMENSION_WIDTH--;
-//                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-                    isValidStore = false;
-
-                }
-                time.restart();
-            }
-
-            if (spentMilliSecond % 5000 == 0 && spentMilliSecond >= 5000) {
-                System.out.println(GLASS_FRAME_DIMENSION_HEIGHT);
-                if (GLASS_FRAME_DIMENSION_HEIGHT < GLASS_FRAME_DIMENSION_MAX_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT++;
-                    GLASS_FRAME_DIMENSION_WIDTH++;
-//                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-                    isValidStore = false;
-                }
-//            time.restart();
-            }
-
-            if (spentMilliSecond % 5000 == 3000 && spentMilliSecond >= 5000) {
-                if (GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
-                    GLASS_FRAME_DIMENSION_HEIGHT--;
-                    GLASS_FRAME_DIMENSION_WIDTH--;
-//                    frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-                    isValidStore = false;
-                }
-//            time.restart();
-            }
-
-            IS_VALID_STORE = !((spentMilliSecond % 5000 == 3000) || (spentMilliSecond % 5000 == 0));
-//        System.out.println("ISVALIDSTORE: " + IS_VALID_STORE);
-
-
-            if (isValid11) {
-                reversePointer();
-                isValid11 = false;
-            }
-
-            if (isValid7) {
-                frame.dispose();
-                isValid7 = false;
-                timerOfGame.reset();
-            }
-            time.start();
-            if (play) {
-                for (int i = 1; i < 3 ; i++) {
-                    if(((YellowEnemyModel)gameObjects.get(i)).getLifeValue() == 0){
-                        if(((YellowEnemyModel)gameObjects.get(i)).isAlive()){
-                            positionsOfCollectibles.add(((YellowEnemyModel)gameObjects.get(i)).getPosition());
-                            collectibleItems.add(i ,new TKM2_Item_Model(((YellowEnemyModel)gameObjects.get(i)).getPosition()));
-                        }
-                        ((YellowEnemyModel)gameObjects.get(i)).setPosition(new Position(1111111111,1111111111));
-                        ((YellowEnemyModel)gameObjects.get(i)).setAlive(false);
-                        startedTimeOfCollectibles[i] = spentMilliSecond;
-
-                    }
-                }
-                for (int j = 1; j < 5; j++) {
-                    if((gameObjects.get(j).getPosition().getY()==2000)||(gameObjects.get(j).getPosition().getX()==2000)||(gameObjects.get(j).getPosition().getY()<=-2000)||(gameObjects.get(j).getPosition().getX()<=-2000)){
-                        for (int i = 1; i < 3; i++) {
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                        }
-                        for (int i = 3; i < 5; i++) {
-                            ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                            ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                        }
-
-                    }
-                }
-                for (int i = 3; i < 5; i++) {
-
-                    if(((GreenEnemyModel)gameObjects.get(i)).getLifeValue() == 0){
-                        if(((GreenEnemyModel)gameObjects.get(i)).isAlive()){
-                            positionsOfCollectibles.add(((GreenEnemyModel)gameObjects.get(i)).getPosition());
-                            collectibleItems.add(i, new TKM2_Item_Model(((GreenEnemyModel)gameObjects.get(i)).getPosition()));
-
-                        }
-                        ((GreenEnemyModel)gameObjects.get(i)).setPosition(new Position(1111111111,1111111111));
-                        ((GreenEnemyModel)gameObjects.get(i)).setAlive(false);
-                        startedTimeOfCollectibles[i] = spentMilliSecond;
-
-                    }
-                }
-                for (int i = 0; i < greenEnemies1.size(); i++) {
-                    if(((GreenEnemyModel)greenEnemies1.get(i)).isAlive()){
-                        positionsOfCollectiblesG.add(((GreenEnemyModel)greenEnemies1.get(i)).getPosition());
-                        collectibleItemsG.add(i, new TKM2_Item_Model(((GreenEnemyModel)greenEnemies1.get(i)).getPosition()));
-
-                    }
-                    ((GreenEnemyModel)greenEnemies1.get(i)).setPosition(new Position(1111111111,1111111111));
-                    ((GreenEnemyModel)greenEnemies1.get(i)).setAlive(false);
-                    startedTimeOfCollectiblesG.set(i, spentMilliSecond);
-
-                }
-                for (int i = 0; i < yellowEnemies1.size(); i++) {
-                    if(((YellowEnemyModel)yellowEnemies1.get(i)).isAlive()){
-                        positionsOfCollectiblesY.add(((YellowEnemyModel)yellowEnemies1.get(i)).getPosition());
-                        collectibleItemsY.get(i).setNodeOfRectangle(new Position(((YellowEnemyModel)yellowEnemies1.get(i)).getPosX()+100,((YellowEnemyModel)yellowEnemies1.get(i)).getPosY()));
-
-//                        collectibleItemsY.add(i, new TKM2_Item_Model(((YellowEnemyModel)yellowEnemies1.get(i)).getPosition()));
-
-                    }
-                    ((YellowEnemyModel)yellowEnemies1.get(i)).setPosition(new Position(1111111111,1111111111));
-                    ((YellowEnemyModel)yellowEnemies1.get(i)).setAlive(false);
-                    startedTimeOfCollectiblesY.set(i, spentMilliSecond);
-
-                }
-                for (int i = 1; i < gameObjects.size(); i++) {
-                    if (startFromCollision.get(i)!=null){
-                        System.out.println("????????????????????????????????????????????????????????????????????????????: " + startFromCollision.get(i));
-                        if(spentMilliSecond==(startFromCollision.get(i)+5000)){
-                            if(gameObjects.get(i) instanceof YellowEnemyModel){
-                                isCollided.set(i, false);
-
-                            }else if(gameObjects.get(i) instanceof GreenEnemyModel){
-                                isCollided.set(i, false);
-
-                            }
-                        }
-                    }
-                }
-
-                if(HP <=0){
-                    ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setHeight(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getHeight()+1);
-                    ((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.setWidth(((EpsilonModel)gameObjects.get(0)).sizeOfEpsilon.getWidth()+1);
-                }
-
-
-                for (int i = 0; i < currentShots.size(); i++) {
-                    shotsOfEpsilons.get(i).setPlaceX((int) (shotsOfEpsilons.get(i).getPlaceX() - shotsOfEpsilons.get(i).getDirX()));
-                    shotsOfEpsilons.get(i).setPlaceY((int) (shotsOfEpsilons.get(i).getPlaceY() - shotsOfEpsilons.get(i).getDirY()));
-
-                }
-                for (int i = 0; i < shotsOfEpsilons.size(); i++) {
-                    System.out.println("NumberOfCollision: " + shotsOfEpsilons.get(0).getNumberOfCollision());
-                    if (shotsOfEpsilons.get(i).getNumberOfCollision() == 1) {
-                        shotsOfEpsilons.get(i).setPlaceX(1000000);
-                        shotsOfEpsilons.get(i).setPlaceY(1000000);
-                    }
-                    if (shotsOfEpsilons.get(i).getPlaceX() == 2) {
-                        if (GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
-                            GLASS_FRAME_DIMENSION_WIDTH += 5;
-                            boundX -= 5;
-//                            frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-                            System.out.println("\u001B[41m" + i + "\u001B[0m");
-
-                        }
-                        if (GLASS_FRAME_DIMENSION_WIDTH > 20) {
-                            GLASS_FRAME_DIMENSION_WIDTH -= 5;
-//                        boundX+=5;
-//                            frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-
-                        }
-                    }
-                    if (shotsOfEpsilons.get(i).getPlaceX() == GLASS_FRAME_DIMENSION_WIDTH - 10) {
-                        boundX += 5;
-                        GLASS_FRAME_DIMENSION_WIDTH--;
-//                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-
-
-                    }
-                    if (shotsOfEpsilons.get(i).getPlaceX() <= 0 || shotsOfEpsilons.get(i).getPlaceY() <= -8 ||
-                            shotsOfEpsilons.get(i).getPlaceY() >= GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= GLASS_FRAME_DIMENSION_WIDTH))
-                        shotsOfEpsilons.get(i).setNumberOfCollision(shotsOfEpsilons.get(i).getNumberOfCollision() + 1);
-                }
-                System.out.println("\u001B[41m" + shotsOfEpsilons.get(0).getPlaceX() + "\u001B[0m" + " - y:" + "\u001B[36m" + shotsOfEpsilons.get(0).getPlaceY() + "\u001B[0m");
-                for (int i = 0; i < shotsOfEpsilons.size(); i++) {
-                    for (int j = 1; j < 3; j++) {
-                        if (Math.sqrt(((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getX() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getX() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) +
-                                ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getY() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getY() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()))
-                                < 5.0 + ((YellowEnemyModel) gameObjects.get(j)).getRadius()) {
-                            // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
-                            if(is_Writ_Of_Ares){
-                                REDUCTION_RATE_OF_HP_OF_ENEMY = 2;
-                            }
-                            ((YellowEnemyModel) gameObjects.get(j)).setLifeValue(((YellowEnemyModel) gameObjects.get(j)).getLifeValue()-REDUCTION_RATE_OF_HP_OF_ENEMY);
-//                        XXED++;
-                            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                            shotsOfEpsilons.get(i).setPlaceX(1000000);
-                            shotsOfEpsilons.get(i).setPlaceY(1000000);
-
-
-
-                        }
-                    }
-                    for (int j = 3; j < 5; j++) {
-                        if (Math.sqrt(((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((GreenEnemyModel)gameObjects.get(j)).getPosition().getX() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((GreenEnemyModel) gameObjects.get(j)).getPosition().getX() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) +
-                                ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((GreenEnemyModel)gameObjects.get(j)).getPosition().getY() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((GreenEnemyModel) gameObjects.get(j)).getPosition().getY() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()))
-                                < 5.0 + ((GreenEnemyModel) gameObjects.get(j)).getRadius()) {
-                            // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
-                            ((GreenEnemyModel) gameObjects.get(j)).setLifeValue(((GreenEnemyModel) gameObjects.get(j)).getLifeValue()-1);
-                            HP++;
-                            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                            shotsOfEpsilons.get(i).setPlaceX(1000000);
-                            shotsOfEpsilons.get(i).setPlaceY(1000000);
-
-
-                        }
-                    }
-
-
-                }
-                for (int i = 1; i < 3; i++) {
-                    ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                    ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                }
-                for (int i = 3; i < 5; i++) {
-                    ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                    ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                }
-
-                for (int j = 1; j < 3; j++) {
-                    if (!isCollided.get(j)) {
-                        for (int i = 1; i < 3; i++) {
-                            if (i == j) {
-                                ACCELERATION_OF_YELLOW_ENEMIES = 2;
-                                gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                                if(waveOHB){
-                                    isCollided.set(i,true);
-                                    waveOHB=false;
-                                }
-
-                            }
-
-                        }
-
-                    }
-                    if (isCollided.get(j)) {
-                        for (int i = 1; i < 3; i++) {
-                            if (i == j) {
-                                ACCELERATION_OF_YELLOW_ENEMIES = 4;
-                                gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                            }
-                        }
-
-                    }
-                }
-                for (int j = 3; j < 5; j++) {
-                    if (!isCollided.get(j)) {
-                        for (int i = 3; i < 5; i++) {
-                            if (i == j) {
-                                ACCELERATION_OF_GREEN_ENEMIES = 2;
-                                gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                                if(waveOHB){
-                                    isCollided.set(i,true);
-                                    waveOHB=false;
-                                }
-                            }
-
-
-                        }
-
-                    }
-                    if (isCollided.get(j)) {
-                        for (int i = 3; i < 5; i++) {
-                            if (i == j) {
-                                ACCELERATION_OF_GREEN_ENEMIES = 4;
-                                gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, -((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), -((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            for (int k = 1; k < 5; k++) {
-                for (int i = 1; i < 3; i++) {
-                    for (int j = 3; j < 5; j++) {
-                        double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                        double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-                        double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                        double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-
-                        if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((YellowEnemyModel) gameObjects.get(i)).getRadius() + ((GreenEnemyModel) gameObjects.get(j)).getRadius())) {
-                            System.out.println(":)");
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                            //                       ((GreenEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-                            //                    ((GreenEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                            isCollidedEnemies.set(i,true);// : **********is needed???  - : yes!
-                            isCollidedEnemies.set(j,true);
-                            startFromCollision.put(i,spentMilliSecond);
-                            startFromCollision.put(j,spentMilliSecond);
-
-                            collidedOneGY = i;
-                            collidedTwoGY = j;
-                            gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                        }
-
-                    }
-                }
-
-                if (gameObjects.get(k) instanceof GreenEnemyModel){
-                    //پلن دوم:
-                    for (int i = 3; i < 5; i++) {
-                        double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                        double centerOfEnemyX = gameObjects.get(i).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                        double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                        double centerOfEnemyY = gameObjects.get(i).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-
-//                    if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) == (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) gameObjects.get(i)).getRadius()+1)) {
-//
-//                    }
-
-                        if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) gameObjects.get(i)).getRadius())) {
-                            System.out.println(":)");
-                            //((((((((((((+((*))+))))))))))))\\
-//
-                            ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                            ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                            HP -=6;
-                            stateCounterG = counters.get(1);
-                            isCollided.set(i, true);
-                            gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                isImpact1 = false;
-//                isImpact2 = true;
-//                با int counter استیت بندی می کنیم.
-                        }
-                    }
-                    for (int i = 3; i < 5; i++) {
-                        for (int j = i; j < 5; j++) {
-                            if (i != j) {
-                                double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                                double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-                                double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                                double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-
-
-                                if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((GreenEnemyModel) gameObjects.get(i)).getRadius() + ((GreenEnemyModel) gameObjects.get(j)).getRadius())) {
-                                    System.out.println(":)");
-                                    ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                                    ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-                                    startFromCollision.put(i,spentMilliSecond);
-
-                                    isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                                    collidedOneG = i;
-                                    collidedTwoG = j;
-                                    gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-
-                if (gameObjects.get(k) instanceof YellowEnemyModel) {
-                    // این پلن جواب نداد :( برای برخورد
-//            if(isImpact&&Math.sqrt(((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getX()+17))*((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getX()+17)) +
-//                    ((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getY()+30))*((gameObjects.get(0).getPosition().getY()+30)-(gameObjects.get(1).getPosition().getY()+30))) == 45.0 ){
-//                ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().setVector1(new Vector2D(((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getX(),- ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getY()));
-//            isImpact = false;
-//            }
-//            System.out.println("second Xdir: " + ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getX());
-                    //پلن دوم:
-                    for (int i = 1; i < 3; i++) {
-                        double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                        double centerOfEnemyX = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                        double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                        double centerOfEnemyY = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-
-
-                        if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((YellowEnemyModel) gameObjects.get(i)).getRadius())) {
-                            System.out.println(":)");
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                            ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                            startFromCollision.put(i,spentMilliSecond);
-                            HP -=5;
-                            stateCounter = counters.get(1);
-                            isCollided.set(i, true);
-                            gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                isImpact1 = false;
-//                isImpact2 = true;
-//                با int counter استیت بندی می کنیم.
-                        }
-                    }
-                    for (int i = 1; i < 3; i++) {
-                        for (int j = i; j < 3; j++) {
-                            if (i != j) {
-                                double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                                double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(j)).getRadius();
-                                double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                                double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(j)).getRadius();
-
-
-                                if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((YellowEnemyModel) gameObjects.get(i)).getRadius() + ((YellowEnemyModel) gameObjects.get(j)).getRadius())) {
-                                    System.out.println(":)");
-                                    ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                                    ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                                    isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                                    collidedOne = i;
-                                    collidedTwo = j;
-                                    gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-
-
-
-
-
-        }*/
-
-
-        //   System.out.println("3th: x : "+(gameObjects.get(2).getPosition().getX()) + " y : " + (gameObjects.get(2).getPosition().getY()));
-        //   System.out.println("4th: x : "+(gameObjects.get(3).getPosition().getX()) + " y : " + (gameObjects.get(3).getPosition().getY()));
         timer1Starter = true;
         //start after second one:
 
@@ -2081,27 +955,10 @@ public class GameFrame2 implements ActionListener {
                 showOfCollectiblesG.set(i, spentMilliSecond >= Properties.getInstance().startedTimeOfCollectiblesG.get(i) && spentMilliSecond <= Properties.getInstance().startedTimeOfCollectiblesG.get(i) + 10000);
 
         }
-//        for (int i = 0; i < yellowEnemies1.size(); i++) {
-//            if (showOfCollectiblesHelperY.get(i))
-//                showOfCollectiblesY.set(i, spentMilliSecond >= startedTimeOfCollectiblesY.get(i) && spentMilliSecond <= startedTimeOfCollectiblesY.get(i) + 10000);
-//
-//        }
+
         if (showOfPointerItemHelper) showOfPointerItem = spentMilliSecond >= 5000 && spentMilliSecond <= 15000;
 
 
-        //todo:these were for phase1:
-//        for (int i = 3; i < 5; i++) {
-//            if(showOfCollectibles.get(i)){
-//                double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-//                double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-//                if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItems.get(i).getCenterX()) * (centerOfEpsilonX - collectibleItems.get(i).getCenterX())) + ((centerOfEpsilonY - collectibleItems.get(i).getCenterY()) * (centerOfEpsilonY - collectibleItems.get(i).getCenterY())))) {
-//                    showOfCollectiblesHelper[i] = false;
-//                    showOfCollectibles.set(i,false);
-//                    XP+=5;
-//                }
-//
-//            }
-//        }
         for (int i = 0; i < greenEnemies1.size(); i++) {
             if (showOfCollectiblesG.get(i)) {
                 double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
@@ -2114,18 +971,7 @@ public class GameFrame2 implements ActionListener {
 
             }
         }
-//        for (int i = 0; i < yellowEnemies1.size(); i++) {
-//            if (showOfCollectiblesY.get(i)) {
-//                double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-//                double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-//                if (((EpsilonModel) gameObjects.get(0)).getRadius() + twm_item_model.getRadius() >= Math.sqrt(((centerOfEpsilonX - collectibleItemsY.get(i).getCenterX()) * (centerOfEpsilonX - collectibleItemsY.get(i).getCenterX())) + ((centerOfEpsilonY - collectibleItemsY.get(i).getCenterY()) * (centerOfEpsilonY - collectibleItemsY.get(i).getCenterY())))) {
-//                    showOfCollectiblesHelperY.set(i, false);
-//                    showOfCollectiblesY.set(i, false);
-//                    XP += 10;
-//                }
-//
-//            }
-//        }
+
         if (showOfPointerItem) {
             double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
             double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
@@ -2141,7 +987,7 @@ public class GameFrame2 implements ActionListener {
 
         if (((spentMilliSecond <= startTimeFromActivationOfPointerItem + 10000) && activateMechanismOfPointerItem) || HelpingBooleans.getInstance().lineShower2) {
             lineShower = true;
-            targetWithMouse = new TargetWithMouse(new Point2D.Double(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+            targetWithMouse = new TargetWithMouse(new Point2D.Double((gameObjects.get(0)).getPosition().getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
 
         } else lineShower = false;
         //todo: Shrinkage :
@@ -2171,14 +1017,11 @@ public class GameFrame2 implements ActionListener {
             if (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT > GLASS_FRAME_DIMENSION_MIN_HEIGHT && Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH > GLASS_FRAME_DIMENSION_MIN_WIDTH) {
                 Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT -= 1 * Properties.getInstance().constantOfShrinkagePanel;
                 Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH -= 1 * Properties.getInstance().constantOfShrinkagePanel;
-//                frame.setSize((int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
                 isValidStore = false;
             }
-//            time.restart();
         }
 
         IS_VALID_STORE = !((spentMilliSecond % 5000 == 3000) || (spentMilliSecond % 5000 == 0));
-//        System.out.println("ISVALIDSTORE: " + IS_VALID_STORE);
 
 
         if (isValid7) {
@@ -2205,56 +1048,16 @@ public class GameFrame2 implements ActionListener {
 //        time.start();
         if (Properties.getInstance().play) {
 
-            /*todo: these were for phase1:
-            for (int i = 1; i < 3 ; i++) {
-                if(((YellowEnemyModel)gameObjects.get(i)).getLifeValue() == 0){
-                    if(((YellowEnemyModel)gameObjects.get(i)).isAlive()){
-                        positionsOfCollectibles.add(((YellowEnemyModel)gameObjects.get(i)).getPosition());
-                        collectibleItems.add(i, new TKM2_Item_Model(((YellowEnemyModel)gameObjects.get(i)).getPosition()));
-                    }
-                    ((YellowEnemyModel)gameObjects.get(i)).setPosition(new Position(1111111111,1111111111));
-                    ((YellowEnemyModel)gameObjects.get(i)).setAlive(false);
-                    startedTimeOfCollectibles[i] = spentMilliSecond;
-
-                }
-            }
-            for (int j = 1; j < 5; j++) {
-                if((gameObjects.get(j).getPosition().getY()==2000)||(gameObjects.get(j).getPosition().getX()==2000)||(gameObjects.get(j).getPosition().getY()<=-2000)||(gameObjects.get(j).getPosition().getX()<=-2000)){
-                    for (int i = 1; i < 3; i++) {
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                    }
-                    for (int i = 3; i < 5; i++) {
-                        ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                        ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                    }
-
-                }
-            }
-            for (int i = 3; i < 5; i++) {
-
-                if(((GreenEnemyModel)gameObjects.get(i)).getLifeValue() == 0){
-                    if(((GreenEnemyModel)gameObjects.get(i)).isAlive()){
-                        positionsOfCollectibles.add(((GreenEnemyModel)gameObjects.get(i)).getPosition());
-                        collectibleItems.add(i, new TKM2_Item_Model(((GreenEnemyModel)gameObjects.get(i)).getPosition()));
-
-                    }
-                    ((GreenEnemyModel)gameObjects.get(i)).setPosition(new Position(1111111111,1111111111));
-                    ((GreenEnemyModel)gameObjects.get(i)).setAlive(false);
-                    startedTimeOfCollectibles[i] = spentMilliSecond;
-
-                }
-            }*/
 
             for (int i = 0; i < greenEnemies1.size(); i++) {
 
                 if (((GreenEnemyModel) greenEnemies1.get(i)).getLifeValue() == 0) {
                     if (((GreenEnemyModel) greenEnemies1.get(i)).isAlive()) {
-                        Properties.getInstance().positionsOfCollectiblesG.add(((GreenEnemyModel) greenEnemies1.get(i)).getPosition());
-                        collectibleItemsG.add(i, new TKM2_Item_Model(((GreenEnemyModel) greenEnemies1.get(i)).getPosition()));
+                        Properties.getInstance().positionsOfCollectiblesG.add((greenEnemies1.get(i)).getPosition());
+                        collectibleItemsG.add(i, new TKM2_Item_Model((greenEnemies1.get(i)).getPosition()));
 
                     }
-                    ((GreenEnemyModel) greenEnemies1.get(i)).setPosition(new Position(1111111111, 1111111111));
+                    (greenEnemies1.get(i)).setPosition(new Position(1111111111, 1111111111));
                     ((GreenEnemyModel) greenEnemies1.get(i)).setAlive(false);
                     Properties.getInstance().startedTimeOfCollectiblesG.set(i, spentMilliSecond);
 
@@ -2262,35 +1065,19 @@ public class GameFrame2 implements ActionListener {
             }
             for (int i = 0; i < yellowEnemies1.size(); i++) {
 
-                if (((YellowEnemyModel) yellowEnemies1.get(i)).getLifeValue() == 0) {
+                if ((yellowEnemies1.get(i)).getLifeValue() == 0) {
                     if (BooleansOfCollectibles.getInstance().getIsValidYEtoCollect().get(i)) {
                         CollectablesOfEnemies.getInstance().getCollectablesOfYE().add(new Collectable((int) yellowEnemies1.get(i).getPosition().getX(), (int) yellowEnemies1.get(i).getPosition().getY(), 10, Color.ORANGE));
                         CollectablesOfEnemies.getInstance().getCollectablesOfYE().add(new Collectable((int) yellowEnemies1.get(i).getPosition().getX() + 20, (int) yellowEnemies1.get(i).getPosition().getY(), 10, Color.ORANGE));
                         BooleansOfCollectibles.getInstance().getIsValidYEtoCollect().set(i, false);
                     }
 
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).setPosition(new Position(1111111111, 1111111111));
-                    ((YellowEnemyModel) yellowEnemies1.get(i)).setAlive(false);
+                    (yellowEnemies1.get(i)).setPosition(new Position(1111111111, 1111111111));
+                    (yellowEnemies1.get(i)).setAlive(false);
                     Properties.getInstance().startedTimeOfCollectiblesY.set(i, spentMilliSecond);
 
                 }
             }
-
-            /*todo:these were for phase1:
-            for (int i = 1; i < gameObjects.size(); i++) {
-                if (startFromCollision.get(i)!=null){
-                    System.out.println("????????????????????: " + startFromCollision.get(i));
-                    if(spentMilliSecond==(startFromCollision.get(i)+5000)){
-                        if(gameObjects.get(i) instanceof YellowEnemyModel){
-                            isCollided.set(i, false);
-
-                        }else if(gameObjects.get(i) instanceof GreenEnemyModel){
-                            isCollided.set(i, false);
-
-                        }
-                    }
-                }
-            }*/
 
             if (Properties.getInstance().HP <= 0) {
                 ((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.setHeight(((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.getHeight() + 1);
@@ -2298,302 +1085,11 @@ public class GameFrame2 implements ActionListener {
             }
 
 
-/*                    todo:these were for phase1:
-        for (int i = 0; i < currentShots.size(); i++) {
-                shotsOfEpsilons.get(i).setPlaceX((int) (shotsOfEpsilons.get(i).getPlaceX() - shotsOfEpsilons.get(i).getDirX()));
-                shotsOfEpsilons.get(i).setPlaceY((int) (shotsOfEpsilons.get(i).getPlaceY() - shotsOfEpsilons.get(i).getDirY()));
-
-            }
-            for (int i = 0; i < shotsOfEpsilons.size(); i++) {
-                System.out.println("NumberOfCollision: " + shotsOfEpsilons.get(0).getNumberOfCollision());
-                if (shotsOfEpsilons.get(i).getNumberOfCollision() == 1) {
-                    shotsOfEpsilons.get(i).setPlaceX(1000000);
-                    shotsOfEpsilons.get(i).setPlaceY(1000000);
-                }
-                if (shotsOfEpsilons.get(i).getPlaceX() == 2) {
-                    if (GLASS_FRAME_DIMENSION_WIDTH < GLASS_FRAME_DIMENSION_MAX_WIDTH - 20) {
-                        GLASS_FRAME_DIMENSION_WIDTH += 5;
-                        boundX -= 5;
-//                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-                        System.out.println("\u001B[41m" + i + "\u001B[0m");
-
-                    }
-                    if (GLASS_FRAME_DIMENSION_WIDTH > 20) {
-                        GLASS_FRAME_DIMENSION_WIDTH -= 5;
-//                        boundX+=5;
-//                        frame.setBounds((int) boundX, (int) boundY, (int) GLASS_FRAME_DIMENSION_WIDTH, (int) GLASS_FRAME_DIMENSION_HEIGHT);
-
-                    }
-                }*/
-
-                /* todo:these were for phase1:
-                if (shotsOfEpsilons.get(i).getPlaceX() <= 0 || shotsOfEpsilons.get(i).getPlaceY() <= -8 ||
-                        shotsOfEpsilons.get(i).getPlaceY() >= GLASS_FRAME_DIMENSION_HEIGHT - 1 || (shotsOfEpsilons.get(i).getPlaceX() >= GLASS_FRAME_DIMENSION_WIDTH))
-                    shotsOfEpsilons.get(i).setNumberOfCollision(shotsOfEpsilons.get(i).getNumberOfCollision() + 1);
-
-
-            }
-            System.out.println("\u001B[41m" + shotsOfEpsilons.get(0).getPlaceX() + "\u001B[0m" + " - y:" + "\u001B[36m" + shotsOfEpsilons.get(0).getPlaceY() + "\u001B[0m");
-            for (int i = 0; i < shotsOfEpsilons.size(); i++) {
-                for (int j = 1; j < 3; j++) {
-                    if (Math.sqrt(((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getX() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getX() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) +
-                            ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getY() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((YellowEnemyModel) gameObjects.get(j)).getPosition().getY() - ((YellowEnemyModel) gameObjects.get(j)).getRadius()))
-                            < 5.0 + ((YellowEnemyModel) gameObjects.get(j)).getRadius()) {
-                        // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
-                        if (is_Writ_Of_Ares) {
-                            REDUCTION_RATE_OF_HP_OF_ENEMY = 2;
-                        }
-                        ((YellowEnemyModel) gameObjects.get(j)).setLifeValue(((YellowEnemyModel) gameObjects.get(j)).getLifeValue() - REDUCTION_RATE_OF_HP_OF_ENEMY);
-//                        XXED++;
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        shotsOfEpsilons.get(i).setPlaceX(1000000);
-                        shotsOfEpsilons.get(i).setPlaceY(1000000);
-
-
-                    }
-                }*/
-
-               /* todo:these were for phase1:
-                for (int j = 3; j < 5; j++) {
-                    if (Math.sqrt(((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((GreenEnemyModel)gameObjects.get(j)).getPosition().getX() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceX() + 5.0) - ((GreenEnemyModel) gameObjects.get(j)).getPosition().getX() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) +
-                            ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((GreenEnemyModel)gameObjects.get(j)).getPosition().getY() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()) * ((shotsOfEpsilons.get(i).getPlaceY() + 5.0) - ((GreenEnemyModel) gameObjects.get(j)).getPosition().getY() - ((GreenEnemyModel) gameObjects.get(j)).getRadius()))
-                            < 5.0 + ((GreenEnemyModel) gameObjects.get(j)).getRadius()) {
-                        // گلوله حذف بشه - یه جون از جونای enemy کم بشه.
-                        ((GreenEnemyModel) gameObjects.get(j)).setLifeValue(((GreenEnemyModel) gameObjects.get(j)).getLifeValue()-1);
-                        HP++;
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        shotsOfEpsilons.get(i).setPlaceX(1000000);
-                        shotsOfEpsilons.get(i).setPlaceY(1000000);
-
-
-                    }
-                }*/
-
-
-            //           }
-
-           /* todo: these were for phase1:
-            for (int i = 1; i < 3; i++) {
-                ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-            }
-            for (int i = 3; i < 5; i++) {
-                ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - gameObjects.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - gameObjects.get(i).getPosition().getY())));
-                ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-            }*/
-
-            /*todo:these were for phase1:
-            for (int j = 1; j < 3; j++) {
-                if (!isCollided.get(j)) {
-                    for (int i = 1; i < 3; i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_YELLOW_ENEMIES = 2;
-                            gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                            if(waveOHB){
-                                isCollided.set(i,true);
-                                waveOHB=false;
-                            }
-
-                        }
-
-                    }
-
-                }
-                if (isCollided.get(j)) {
-                    for (int i = 1; i < 3; i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_YELLOW_ENEMIES = 4;
-                            gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-                        }
-                    }
-
-                }
-            }
-            for (int j = 3; j < 5; j++) {
-                if (!isCollided.get(j)) {
-                    for (int i = 3; i < 5; i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_GREEN_ENEMIES = 2;
-                            gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                            if(waveOHB){
-                                isCollided.set(i,true);
-                                waveOHB=false;
-                            }
-                        }
-
-
-                    }
-
-                }
-                if (isCollided.get(j)) {
-                    for (int i = 3; i < 5; i++) {
-                        if (i == j) {
-                            ACCELERATION_OF_GREEN_ENEMIES = 4;
-                            gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, -((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), -((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-                        }
-                    }
-
-                }
-            }*/
         }
         System.out.println("x of moving enemy: " + gameObjects.get(1).getPosition().getX());
         System.out.println("x of moving epsilon: " + gameObjects.get(0).getPosition().getX());
 
-        /*todo:these were for phase1:
-        for (int k = 1; k < 5; k++) {
 
-            for (int i = 1; i < 3; i++) {
-                for (int j = 3; j < 5; j++) {
-                    double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                    double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-                    double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                    double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-
-                    if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((YellowEnemyModel) gameObjects.get(i)).getRadius() + ((GreenEnemyModel) gameObjects.get(j)).getRadius())) {
-                        System.out.println(":)");
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                        //                       ((GreenEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-                        //                    ((GreenEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                        isCollidedEnemies.set(i,true);// : **********is needed???  - : yes!
-                        isCollidedEnemies.set(j,true);
-                        startFromCollision.put(i,spentMilliSecond);
-                        startFromCollision.put(j,spentMilliSecond);
-
-                        collidedOneGY = i;
-                        collidedTwoGY = j;
-                        gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                    }
-
-                }
-            }
-
-            if (gameObjects.get(k) instanceof GreenEnemyModel){
-                //پلن دوم:
-                for (int i = 3; i < 5; i++) {
-                    double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEnemyX = gameObjects.get(i).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                    double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEnemyY = gameObjects.get(i).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-
-//                    if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) == (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) gameObjects.get(i)).getRadius()+1)) {
-//
-//                    }
-
-                    if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) gameObjects.get(i)).getRadius())) {
-                        System.out.println(":)");
-                        //((((((((((((+((*))+))))))))))))\\
-//
-                        ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                        ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-                        HP -=6;
-                        stateCounterG = counters.get(1);
-                        isCollided.set(i, true);
-                        gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                isImpact1 = false;
-//                isImpact2 = true;
-//                با int counter استیت بندی می کنیم.
-                    }
-                }
-                for (int i = 3; i < 5; i++) {
-                    for (int j = i; j < 5; j++) {
-                        if (i != j) {
-                            double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                            double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-                            double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(i)).getRadius();
-                            double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((GreenEnemyModel) gameObjects.get(j)).getRadius();
-
-
-                            if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((GreenEnemyModel) gameObjects.get(i)).getRadius() + ((GreenEnemyModel) gameObjects.get(j)).getRadius())) {
-                                System.out.println(":)");
-                                ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                                ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-                                startFromCollision.put(i,spentMilliSecond);
-
-                                isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                                collidedOneG = i;
-                                collidedTwoG = j;
-                                gameObjects.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) gameObjects.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                            }
-                        }
-                    }
-                }
-
-            }
-
-
-            if (gameObjects.get(k) instanceof YellowEnemyModel) {
-                // این پلن جواب نداد :( برای برخورد
-//            if(isImpact&&Math.sqrt(((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getX()+17))*((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getX()+17)) +
-//                    ((gameObjects.get(0).getPosition().getX()+25)-(gameObjects.get(1).getPosition().getY()+30))*((gameObjects.get(0).getPosition().getY()+30)-(gameObjects.get(1).getPosition().getY()+30))) == 45.0 ){
-//                ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().setVector1(new Vector2D(((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getX(),- ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getY()));
-//            isImpact = false;
-//            }
-//            System.out.println("second Xdir: " + ((YellowEnemyModel) gameObjects.get(1)).getMovementOfYellowEnemy().getVector1().getX());
-                //پلن دوم:
-                for (int i = 1; i < 3; i++) {
-                    double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEnemyX = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                    double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
-                    double centerOfEnemyY = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-
-
-                    if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((YellowEnemyModel) gameObjects.get(i)).getRadius())) {
-                        System.out.println(":)");
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                        ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-                        startFromCollision.put(i,spentMilliSecond);
-                        HP -=5;
-                        stateCounter = counters.get(1);
-                        isCollided.set(i, true);
-                        gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                isImpact1 = false;
-//                isImpact2 = true;
-//                با int counter استیت بندی می کنیم.
-                    }
-                }
-                for (int i = 1; i < 3; i++) {
-                    for (int j = i; j < 3; j++) {
-                        if (i != j) {
-                            double centerOfEnemy1X = gameObjects.get(i).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                            double centerOfEnemy2X = gameObjects.get(j).getPosition().getX() + ((YellowEnemyModel) gameObjects.get(j)).getRadius();
-                            double centerOfEnemy1Y = gameObjects.get(i).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(i)).getRadius();
-                            double centerOfEnemy2Y = gameObjects.get(j).getPosition().getY() + ((YellowEnemyModel) gameObjects.get(j)).getRadius();
-
-
-                            if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((YellowEnemyModel) gameObjects.get(i)).getRadius() + ((YellowEnemyModel) gameObjects.get(j)).getRadius())) {
-                                System.out.println(":)");
-                                ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(i).getPosition().getX() + gameObjects.get(j).getPosition().getX() + 25, -gameObjects.get(j).getPosition().getY() + gameObjects.get(i).getPosition().getY() + 25)));
-                                ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
-//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
-
-                                isCollidedEnemies.set(i, true);
-//                                isCollidedEnemies.set(j, true);
-                                collidedOne = i;
-                                collidedTwo = j;
-                                gameObjects.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
-//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
-
-
-                            }
-                        }
-                    }
-                }
-
-            }
-        }*/
         if (isUnvisible && ((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.getWidth() >= PANEL_SIZE.getWidth()) {
             Properties.getInstance().play = false;
             if (isValid8) {
@@ -2691,29 +1187,17 @@ public class GameFrame2 implements ActionListener {
     }
 
     public void disposer() {
-//        time=null;
         time.restart();
         time.stop();
         timer1.restart();
         timer1.stop();
         timerOfGame.reset();
         timerOfGame.stop();
-//        INSTANCE = null;
         panel.removeAll();
-//        gameObjects.clear();
-//        shotsOfEpsilons.clear();
-//        currentShots.clear();
+
         Properties.getInstance().HP = 100;
         Properties.getInstance().XP = 0.0;
 //        timerOfGame = null;
-    }
-
-    public void makeInvisible() {
-        frame.setVisible(false);
-    }
-
-    public void makeVisible() {
-        frame.setVisible(true);
     }
 
 
@@ -2722,9 +1206,9 @@ public class GameFrame2 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isNecropickInRightRange()) {
-                    necropick.setLocation(new Point((int) (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + 200), (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+                    necropick.setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
                 } else if (isNecopickInLeftRange()) {
-                    necropick.setLocation(new Point((int) (((EpsilonModel) gameObjects.get(0)).getPosition().getX() - 200), (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+                    necropick.setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
 
                 }
                 necropick_isVisible = true;
@@ -2736,11 +1220,587 @@ public class GameFrame2 implements ActionListener {
     }
 
     public boolean isNecropickInRightRange() {
-        return ((EpsilonModel) gameObjects.get(0)).getPosition().getX() + 200 < panels.get(0).getRightX();
+        return (gameObjects.get(0)).getPosition().getX() + 200 < panels.get(0).getRightX();
     }
 
     public boolean isNecopickInLeftRange() {
-        return ((EpsilonModel) gameObjects.get(0)).getPosition().getX() - 200 < panels.get(0).getX();
+        return (gameObjects.get(0)).getPosition().getX() - 200 < panels.get(0).getX();
+    }
+
+    public void isValidToShowYE() {
+        for (YellowEnemyModel yellowEnemyModel : yellowEnemies1) {
+            Rectangle rectangle = new Rectangle((int) yellowEnemyModel.getPosition().getX(), (int) yellowEnemyModel.getPosition().getY(), (int) yellowEnemyModel.getRadius(), (int) yellowEnemyModel.getRadius());
+            yellowEnemyModel.setValidToShow(rectangle.intersects(panels.get(1).getRectangle()) || rectangle.intersects(panels.get(0).getRectangle()));
+
+        }
+    }
+
+    public void isValidToShowGE() {
+        for (GameObject greenEnemyModel : greenEnemies1) {
+            Rectangle rectangle = new Rectangle((int) greenEnemyModel.getPosition().getX(), (int) greenEnemyModel.getPosition().getY(), greenEnemyModel.getBounds().width, greenEnemyModel.getBounds().height);
+            ((GreenEnemyModel) greenEnemyModel).setValidToShow(rectangle.intersects(panels.get(1).getRectangle()) || rectangle.intersects(panels.get(0).getRectangle()));
+
+        }
+    }
+
+    public void movementOfP1Enemies() {
+        //todo: movement if its not collided
+        for (int i = 0; i < yellowEnemies1.size(); i++) {
+            if (!isCollidedY.get(i)) {
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - yellowEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - yellowEnemies1.get(i).getPosition().getY())));
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                (yellowEnemies1.get(i)).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+            }
+        }
+
+        for (int i = 0; i < greenEnemies1.size(); i++) {
+            if (!isCollidedG.get(i)) {
+                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - greenEnemies1.get(i).getPosition().getX(), gameObjects.get(0).getPosition().getY() - greenEnemies1.get(i).getPosition().getY())));
+                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
+                ((GreenEnemyModel) greenEnemies1.get(i)).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+            }
+        }
+
+
+        //todo :YellowEnemy:
+        for (int i = 0; i < yellowEnemies1.size(); i++) {
+            double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+            double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
+            double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+            double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
+
+
+            double sqrt = Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY)));
+            if (sqrt < (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
+                System.out.println(":)");
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + yellowEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
+
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                startFromCollision.put(i, spentMilliSecond);
+                Properties.getInstance().HP -= 5;
+                stateCounter = counters.get(1);
+                isCollidedY.set(i, true);
+                yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+
+            }
+            if (isCollidedY.get(i)) {
+                if (sqrt > 700) {
+                    isCollidedY.set(i, false);
+
+                }
+            }
+        }
+        for (int i = 0; i < yellowEnemies1.size(); i++) {
+            for (int j = i; j < yellowEnemies1.size(); j++) {
+                if (i != j) {
+                    double centerOfEnemy1X = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
+                    double centerOfEnemy2X = yellowEnemies1.get(j).getPosition().getX() + (yellowEnemies1.get(j)).getRadius();
+                    double centerOfEnemy1Y = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
+                    double centerOfEnemy2Y = yellowEnemies1.get(j).getPosition().getY() + (yellowEnemies1.get(j)).getRadius();
+
+
+                    if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= ((yellowEnemies1.get(i)).getRadius() + (yellowEnemies1.get(j)).getRadius())) {
+                        System.out.println(":)");
+                        (yellowEnemies1.get(i)).getMovementOfYellowEnemy().setVector1((new Vector2D(-yellowEnemies1.get(i).getPosition().getX() + yellowEnemies1.get(j).getPosition().getX() + 25, -yellowEnemies1.get(j).getPosition().getY() + yellowEnemies1.get(i).getPosition().getY() + 25)));
+                        (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().setVector1((new Vector2D(-gameObjects.get(j).getPosition().getX() + gameObjects.get(i).getPosition().getX() + 25, -gameObjects.get(i).getPosition().getY() + gameObjects.get(j).getPosition().getY() + 25)));
+//                                ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().normalize();
+
+                        isCollidedEnemies.set(i, true);
+//                                isCollidedEnemies.set(j, true);
+                        collidedOne = i;
+                        collidedTwo = j;
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
+
+
+                    }
+                }
+            }
+        }
+
+        for (YellowEnemyModel yellowEnemyModel : yellowEnemies1) {
+            yellowEnemyModel.getMovementOfYellowEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - yellowEnemyModel.getPosition().getX(), gameObjects.get(0).getPosition().getY() - yellowEnemyModel.getPosition().getY())));
+            yellowEnemyModel.getMovementOfYellowEnemy().getVector1().normalize();
+        }
+
+        for (int j = 0; j < yellowEnemies1.size(); j++) {
+            if (!isCollidedY.get(j)) {
+                for (int i = 0; i < yellowEnemies1.size(); i++) {
+                    if (i == j) {
+                        double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+                        double centerOfEnemyX = yellowEnemies1.get(i).getPosition().getX() + (yellowEnemies1.get(i)).getRadius();
+                        double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+                        double centerOfEnemyY = yellowEnemies1.get(i).getPosition().getY() + (yellowEnemies1.get(i)).getRadius();
+
+                        ACCELERATION_OF_YELLOW_ENEMIES = 1;
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                        if (waveOHB) {
+                            isCollidedY.set(i, true);
+                            waveOHB = false;
+                        }
+
+                        if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemies1.get(i)).getRadius())) {
+                            ACCELERATION_OF_YELLOW_ENEMIES = 3;
+//                                ACCELERATION_OF_EPSILON = 4;
+
+                        } else {
+                            ACCELERATION_OF_YELLOW_ENEMIES = 1;
+//                                ACCELERATION_OF_EPSILON = 2;
+                        }
+                        ;
+
+                    }
+
+                }
+
+            }
+            if (isCollidedY.get(j)) {
+                for (int i = 0; i < yellowEnemies1.size(); i++) {
+                    if (i == j) {
+                        ACCELERATION_OF_YELLOW_ENEMIES = 2;
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -((YellowEnemyModel) yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    }
+                }
+
+            }
+        }
+
+        //todo :GreenEnemy:
+        for (int i = 0; i < greenEnemies1.size(); i++) {
+            double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+            double centerOfEnemyX = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+            double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+            double centerOfEnemyY = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+
+
+            double a = ((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY));
+            if (Math.sqrt(a) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius())) {
+                System.out.println(":)");
+                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-gameObjects.get(0).getPosition().getX() + greenEnemies1.get(i).getPosition().getX() + 25, -gameObjects.get(0).getPosition().getY() + greenEnemies1.get(i).getPosition().getY() + 25)));
+
+                ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
+                startFromCollision.put(i, spentMilliSecond);
+                Properties.getInstance().HP -= 5;
+                stateCounter = counters.get(1);
+                isCollidedG.set(i, true);
+                greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+
+            }
+            if (isCollidedG.get(i)) {
+                if (Math.sqrt(a) > 700) {
+                    isCollidedG.set(i, false);
+
+                }
+            }
+        }
+        for (int i = 0; i < greenEnemies1.size(); i++) {
+            for (int j = i; j < greenEnemies1.size(); j++) {
+                if (i != j) {
+                    double centerOfEnemy1X = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+                    double centerOfEnemy2X = greenEnemies1.get(j).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius();
+                    double centerOfEnemy1Y = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+                    double centerOfEnemy2Y = greenEnemies1.get(j).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius();
+
+
+                    if (Math.sqrt(((centerOfEnemy1X - centerOfEnemy2X) * (centerOfEnemy1X - centerOfEnemy2X)) + ((centerOfEnemy1Y - centerOfEnemy2Y) * (centerOfEnemy1Y - centerOfEnemy2Y))) <= (((GreenEnemyModel) greenEnemies1.get(i)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(j)).getRadius())) {
+                        System.out.println(":)");
+                        ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().setVector1((new Vector2D(-greenEnemies1.get(i).getPosition().getX() + greenEnemies1.get(j).getPosition().getX() + 25, -greenEnemies1.get(j).getPosition().getY() + greenEnemies1.get(i).getPosition().getY() + 25)));
+                        ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().normalize();
+
+                        isCollidedEnemies.set(i, true);
+//                                isCollidedEnemies.set(j, true);
+                        collidedOne = i;
+                        collidedTwo = j;
+                        greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+//                                gameObjects.get(j).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getX(), ((YellowEnemyModel) gameObjects.get(j)).getMovementOfYellowEnemy().getVector1().getY()));
+
+
+                    }
+                }
+            }
+        }
+
+        for (GameObject value : greenEnemies1) {
+            ((GreenEnemyModel) value).getMovementOfGreenEnemy().setVector1((new Vector2D(gameObjects.get(0).getPosition().getX() - value.getPosition().getX(), gameObjects.get(0).getPosition().getY() - value.getPosition().getY())));
+            ((GreenEnemyModel) value).getMovementOfGreenEnemy().getVector1().normalize();
+        }
+
+        for (int j = 0; j < greenEnemies1.size(); j++) {
+            if (!isCollidedG.get(j)) {
+                for (int i = 0; i < greenEnemies1.size(); i++) {
+                    if (i == j) {
+                        double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+                        double centerOfEnemyX = greenEnemies1.get(i).getPosition().getX() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+                        double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
+                        double centerOfEnemyY = greenEnemies1.get(i).getPosition().getY() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius();
+
+                        ACCELERATION_OF_GREEN_ENEMIES = 1;
+                        greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), ((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+                        if (waveOHB) {
+                            isCollidedG.set(i, true);
+                            waveOHB = false;
+                        }
+
+                        if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < 150 + (((EpsilonModel) gameObjects.get(0)).getRadius() + ((GreenEnemyModel) greenEnemies1.get(i)).getRadius())) {
+                            ACCELERATION_OF_GREEN_ENEMIES = 3;
+//                                ACCELERATION_OF_EPSILON = 4;
+
+                        } else {
+                            ACCELERATION_OF_GREEN_ENEMIES = 1;
+//                                ACCELERATION_OF_EPSILON = 2;
+                        }
+
+                    }
+
+                }
+
+            }
+            if (isCollidedG.get(j)) {
+                for (int i = 0; i < greenEnemies1.size(); i++) {
+                    if (i == j) {
+                        ACCELERATION_OF_GREEN_ENEMIES = 2;
+                        greenEnemies1.get(i).getPosition().applyOfGreenEnemy(new MovementOfGreenEnemy(0, -((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getX(), -((GreenEnemyModel) greenEnemies1.get(i)).getMovementOfGreenEnemy().getVector1().getY()));
+                    }
+                }
+
+            }
+        }
+
+        //todo:collision between p1 enemies
+        for (int i = 0; i < yellowEnemies1.size(); i++) {
+            for (int j = 0; j < greenEnemies1.size(); j++) {
+                double distanceX = (yellowEnemies1.get(i)).getPosition().getX() - (greenEnemies1.get(j)).getPosition().getX();
+                double distanceY = (yellowEnemies1.get(i)).getPosition().getY() - (greenEnemies1.get(j)).getPosition().getY();
+                double oclidianDistance = Math.sqrt((distanceX * distanceX) + (distanceY * distanceY));
+                if (oclidianDistance < 2 * ((GreenEnemyModel) greenEnemies1.get(j)).getRadius() + 20) {
+//                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().setVector1((new Vector2D(-greenEnemies1.get(j).getPosition().getX() + greenEnemies1.get(j).getPosition().getX() + 25, -greenEnemies1.get(j).getPosition().getY() + greenEnemies1.get(j).getPosition().getY() + 25)));
+//                        ((GreenEnemyModel) greenEnemies1.get(j)).getMovementOfGreenEnemy().getVector1().normalize();
+                    isCollidedG.set(j, true);
+                    isCollidedY.set(i, true);
+                }
+            }
+        }
+
+    }
+
+    public void movementOfOmenoct() {
+        //todo: Omenoct movement:
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
+            Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+            int leftDistance = (int) (omenoct.getLocation().x - panels.get(0).getX());
+            int rightDistance = panels.get(0).getRightX() - omenoct.getLocation().x;
+            int upperDistance = (int) (omenoct.getLocation().y - panels.get(0).getY());
+            int lowerDistance = panels.get(0).getDownY() - omenoct.getLocation().y;
+            int tempDistance = Math.min(Math.min(leftDistance, rightDistance), Math.min(upperDistance, lowerDistance));
+
+            //todo: panel.get(1)
+            int leftDistance1 = (int) (omenoct.getLocation().x - panels.get(1).getX());
+            int rightDistance1 = panels.get(1).getRightX() - omenoct.getLocation().x;
+            int upperDistance1 = (int) (omenoct.getLocation().y - panels.get(1).getY());
+            int lowerDistance1 = panels.get(1).getDownY() - omenoct.getLocation().y;
+            int tempDistance1 = Math.min(Math.min(leftDistance1, rightDistance1), Math.min(upperDistance1, lowerDistance1));
+
+            if (shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle())) {
+
+                if (leftDistance == tempDistance) {
+                    omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
+                } else if (rightDistance == tempDistance) {
+                    omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
+                } else if (upperDistance == tempDistance) {
+                    if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
+
+                    }
+                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
+                            if (omenoct.getLocation().x > epsilon.x) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
+                            } else if (omenoct.getLocation().x < epsilon.x) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                            }
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                            omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
+                            omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
+                        }
+                    }
+                    if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
+                        if (!isEnteredToPanel2_Omenoct) {
+                            omenoct.setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
+                            isEnteredToPanel2_Omenoct = true;
+                        }
+
+                    }
+
+
+                } else {
+                    if (omenoct.getLocation().y + 8 < panels.get(0).getDownY()) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y + 1));
+                    }
+                    if (omenoct.getLocation().y + 8 == panels.get(0).getDownY()) {
+                        if (omenoct.getLocation().x > epsilon.x) {
+                            omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
+                        } else if (omenoct.getLocation().x < epsilon.x) {
+                            omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                        }
+                    }
+                    if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                        omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                    }
+                    if (omenoct.getLocation().x + (omenoct.getSize() / 2) > panels.get(0).getRightX()) {
+                        omenoct.setLocation(new Point(panels.get(0).getRightX() - (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
+                    }
+                }
+
+
+            } else if (shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && !shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
+                if (epsilon.intersects(panels.get(1).getRectangle()) && !epsilon.intersects(panels.get(0).getRectangle())) {
+                    omenoct.setLocation(new Point(epsilon.x, omenoct.getLocation().y));
+                }
+ /*               if (leftDistance1 == tempDistance1) {
+                    omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
+                } else if (rightDistance1 == tempDistance1) {
+                    omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
+                } else if (upperDistance1 == tempDistance1) {
+                    if (omenoct.getLocation().y - 8 > panels.get(1).getY()) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
+
+                    }
+
+                }
+
+                if (!panels.get(0).getRectangle().contains(omenoct.getRectangle()) && panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+                    if (omenoct.getLocation().x < epsilon.x) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                    } else if (omenoct.getLocation().x > epsilon.x) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
+                    }
+                }*/
+//                    if(panels.get(0).getRectangle().contains(epsilon)&&!panels.get(1).getRectangle().contains(epsilon)){
+//                        if(!isEnteredToPanel1_Omenoct) {
+//                            omenoct.setLocation(new Point(epsilon.x, panels.get(0).getY()));
+//                            isEnteredToPanel1_Omenoct = true;
+//                        }
+//                    }
+            } else if (!shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
+                if (leftDistance == tempDistance) {
+                    omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
+                } else if (rightDistance == tempDistance) {
+                    if (omenoct.getLocation().y + omenoct.getSize() - 8 > panels.get(0).getRightX()) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
+                    }
+                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y + omenoct.getSize() - 8 == panels.get(0).getRightX()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
+                            if (omenoct.getLocation().y > epsilon.y) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 2));
+                            } else if (omenoct.getLocation().y < epsilon.y) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y + 2));
+                            }
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().y - (omenoct.getSize() / 2) < panels.get(0).getY()) {
+                            omenoct.setLocation(new Point((int) panels.get(0).getX(), (int) omenoct.getLocation().getY() + (omenoct.getSize() / 2)));
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().y + (2 * omenoct.getSize()) > panels.get(0).getDownY()) {
+                            omenoct.setLocation(new Point((int) panels.get(0).getX(), panels.get(0).getDownY() - (2 * omenoct.getSize())));
+                        }
+                    }
+
+                } else if (upperDistance == tempDistance) {
+                    if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
+                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
+
+                    }
+                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
+                            if (omenoct.getLocation().x > epsilon.x) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
+                            } else if (omenoct.getLocation().x < epsilon.x) {
+                                omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                            }
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().x - (omenoct.getSize() / 2) < panels.get(0).getX()) {
+                            omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                        }
+                    }
+                    if (panels.get(0).getRectangle().contains(epsilon)) {
+                        if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
+                            omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
+                        }
+                    }
+                    if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
+                        if (!isEnteredToPanel2_Omenoct) {
+                            omenoct.setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
+                            isEnteredToPanel2_Omenoct = true;
+                        }
+
+                    }
+
+                }
+
+            } else if (epsilon.intersects(panels.get(1).getRectangle()) && !epsilon.intersects(panels.get(0).getRectangle())) {
+                omenoct.setLocation(new Point(epsilon.x, omenoct.getLocation().y));
+
+            }
+            if (!HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0 && omenoct.getLocation().x + omenoct.getSize() >= panels.get(1).getRightX() && panels.get(1).getRightX() + omenoct.getSize() >= panels.get(0).getRightX()) {
+                omenoct.setLocation(new Point(panels.get(1).getRightX() - 2 * omenoct.getSize(), omenoct.getLocation().y));
+//                HelpingBooleans.getInstance().inPanel0 = true;
+                if (!panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+                    omenoct.setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
+
+                    HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0 = true;
+                }
+            }
+            if (HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0) {
+                omenoct.setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
+            }
+
+            if (panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
+                isEnteredToPanel1_Omenoct = true;
+            } else if (panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+                isEnteredToPanel2_Omenoct = true;
+            } else if (!panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
+                isEnteredToPanel1_Omenoct = false;
+            } else if (!panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+                isEnteredToPanel2_Omenoct = false;
+            }
+
+        }
+
+    }
+
+    public void movementOfArchmire() {
+        //TODO: Archmire movement:
+        if (booleansOfIsValidToShow.getIsValidToShowEnemies().get(0)) {
+            if (archmire.getLocation().x < panels.get(0).getRightX() - archmire.getSize() - 50 && isRightMoveArchmire) {
+                archmire.setLocation(new Point(archmire.getLocation().x + 1, archmire.getLocation().y));
+            } else if (archmire.getLocation().x == panels.get(0).getRightX() - archmire.getSize() - 50) {
+                isRightMoveArchmire = false;
+            } else if (archmire.getLocation().x > panels.get(0).getX() && !isRightMoveArchmire) {
+                archmire.setLocation(new Point(archmire.getLocation().x - 1, archmire.getLocation().y));
+
+            } else if (archmire.getLocation().x == panels.get(0).getX()) isRightMoveArchmire = true;
+        }
+
+
+        //todo: archmire:
+        if (booleansOfIsValidToShow.getIsValidToShowEnemies().get(0) && spentMilliSecond == 5000) {
+            archmirePrintTimer.start();
+            addArchmirePrintTimer.start();
+        }
+    }
+
+    public void funcOfBlackOrbs() {
+        //todo: BlackOrbs:
+        for (int i = 0; i < Orb.getInstance().size(); i++) {
+            if (Orb.getInstance().get(i).getHP() <= 0) {
+                if (BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().get(i)) {
+                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x + 25, Orb.getInstance().get(i).getLocation().y - 5, 10, Color.LIGHT_GRAY));
+                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x + 40, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x - 5, Orb.getInstance().get(i).getLocation().y - 5, 10, Color.LIGHT_GRAY));
+                    CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Orb.getInstance().get(i).getLocation().x - 20, Orb.getInstance().get(i).getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                    BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().set(i, false);
+                }
+            }
+        }
+    }
+
+    public void movementOfWyrm() {
+        //todo: Wyrm
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
+            double distanceX = (int) (gameObjects.get(0).getPosition().getX() - Wyrm.getInstance().getLocation().x);
+            double distanceY = (int) (gameObjects.get(0).getPosition().getY() - Wyrm.getInstance().getLocation().y);
+            double oDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            if (HelpingBooleans.getInstance().isOnOrbitWyrm) {
+                int secX = (int) (gameObjects.get(0).getPosition().getX() + Properties.getInstance().radiusOfOrbitWyrm * Math.cos(Math.toRadians(Properties.getInstance().angleOfOrbitWyrm)));
+                int secY = (int) (gameObjects.get(0).getPosition().getY() + (Properties.getInstance().constantOfOrbitalMovement) * Properties.getInstance().radiusOfOrbitWyrm * Math.sin(Math.toRadians(Properties.getInstance().angleOfOrbitWyrm)));
+
+                Wyrm.getInstance().setLocation(new Point(secX, secY));
+
+            }
+            if (oDistance > 150) {
+                Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x-3,Wyrm.getInstance().getLocation().y));
+
+            } else if (oDistance < 150) {
+                Wyrm.getInstance().setValidToShoot(true);
+                HelpingBooleans.getInstance().isOnOrbitWyrm = true;
+            }
+        }
+
+        if (Wyrm.getInstance().isValidToShoot()) {
+            wyrmShooter.start();
+        }
+
+        if (Wyrm.getInstance().getHP() <= 0) {
+            BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(3, false);
+            if (BooleansOfCollectibles.getInstance().isValidToCollectWyrm()) {
+                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x - 20, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                BooleansOfCollectibles.getInstance().setValidToCollectWyrm(false);
+            }
+            wyrmShooter.stop();
+        }
+
+    }
+
+    public void funcOfBarricados() {
+        Rectangle epsilon = gameObjects.get(0).getBounds();
+        Rectangle edge1 = new Rectangle(Barricados.getInstance().getLocation().x - 20, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize() + 35, 1);
+        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x - 30, Barricados.getInstance().getLocation().y - (EPSILON_LENGTH / 2), 1, Barricados.getInstance().getSize() + -(EPSILON_LENGTH / 2) + 60);
+        Rectangle edge3 = new Rectangle(Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize() + 20);
+        Rectangle edge4 = new Rectangle(Barricados.getInstance().getLocation().x - 10, Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getSize() + 45, 1);
+
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(4)) {
+            if (Properties.getInstance().barricadosMode == 1) {
+
+//            HelpingBooleans.getInstance().isEpsilonValidToMove = epsilon.intersects(Barricados.getInstance().getRectangle());
+                if (epsilon.x > Barricados.getInstance().getLocation().x && epsilon.x + epsilon.width < Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize() + 25 && epsilon.y + epsilon.height > Barricados.getInstance().getLocation().y - 2 * (Barricados.getInstance().getSize() - 25) && epsilon.y < Barricados.getInstance().getLocation().y) {
+                    gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX(), Barricados.getInstance().getLocation().y - 2 * (Barricados.getInstance().getSize() - 25)));
+                } else if (epsilon.intersects(edge2)) {
+                    gameObjects.get(0).setPosition(new Position(Barricados.getInstance().getLocation().x - 2 * epsilon.width - 35, Barricados.getInstance().getLocation().y));
+                } else if (epsilon.intersects(edge3)) {
+                    gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX() + 20, Barricados.getInstance().getLocation().y));
+                } else if (epsilon.intersects(edge4)) {
+                    gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX(), Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize() + 25));
+                }
+            } else if (Properties.getInstance().barricadosMode == 2) {
+                Barricados.getInstance().setLocation(new Point(500, 400));
+                if (Barricados.getInstance().getRectangle().intersects(panels.get(0).getRectangle())) {
+                    HelpingBooleans.getInstance().isValidToLargerMainPanel = false;
+                }
+            }
+        }
+    }
+
+    public void startGameLoop() {
+        ExecutorService executor = Executors.newFixedThreadPool(9);
+
+        executor.submit(this::isValidToShowYE);
+        executor.submit(this::isValidToShowGE);
+        executor.submit(this::movementOfP1Enemies);
+        executor.submit(this::movementOfOmenoct);
+        executor.submit(this::movementOfArchmire);
+        executor.submit(this::funcOfBlackOrbs);
+        executor.submit(this::movementOfWyrm);
+        executor.submit(this::funcOfBarricados);
+        executor.submit(this::funcOfBlackOrbs);
+
+
+
+        executor.shutdown();
     }
 
 }

@@ -1,16 +1,17 @@
-package third.all.model;
+package third.all.model.epsilon;
 
 import java.awt.*;
 
 import static third.all.controller.Constants.COLOR1;
+import static third.all.gameComponents.game.MyPanel.panels;
 
 public class Bullet {
     private int x, y;
-    private int dx,dy;
+    private int dx, dy;
     private int targetX, targetY;
     private int speed = 5;
-    int tempx =x,tempy=y;
-    int temp2x =x,temp2y=y;
+    int tempx = x, tempy = y;
+    int temp2x = x, temp2y = y;
 
     private Color color;
     private final int speed2 = 2;
@@ -21,18 +22,18 @@ public class Bullet {
         this.y = startY;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.tempx =x;
-        this.tempy =y;
+        this.tempx = x;
+        this.tempy = y;
         this.color = color;
     }
 
-    public Bullet(int x, int y, int dx, int dy){
+    public Bullet(int x, int y, int dx, int dy) {
         this.x = x;
         this.y = y;
         this.dx = dx;
         this.dy = dy;
-        this.temp2x=x;
-        this.temp2y=y;
+        this.temp2x = x;
+        this.temp2y = y;
     }
 
     public void move() {
@@ -50,26 +51,46 @@ public class Bullet {
 
 
     public void draw(Graphics g) {
-        g.setColor(color);
+        if (!getBounds().intersects(panels.get(1).getRectangle()) && !getBounds().intersects(panels.get(0).getRectangle())) {
+            g.setColor(new Color(0, 0, 0, 0));
+        } else {
+            g.setColor(color);
+        }
+
         g.fillOval(tempx, tempy, 10, 10);
     }
 
     public void draw2(Graphics g) {
-        g.setColor(COLOR1);
+        if (!getBounds2().intersects(panels.get(1).getRectangle()) && !getBounds2().intersects(panels.get(0).getRectangle())) {
+            g.setColor(new Color(0, 0, 0, 0));
+        } else {
+            g.setColor(COLOR1);
+        }
         g.fillOval(temp2x, temp2y, 10, 10);
     }
+
     public void draw3(Graphics g) {
-        g.setColor(new Color(0));
+        if (!getBounds2().intersects(panels.get(1).getRectangle()) && !getBounds2().intersects(panels.get(0).getRectangle())) {
+            g.setColor(new Color(0, 0, 0, 0));
+        } else {
+            g.setColor(new Color(0));
+        }
         g.fillOval(temp2x, temp2y, 10, 10);
     }
+
     public void draw4(Graphics g) {
-        g.setColor(new Color(0x9BBB3400, true));
+        if (!getBounds2().intersects(panels.get(1).getRectangle()) && !getBounds2().intersects(panels.get(0).getRectangle())) {
+            g.setColor(new Color(0, 0, 0, 0));
+        } else {
+            g.setColor(new Color(0x9BBB3400, true));
+        }
         g.fillOval(temp2x, temp2y, 10, 10);
     }
 
     public Rectangle getBounds() {
         return new Rectangle(tempx, tempy, 10, 10);
     }
+
     public Rectangle getBounds2() {
         return new Rectangle(temp2x, temp2y, 10, 10);
     }

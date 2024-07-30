@@ -1,7 +1,7 @@
 package third.all.gameComponents.preGameComponent;
 
 import third.all.utils.ImageAddressses;
-import third.all.gameComponents.extendedComponents.GuideFrame;
+import third.all.gameComponents.extendedComponentsPhase1.GuideFrame;
 
 
 import javax.imageio.ImageIO;

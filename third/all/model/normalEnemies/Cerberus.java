@@ -1,4 +1,4 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 
 import third.all.controller.entity.EpsilonModel;
 

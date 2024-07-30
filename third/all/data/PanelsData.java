@@ -1,8 +1,8 @@
 package third.all.data;
 
 import third.all.gameComponents.game.Panel;
-import third.all.model.Barricados;
-import third.all.model.Wyrm;
+import third.all.model.normalEnemies.Barricados;
+import third.all.model.normalEnemies.Wyrm;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class PanelsData {
                 .getInstance().sizeOfBossPanel.getWidth(),Properties.getInstance().sizeOfBossPanel.getHeight());
 
         panels.add(0,new Panel(STARTING_POINT.x , STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
-        panels.add(1,new Panel((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2,Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2));
+        panels.add(1,new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2,Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH/2));
 
         blackOrbPanels.add(0,new Panel(1100,550,100,100));
         blackOrbPanels.add(1,new Panel(980,460,100,100));

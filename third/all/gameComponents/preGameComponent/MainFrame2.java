@@ -1,7 +1,7 @@
 package third.all.gameComponents.preGameComponent;
 
 import third.all.utils.ImageAddressses;
-import third.all.gameComponents.extendedComponents.SkillTreeFrame;
+import third.all.gameComponents.extendedComponentsPhase1.SkillTreeFrame;
 
 
 import javax.swing.*;

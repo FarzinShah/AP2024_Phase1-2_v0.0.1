@@ -2,7 +2,6 @@ package third.all.gameComponents.game;
 
 import third.all.controller.componentController.Input;
 import third.all.controller.componentController.TWM_Item_Model;
-import third.all.controller.entity.EpsilonModel;
 import third.all.controller.entity.GameObject;
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.CollectablesOfEnemies;
@@ -11,11 +10,12 @@ import third.all.data.Properties;
 import third.all.data.booleans.HelpingBooleans;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.Timer1;
-import third.all.model.*;
 import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
+import third.all.model.epsilon.Bullet;
+import third.all.model.normalEnemies.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +28,7 @@ import static third.all.controller.Constants.*;
 import static third.all.data.Properties.*;
 import static third.all.gameComponents.game.FunctionalMethods.showOptionPane;
 import static third.all.gameComponents.game.GameFrame2.*;
+import static third.all.gameComponents.game.Timers.addBlackOrbsTimer;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
 import static third.all.gameComponents.preGameComponent.Timer1.elapsedTime;
 import static third.all.data.booleans.Booleans.*;
@@ -42,7 +43,6 @@ public class MyPanel extends JPanel implements Runnable {
     int record = 0;
 
     private TWM_Item_Model twm_item_model1;
-//    public static boolean[] showOfCollectibles;
 
     private boolean running;
     public static ArrayList<Panel> panels;
@@ -55,9 +55,9 @@ public class MyPanel extends JPanel implements Runnable {
 
 
         redZone = PanelsData.getInstance().getRedZone();
-        redZoneRectangle = new Rectangle(redZone.getX(), redZone.getY(), (int) redZone.getWidth(), (int) redZone.getHeight());
-        panels.add(0, new Panel((int) STARTING_POINT.x, (int) STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
-        panels.add(1, new Panel((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
+        redZoneRectangle = new Rectangle((int) redZone.getX(), (int) redZone.getY(), (int) redZone.getWidth(), (int) redZone.getHeight());
+        panels.add(0, new Panel( STARTING_POINT.x,  STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
+        panels.add(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
         Thread gameThread = new Thread(this);
         gameThread.start();
 
@@ -71,6 +71,11 @@ public class MyPanel extends JPanel implements Runnable {
     @Override
     protected void paintComponent(Graphics g) {
 
+        if (HelpingBooleans.getInstance().isValidToShowStartingWelcome) {
+            g.drawImage(Background_Starting, 250, 100, 1000, 570, this);
+
+        }
+
         if (timer1Starter) {
             timerOfGame.start();
             timer1Starter = false;
@@ -78,16 +83,18 @@ public class MyPanel extends JPanel implements Runnable {
         //background:
         g.setColor(backGround);
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
-            synchronized (panels.get(0)) {
+            synchronized (PanelsData.getInstance().getPanels().get(0)) {
+                PanelsData.getInstance().getPanels().set(0, new Panel(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
                 panels.set(0, new Panel(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
-                panels.get(0).draw(g);
+                PanelsData.getInstance().getPanels().get(0).draw(g);
             }
         }
         //todo: panels
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
-            synchronized (panels.get(1)) {
-                panels.set(1, new Panel((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
-                panels.get(1).draw(g);
+            synchronized (PanelsData.getInstance().getPanels().get(1)) {
+                PanelsData.getInstance().getPanels().set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
+                panels.set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
+                PanelsData.getInstance().getPanels().get(1).draw(g);
             }
         }
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
@@ -139,46 +146,10 @@ public class MyPanel extends JPanel implements Runnable {
 
         }
 
-        Rectangle thirdMinusMain_RightSide = new Rectangle((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, (int) ((Properties.getInstance().THIRD_FRAME_LOCATION_X + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2) - STARTING_POINT.x + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH), (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2));
-//        g.fillRect((int) THIRD_FRAME_LOCATION_X, (int) THIRD_FRAME_LOCATION_Y, (int) ((THIRD_FRAME_LOCATION_X+GLASS_FRAME_DIMENSION_WIDTH/2)-STARTING_POINT.x+GLASS_FRAME_DIMENSION_WIDTH), (int) (GLASS_FRAME_DIMENSION_HEIGHT/2));
-        //todo: با چندتا if زدن درمیاد انشاالله.
-//        g.fillRect(900,50,300,300);//todo
+
         // drawing map:
         g.setColor(BLUE_BACKGROUND);
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(0)) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(SAVING_OPTION, 1000, 10, 220, 50, this);
-        }
-        if (CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().size() != 0 || CollectablesOfEnemies.getInstance().getCollectablesOfYE().size() != 0 || CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().size() != 0) {
-            g.fillRect(20, 10, 220, 50);
-            g.drawImage(COLLECTIBLE_OPTION, 20, 10, 220, 50, this);
-            g.setFont(new Font("serif", Font.BOLD, 25));
-            (g).drawString(String.valueOf(CollectablesOfEnemies.getInstance().getCollectablesOfYE().size()), 200, 40);
-        }
-        if (HelpingBooleans.getInstance().isProjectile && !HelpingBooleans.getInstance().isProjectileFinished) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(ProjectileAttack, 1000, 10, 220, 50, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0) && !HelpingBooleans.getInstance().isSqueezedFinished) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(SqueezeAttack, 1000, 10, 220, 50, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2) && !HelpingBooleans.getInstance().isVomitFinished) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(VomitAttack, 1000, 10, 220, 50, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3) && (HelpingBooleans.getInstance().startPunchDown || HelpingBooleans.getInstance().startPunchUp || HelpingBooleans.getInstance().startPunchRight || HelpingBooleans.getInstance().startPunchLeft)) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(PowerPunchAttack, 1000, 10, 220, 50, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(4)) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(QuakeAttack, 1000, 10, 220, 50, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5)) {
-            g.fillRect(1000, 10, 220, 50);
-            g.drawImage(RapidFireAttack, 1000, 10, 220, 50, this);
-        }
+        showAlert(g);
 
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)) {
             g.drawImage(NECROPICK, Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, Necropick.getInstance().getSize(), Necropick.getInstance().getSize(), this);
@@ -237,6 +208,16 @@ public class MyPanel extends JPanel implements Runnable {
 
             }
         }
+//        g.setColor(new Color(0xB08E1D));
+//        Rectangle edge1 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize()+25, 1);
+//        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize()+25);
+//        Rectangle edge3 = new Rectangle(Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize()+25, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize()+25);
+//        Rectangle edge4 = new Rectangle(Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize()+25, Barricados.getInstance().getSize()+25, 1);
+//        ((Graphics2D) g).fill(edge1);
+//        ((Graphics2D) g).fill(edge2);
+//        ((Graphics2D) g).fill(edge3);
+//        ((Graphics2D) g).fill(edge4);
+
 //        for (int i = 0; i < yellowEnemies1.size(); i++) {
 //            if(showOfCollectiblesY.get(i)){
 //                g.setColor(Color.ORANGE);
@@ -268,11 +249,11 @@ public class MyPanel extends JPanel implements Runnable {
 
         g.setColor(Color.white);
         g.setFont(new Font("serif", Font.BOLD, 25));
-        ((Graphics2D) g).drawString(timerOfGame.minutes_string + ":" + timerOfGame.seconds_string, 300 - 1 + (600 - 350), 40);
+        (g).drawString(timerOfGame.minutes_string + ":" + timerOfGame.seconds_string, 300 - 1 + (600 - 350), 40);
         if (record != 0) {
             g.setColor(Color.white);
             g.setFont(new Font("serif", Font.BOLD, 25));
-            ((Graphics2D) g).drawString("Highest: " + record, 320, 30);
+            (g).drawString("Highest: " + record, 320, 30);
         }
         // shots:
         synchronized (bullets) {
@@ -384,24 +365,13 @@ public class MyPanel extends JPanel implements Runnable {
         gameObjects2.forEach(gameObject -> g.drawImage(gameObject.getSprite(), gameObject.position.intX(), gameObject.position.intY(), null));
     }
 
-//    public void drawPanel(){
-//        for (Panel panel : panels) {
-//            panel.draw(g);
-//        }
-//    }
-
-
-    public TWM_Item_Model getTwm_item_model1() {
-        return twm_item_model1;
-    }
-
     public void setTwm_item_model1(TWM_Item_Model twm_item_model1) {
         this.twm_item_model1 = twm_item_model1;
     }
 
     private void checkCollision() {
         Rectangle blueArea = redZoneRectangle;
-        Rectangle epsilon = new Rectangle((int) ((EpsilonModel) gameObjects.get(0)).getPosition().getX(), (int) (int) ((EpsilonModel) gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+        Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         Shape octagon = createOctagonShape(Omenoct.getInstance().getLocation().x + 25, Omenoct.getInstance().getLocation().y + 25, OMENOCT_SIZE + 2);
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
             if (shapeIntersects(epsilon, octagon)) {
@@ -457,9 +427,51 @@ public class MyPanel extends JPanel implements Runnable {
         return octagon;
     }
 
-//    public void drawArchmireFootPrint() {
-//
-//    }
+
+    public void showAlert(Graphics g) {
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(0)) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(SAVING_OPTION, 1000, 10, 220, 50, this);
+        }
+        if (CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().size() != 0 || CollectablesOfEnemies.getInstance().getCollectablesOfYE().size() != 0 || CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().size() != 0) {
+            g.fillRect(20, 10, 220, 50);
+            g.drawImage(COLLECTIBLE_OPTION, 20, 10, 220, 50, this);
+            g.setFont(new Font("serif", Font.BOLD, 25));
+            (g).drawString(String.valueOf(CollectablesOfEnemies.getInstance().getCollectablesOfYE().size()), 200, 40);
+        }
+        if (HelpingBooleans.getInstance().isProjectile && !HelpingBooleans.getInstance().isProjectileFinished) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(ProjectileAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0) && !HelpingBooleans.getInstance().isSqueezedFinished) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(SqueezeAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(2) && !HelpingBooleans.getInstance().isVomitFinished) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(VomitAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(3) && (HelpingBooleans.getInstance().startPunchDown || HelpingBooleans.getInstance().startPunchUp || HelpingBooleans.getInstance().startPunchRight || HelpingBooleans.getInstance().startPunchLeft)) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(PowerPunchAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(4)) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(QuakeAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5)) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(RapidFireAttack, 1000, 10, 220, 50, this);
+        }
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(6)) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(SlapAttack, 1000, 10, 220, 50, this);
+        }
+        if (addBlackOrbsTimer.isRunning()) {
+            g.fillRect(1000, 10, 220, 50);
+            g.drawImage(BlackOrbsAlert, 1000, 10, 220, 50, this);
+        }
+    }
 
 
     @Override

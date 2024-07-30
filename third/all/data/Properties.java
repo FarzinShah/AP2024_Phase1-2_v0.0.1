@@ -1,7 +1,7 @@
 package third.all.data;
 
 import third.all.controller.movement.Position;
-import third.all.model.Bullet;
+import third.all.model.epsilon.Bullet;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,14 +18,14 @@ public class Properties {
     public boolean play = false; // for starting
     public Integer HP = 1500;
     public Double XP = 0.0;
-    public Integer WAVE = 6;
+    public Integer WAVE = 1;
     public int STATE = 21;
     public int PR = WAVE * (spentMilliSecond / 1000);
     public double PROGRESS_RISK = Math.floor((double) 10 * XP * PR / HP);
     public double GLASS_FRAME_DIMENSION_WIDTH = 600.0;
     public double GLASS_FRAME_DIMENSION_HEIGHT = 600.0;
-    public double SECOND_FRAME_LOCATION_X = 700, SECOND_FRAME_LOCATION_Y = 0;
-    public double THIRD_FRAME_LOCATION_X = 600, THIRD_FRAME_LOCATION_Y = 150;
+    public double THIRD_FRAME_LOCATION_X = 700, THIRD_FRAME_LOCATION_Y = 0;
+    public double SECOND_FRAME_LOCATION_X = 600, SECOND_FRAME_LOCATION_Y = 150;
     public double FOURTH_FRAME_LOCATION_X = 600, FOURTH_FRAME_LOCATION_Y = 300;
     public int FIFTH_FRAME_LOCATION_X = 1400, FIFTH_FRAME_LOCATION_Y = 510;
     public double probabilityOfGettingAttackedEpsilon = 1;
@@ -52,7 +52,15 @@ public class Properties {
     public double angleOfOrbitProjectile;
     public double radiusOfOrbitProjectile;
 
+
+    public double speedOfOrbitWyrm;
+    public double angleOfOrbitWyrm;
+    public double radiusOfOrbitWyrm;
+
     public int headShooterSecondCounter;
+    public int edgesOfEpsilon;
+    public int barricadosMode;
+    public int constantOfOrbitalMovement;
 
 
     public static ArrayList<Bullet> bullets = new ArrayList<>();
@@ -97,6 +105,8 @@ public class Properties {
         locationOfHead = new Point(650, 150);
         locationOfFist = new Point(1200, 400);
         headShooterSecondCounter = 30000;
+        edgesOfEpsilon = 0; //todo: این تعداد راس به اپسیلون اضافه بشه. 3 تا شد اپسیلون بشه مثلث 4 تا دایره 5 تا ... - :|
+        barricadosMode = 1;
 
         sizeOfHead1 = 250;
         sizeOfHead2 = 150;
@@ -104,6 +114,12 @@ public class Properties {
         speedOfOrbitProjectile = 0.5;
         angleOfOrbitProjectile = 0;
         radiusOfOrbitProjectile = 200;
+
+        speedOfOrbitWyrm = 1.5;
+        angleOfOrbitWyrm = 0;
+        radiusOfOrbitWyrm = 150;
+        constantOfOrbitalMovement = 1;
+
 
 
         GLASS_FRAME = GLASS_FRAME_DIMENSION;

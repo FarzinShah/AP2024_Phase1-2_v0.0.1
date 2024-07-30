@@ -1,4 +1,4 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 
@@ -7,7 +7,7 @@ import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.BARRICADOS;
 
-public class Barricados implements NormalEnemyModel{
+public class Barricados implements NormalEnemyModel {
     public static Barricados instance;
     private Point location;
     private int size;
@@ -42,7 +42,7 @@ public class Barricados implements NormalEnemyModel{
 
     public static Barricados getInstance(){
         if(instance==null) {
-            instance = new Barricados(new Point(1200,300));
+            instance = new Barricados(new Point(300, 400));
             return instance;
         }
         return instance;

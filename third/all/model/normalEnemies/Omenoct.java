@@ -1,4 +1,4 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 import java.awt.*;
 import java.awt.geom.Path2D;
 

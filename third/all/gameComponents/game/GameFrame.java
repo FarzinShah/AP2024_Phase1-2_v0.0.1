@@ -10,11 +10,11 @@ import third.all.controller.movement.MovementOfYellowEnemy;
 import third.all.controller.movement.Position;
 import third.all.controller.movement.Vector2D;
 import third.all.data.Properties;
-import third.all.model.ShotOfEpsilon;
+import third.all.model.epsilon.ShotOfEpsilon_P1;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.InformationsOfSettings;
 import third.all.gameComponents.preGameComponent.MapGenerator;
-import third.all.gameComponents.extendedComponents.StoreFrame;
+import third.all.gameComponents.extendedComponentsPhase1.StoreFrame;
 import third.all.gameComponents.preGameComponent.Timer1;
 
 
@@ -29,7 +29,6 @@ import java.util.*;
 
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
-import static third.all.data.Properties.*;
 import static third.all.gameComponents.preGameComponent.MapGenerator.yellowEnemies;
 import static third.all.gameComponents.preGameComponent.MapGenerator.yellowEnemies_triangles;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
@@ -70,9 +69,9 @@ public class GameFrame implements KeyListener, ActionListener, MouseMotionListen
 
     private final Color backGround = Color.BLACK;
 
-    private LinkedList<ShotOfEpsilon> shotsOfEpsilons = new LinkedList<>();
+    private LinkedList<ShotOfEpsilon_P1> shotsOfEpsilons = new LinkedList<>();
 
-    private LinkedList<ShotOfEpsilon> currentShots = new LinkedList<>();
+    private LinkedList<ShotOfEpsilon_P1> currentShots = new LinkedList<>();
 
 
     private LinkedList<Boolean> validShots = new LinkedList<>();
@@ -1314,7 +1313,7 @@ public class GameFrame implements KeyListener, ActionListener, MouseMotionListen
 
     public void setDefaultShots() {
         for (int i = 0; i < numberOfShots; i++) {
-            shotsOfEpsilons.add(i, new ShotOfEpsilon(-1, 2, 100000000 + 15, 1000000000));  // برای مقدار واقعی، dir ها رو یه منفی ضرب کن
+            shotsOfEpsilons.add(i, new ShotOfEpsilon_P1(-1, 2, 100000000 + 15, 1000000000));  // برای مقدار واقعی، dir ها رو یه منفی ضرب کن
         }
         for (int i = 0; i < numberOfShots; i++) {
             validShots.add(i, false);

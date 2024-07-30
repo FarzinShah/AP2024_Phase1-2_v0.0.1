@@ -1,6 +1,6 @@
 package third.all.data;
 
-import third.all.model.Collectable;
+import third.all.model.normalEnemies.Collectable;
 
 import java.util.ArrayList;
 

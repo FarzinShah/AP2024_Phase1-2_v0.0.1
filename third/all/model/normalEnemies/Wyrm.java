@@ -1,4 +1,4 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 
@@ -7,7 +7,7 @@ import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.WYRM;
 
-public class Wyrm implements NormalEnemyModel{
+public class Wyrm implements NormalEnemyModel {
     public static Wyrm instance;
     private Point location;
     private int size;

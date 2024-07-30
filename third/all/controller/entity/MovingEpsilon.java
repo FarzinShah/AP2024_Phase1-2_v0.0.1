@@ -14,6 +14,7 @@ public abstract class MovingEpsilon extends GameObject {
     public MovingEpsilon(Controller3 controller3 , double posX, double posY){
         super(posX,posY);
         this.controller3 = controller3;
+
         this.movementOfEpsilon = new MovementOfEpsilon(2);
     }
 

@@ -1,9 +1,9 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Archmire implements NormalEnemyModel{
+public class Archmire implements NormalEnemyModel {
     public static Archmire instance;
 
     private Point location;

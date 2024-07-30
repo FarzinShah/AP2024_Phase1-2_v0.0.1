@@ -2,7 +2,6 @@ package third.all.gameComponents.preGameComponent;
 
 import third.all.data.Properties;
 import third.all.data.booleans.HelpingBooleans;
-import third.all.model.Archmire;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

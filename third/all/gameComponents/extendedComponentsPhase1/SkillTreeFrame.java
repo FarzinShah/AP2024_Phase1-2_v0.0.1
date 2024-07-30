@@ -1,4 +1,4 @@
-package third.all.gameComponents.extendedComponents;
+package third.all.gameComponents.extendedComponentsPhase1;
 
 import third.all.data.Properties;
 import third.all.utils.ImageAddressses;

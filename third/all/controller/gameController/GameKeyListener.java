@@ -4,8 +4,8 @@ import third.all.controller.componentController.Input;
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.booleans.HelpingBooleans;
 import third.all.data.Properties;
-import third.all.gameComponents.extendedComponents.SkillTreeFrame;
-import third.all.gameComponents.extendedComponents.StoreFrame;
+import third.all.gameComponents.extendedComponentsPhase1.SkillTreeFrame;
+import third.all.gameComponents.extendedComponentsPhase1.StoreFrame;
 import third.all.gameComponents.game.ClipHandler;
 import third.all.gameComponents.game.FunctionalMethods;
 import third.all.specialFeatures.shop.Shopping;
@@ -74,7 +74,7 @@ public class GameKeyListener implements KeyListener {
             shootThread.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_B) {
-//            disposer();
+//            BooleansOf_IsValidToShow.getInstance().setValidToShowBossPanel(true);
         }
         if(e.getKeyCode() == KeyEvent.VK_9){
             FunctionalMethods.epsilonProShoot();

@@ -3,7 +3,7 @@ package third.all.controller.gameController;
 import third.all.data.Properties;
 import third.all.data.booleans.HelpingBooleans;
 import third.all.gameComponents.game.ClipHandler;
-import third.all.model.Bullet;
+import third.all.model.epsilon.Bullet;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

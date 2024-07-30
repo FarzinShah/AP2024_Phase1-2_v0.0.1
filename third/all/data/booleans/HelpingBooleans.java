@@ -6,7 +6,9 @@ public class HelpingBooleans {
 
     public boolean lineShower2 = false;
     public boolean isValidToShowSkillTree2 = true;
-
+    public boolean isValidToShowStartingWelcome = true;
+    public boolean isEpsilonValidToMove = true;
+    public boolean isValidToLargerMainPanel = false;
 
     // todo: BossFight:
     public boolean isValidToPlayBossMusic = true;
@@ -16,6 +18,7 @@ public class HelpingBooleans {
     public boolean isSqueezed = false;
     public boolean isSqueezedFinished = false;
     public boolean isOnOrbit = false;
+    public boolean isOnOrbitWyrm = false;
     public boolean isSmalled = false;
     public boolean isProjectile = false;
     public boolean isProjectileFinished = false;
@@ -36,6 +39,8 @@ public class HelpingBooleans {
     public boolean startPunchDown = false;
     public boolean startQuakeMouseAttack = false;
     public boolean doQuakeMouseAttack = false;
+    public boolean cerberusBool = true;
+    public boolean isValidToMoveOmenoctInPanel0 = false;
 
 
 

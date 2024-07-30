@@ -1,4 +1,4 @@
-package third.all.model;
+package third.all.model.normalEnemies;
 
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.PanelsData;
@@ -52,11 +52,11 @@ public class Orb implements NormalEnemyModel{
     public static ArrayList<Orb> getInstance(){
         if(instance==null) {
             instance = new ArrayList<>();
-            instance.add(0,new Orb(new Point(PanelsData.getInstance().getBlackOrbPanels().get(0).getX()+25,PanelsData.getInstance().getBlackOrbPanels().get(0).getY()+25),30));
-            instance.add(1,new Orb(new Point(PanelsData.getInstance().getBlackOrbPanels().get(1).getX()+25,PanelsData.getInstance().getBlackOrbPanels().get(1).getY()+25),30));
-            instance.add(2,new Orb(new Point(PanelsData.getInstance().getBlackOrbPanels().get(2).getX()+25,PanelsData.getInstance().getBlackOrbPanels().get(2).getY()+25),30));
-            instance.add(3,new Orb(new Point(PanelsData.getInstance().getBlackOrbPanels().get(3).getX()+25,PanelsData.getInstance().getBlackOrbPanels().get(3).getY()+25),30));
-            instance.add(4,new Orb(new Point(PanelsData.getInstance().getBlackOrbPanels().get(4).getX()+25,PanelsData.getInstance().getBlackOrbPanels().get(4).getY()+25),30));
+            instance.add(0,new Orb(new Point((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX()+25), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY()+25)),30));
+            instance.add(1,new Orb(new Point((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX()+25), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY()+25)),30));
+            instance.add(2,new Orb(new Point((int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX()+25), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY()+25)),30));
+            instance.add(3,new Orb(new Point((int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX()+25), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY()+25)),30));
+            instance.add(4,new Orb(new Point((int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX()+25), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY()+25)),30));
 
             return instance;
         }
@@ -81,44 +81,44 @@ public class Orb implements NormalEnemyModel{
         }
 
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(0) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(1)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(0) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(2)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(0) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(3)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(0) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(4)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(0).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(2) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(1)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(3) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(1)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(4) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(1)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(1).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(3) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(2)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(4) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(2)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(2).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
         }
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(3) && BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbEntity().get(4)) {
-            g.drawLine(PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50, PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50
-                    , PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50, (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
+            g.drawLine((int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(3).getY() + 50)
+                    , (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getX() + 50), (int) (PanelsData.getInstance().getBlackOrbPanels().get(4).getY() + 50));
         }
         for (int j = 0; j < Orb.getInstance().size(); j++) {
             if(Orb.getInstance().get(j).HP <=0){

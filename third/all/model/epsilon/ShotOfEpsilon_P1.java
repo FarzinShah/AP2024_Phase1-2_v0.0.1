@@ -1,13 +1,13 @@
-package third.all.model;
+package third.all.model.epsilon;
 
-public class ShotOfEpsilon {
+public class ShotOfEpsilon_P1 {
     private double dirX;
     private double dirY;
     private double placeX;
     private double placeY;
     private int numberOfCollision;
 
-    public ShotOfEpsilon(double dirX, double dirY, double placeX, double placeY) {
+    public ShotOfEpsilon_P1(double dirX, double dirY, double placeX, double placeY) {
         this.dirX = dirX;
         this.dirY = dirY;
         this.placeX = placeX;

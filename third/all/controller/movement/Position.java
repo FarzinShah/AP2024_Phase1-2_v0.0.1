@@ -6,7 +6,6 @@ import third.all.data.Properties;
 import java.awt.*;
 
 import static third.all.controller.Constants.*;
-import static third.all.data.Properties.*;
 
 public class Position {
     private double x;
@@ -44,9 +43,9 @@ public class Position {
     public void applyOfEpsilon(MovementOfEpsilon movementOfEpsilon) {
         Rectangle epsilon = new Rectangle((int) x, (int) y, EPSILON_WIDTH, EPSILON_LENGTH);
         Rectangle mainPanel = new Rectangle(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
-        Rectangle thirdPanel = new Rectangle((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2);
+        Rectangle thirdPanel = new Rectangle((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2);
         Rectangle thirdMinusMain_RightSide = new Rectangle(
-                (int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, (int) ((Properties.getInstance().THIRD_FRAME_LOCATION_X + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2) - STARTING_POINT.x + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH), (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2));
+                (int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, (int) ((Properties.getInstance().SECOND_FRAME_LOCATION_X + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2) - STARTING_POINT.x + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH), (int) (Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2));
 //        if (play) {
             Vector2D vector = movementOfEpsilon.getVector();
             x += ACCELERATION_OF_EPSILON * vector.getX();

@@ -1,4 +1,5 @@
 package third.all.controller.entity;
+
 import third.all.controller.componentController.Controller3;
 import third.all.controller.movement.SizeOfGreenEnemy;
 
@@ -31,20 +32,29 @@ public class GreenEnemyModel extends MovingEnemy {
     private boolean isAlive = true;
     private int length;
 
+    private final Color normalColor;
+    private final Color semiNormalColor;
+    private final Color unNormalColor;
+    private Color color;
+    private boolean isValidToShow;
 
 
     public GreenEnemyModel(Controller3 controller3, double radius, double posX, double posY) {
-        super(controller3,posX,posY);
+        super(controller3, posX, posY);
         this.posX = posX;
         this.posY = posY;
         this.posCenterX = radius;
         this.posCenterY = radius;
-        sizeOfGE = new SizeOfGreenEnemy(2*radius,2*radius);
+        sizeOfGE = new SizeOfGreenEnemy(2 * radius, 2 * radius);
         this.radius = radius;
         this.controller3 = controller3;
         this.GE_posX1 = posCenterX;
         this.GE_posY1 = posCenterY + (radius);
         this.length = 25;
+        normalColor = new Color(0xCD00FC04, true);
+        semiNormalColor = new Color(0x4A1CD907, true);
+        unNormalColor = new Color(0, 0, 0, 0);
+        isValidToShow = false;
     }
 
     @Override
@@ -54,18 +64,18 @@ public class GreenEnemyModel extends MovingEnemy {
     }
 
     public Image getSprite() {
-        BufferedImage image = new BufferedImage((int) sizeOfGE.getWidth(), (int) sizeOfGE.getHeight(),BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage((int) sizeOfGE.getWidth(), (int) sizeOfGE.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        g.setColor(new Color(0xCD00FC04, true));
-        if(lifeValue<8){
-            g.setColor(new Color(0x4A1CD907, true));
-
-        }
-        if(lifeValue<=0){
-            g.setColor(Color.BLACK);
-        }
-        Rectangle rectangle = new Rectangle(0,0,length,length);
-        if(length==25) {
+        if (isValidToShow) {
+            if (lifeValue >= 8) {
+                g.setColor(normalColor);
+            }
+            if (lifeValue < 8) {
+                g.setColor(semiNormalColor);
+            }
+        } else g.setColor(unNormalColor);
+        Rectangle rectangle = new Rectangle(0, 0, length, length);
+        if (length == 25) {
             g.setFont(new Font("calibri", Font.BOLD, 10));
             ((Graphics2D) g).drawString(Integer.toString(lifeValue), 5, 25);
         }
@@ -73,9 +83,11 @@ public class GreenEnemyModel extends MovingEnemy {
         g.dispose();
         return image;
     }
+
     public Rectangle getBounds() {
         return new Rectangle((int) posX, (int) posY, 25, 25);
     }
+
     public double getRadius() {
         return radius;
     }
@@ -88,48 +100,13 @@ public class GreenEnemyModel extends MovingEnemy {
         this.lifeValue = lifeValue;
     }
 
-    public double getGE_posX1() {
-        return GE_posX1;
+    public boolean isValidToShow() {
+        return isValidToShow;
     }
 
-    public void setGE_posX1(double GE_posX1) {
-        this.GE_posX1 = GE_posX1;
-    }
+    public void setValidToShow(boolean validToShow) {
+        isValidToShow = validToShow;
 
-    public double getGE_posY1() {
-        return GE_posY1;
-    }
-
-    public void setGE_posY1(double GE_posY1) {
-        this.GE_posY1 = GE_posY1;
-    }
-
-    public double getGE_posX2() {
-        return GE_posX2;
-    }
-
-    public void setGE_posX2(double GE_posX2) {
-        this.GE_posX2 = GE_posX2;
-    }
-
-    public double getGE_posY2() {
-        return GE_posY2;
-    }
-
-    public void setGE_posY2(double GE_posY2) {
-        this.GE_posY2 = GE_posY2;
-    }
-
-    public double getGE_posX3() {
-        return GE_posX3;
-    }
-
-    public void setGE_posX3(double GE_posX3) {
-        this.GE_posX3 = GE_posX3;
-    }
-
-    public double getGE_posY3() {
-        return GE_posY3;
     }
 
     public int getLength() {
@@ -143,6 +120,7 @@ public class GreenEnemyModel extends MovingEnemy {
     public void setGE_posY3(double GE_posY3) {
         this.GE_posY3 = GE_posY3;
     }
+
     public boolean isAlive() {
         return isAlive;
     }

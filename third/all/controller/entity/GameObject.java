@@ -31,4 +31,6 @@ public abstract class GameObject {
     }
 
     public abstract Image getSprite(); //وقتی این کال بشه میره همه بچه های گیم آبجکت که ازش استفاده کردن رو get میکنه
+
+//
 }

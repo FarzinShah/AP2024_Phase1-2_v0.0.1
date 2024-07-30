@@ -8,6 +8,7 @@ import third.all.controller.entity.EpsilonModel;
 import third.all.data.booleans.BooleansOf_IsValidToShow;
 import third.all.data.PanelsData;
 import third.all.data.Properties;
+import third.all.data.booleans.HelpingBooleans;
 
 import java.awt.*;
 
@@ -23,7 +24,7 @@ public class MovementOfEpsilon {
     Rectangle epsilon;
     Rectangle mainPanel;
     Rectangle bossPanel;
-    Rectangle thirdPanel;
+    Rectangle secondPanel;
 
     boolean test = true;
 
@@ -38,174 +39,176 @@ public class MovementOfEpsilon {
     public void update(Controller3 controller) {
         epsilon = new Rectangle((int) gameObjects.get(0).getPosition().getX(), (int) gameObjects.get(0).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         mainPanel = new Rectangle(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT);
-        thirdPanel = new Rectangle((int) Properties.getInstance().THIRD_FRAME_LOCATION_X, (int) Properties.getInstance().THIRD_FRAME_LOCATION_Y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2);
-        bossPanel =  PanelsData.getInstance().getBossPanel().getRectangle();
-        Rectangle temp3 = new Rectangle(thirdPanel);
+        secondPanel = PanelsData.getInstance().getPanels().get(1).getRectangle();
+        bossPanel = PanelsData.getInstance().getBossPanel().getRectangle();
+        Rectangle temp3 = new Rectangle(secondPanel);
         int deltaX = 0, deltaY = 0;
 
 
-        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)){
-            if (controller.idRequestingEsc()) {
-                System.exit(4);
-            }
-            if (controller.idRequestingUp()) {
-                logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
-                deltaY = -2;
-            }
-            if (controller.idRequestingDown()) {
-                logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
-                deltaY += 2;
-            }
-            if ((controller.idRequestingRight())) {
-                logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
-
-                deltaX += 2;
-            }
-            if (controller.idRequestingLeft()) {
-                logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
-
-                deltaX = -2;
-            }
+        if (mainPanel.contains(epsilon)) {
+            BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().set(1, true);
+        } else if (!mainPanel.intersects(epsilon)) {
+            BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().set(1, false);
+        }
+        if (secondPanel.contains(epsilon)) {
+            BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().set(2, true);
+        } else if (!secondPanel.intersects(epsilon)) {
+            BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().set(2, false);
         }
 
-        if(BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
 
-            if (controller.idRequestingEsc()) {
-                System.exit(4);
-            }
-            if (controller.idRequestingUp()) {
-                logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
-                deltaY = -2;
-            }
-            if (controller.idRequestingDown()) {
-                logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
-                deltaY += 2;
-            }
-            if ((controller.idRequestingRight())) {
-                logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
-
-                deltaX += 2;
-            }
-            if (controller.idRequestingLeft()) {
-                logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
-
-                deltaX = -2;
-            }
-        }
-        if(!BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
-//            if(test) {
-//                gameObjects.get(0).setPosition(new Position(PanelsData.getInstance().getBossPanel().getX(), PanelsData.getInstance().getBossPanel().getY()));
-//            test = false;
+//        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)){
+//            if (controller.idRequestingEsc()) {
+//                System.exit(4);
 //            }
-//            if(bossPanel.contains(epsilon)) {
-//
-//                if (controller.idRequestingEsc()) {
-//                    System.exit(4);
-//                }
-//                if (controller.idRequestingUp()) {
-//                    logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
-//                    deltaY = -2;
-//                }
-//                if (controller.idRequestingDown()) {
-//                    logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
-//                    deltaY += 2;
-//                }
-//                if ((controller.idRequestingRight())) {
-//                    logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
-//
-//                    deltaX += 2;
-//                }
-//                if (controller.idRequestingLeft()) {
-//                    logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
-//
-//                    deltaX = -2;
-//                }
-//            }
-        }
-        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
-            if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
-                if (thirdPanel.contains(epsilon)) {
-                    if (controller.idRequestingUp()) {
-                        logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
-                        deltaY = -2;
-                    }
-                    if (controller.idRequestingDown()) {
-                        logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
-                        deltaY += 2;
-                    }
-                    if ((controller.idRequestingRight())) {
-                        logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
-
-                        deltaX += 2;
-                    }
-                    if (controller.idRequestingLeft()) {
-                        logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
-
-                        deltaX = -2;
-                    }
-
-
-                }
-//        if(mainPanel.contains(epsilon)) {
 //            if (controller.idRequestingUp()) {
+//                logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
 //                deltaY = -2;
 //            }
 //            if (controller.idRequestingDown()) {
+//                logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
 //                deltaY += 2;
 //            }
 //            if ((controller.idRequestingRight())) {
+//                logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
+//
 //                deltaX += 2;
 //            }
 //            if (controller.idRequestingLeft()) {
+//                logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+//
 //                deltaX = -2;
 //            }
-//
-//
-//
 //        }
-                else if (!(mainPanel.contains(epsilon) || thirdPanel.contains(epsilon))) {
-//            if(thirdPanel.contains(epsilon)&&gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH > THIRD_FRAME_LOCATION_X+ GLASS_FRAME_DIMENSION_HEIGHT/2){
-//                gameObjects.get(0).getPosition().setX(THIRD_FRAME_LOCATION_X-EPSILON_WIDTH+GLASS_FRAME_DIMENSION_HEIGHT/2 - 4);
-//            }
-                    if
-//                (temp3.contains(epsilon))
-                    (gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH - Properties.getInstance().THIRD_FRAME_LOCATION_X + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2 <
-                            gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH - STARTING_POINT.x + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH)
-//                {
-//                    gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX()-1.8);
-//                    gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY()-1.8);
-//                    if(epsilon.intersects(THIRD_FRAME_LOCATION_X, THIRD_FRAME_LOCATION_Y,GLASS_FRAME_DIMENSION_WIDTH/2,2)){
-//                        gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY()+2.2);
-//
-//                    }
-//                    if(epsilon.intersects(THIRD_FRAME_LOCATION_X,THIRD_FRAME_LOCATION_Y,2,GLASS_FRAME_DIMENSION_HEIGHT/2)){
-//                        gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX()+2.2);
-//
-//                    }
-//
-//                }
-                        gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() - 1.8);
-                    gameObjects.get(0).getPosition()
-                            .setY(gameObjects.get(0).getPosition().getY() - 2);
-                    if (epsilon.intersects(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 2)) {
-                        gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY() + 2.2);
+            if (BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
+
+                if (controller.idRequestingEsc()) {
+                    System.exit(4);
+                }
+                if (controller.idRequestingUp()) {
+                    logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
+                    deltaY = -2;
+                }
+                if (controller.idRequestingDown()) {
+                    logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
+                    deltaY += 2;
+                }
+                if ((controller.idRequestingRight())) {
+                    logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
+
+                    deltaX += 2;
+                }
+                if (controller.idRequestingLeft()) {
+                    logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+
+                    deltaX = -2;
+                }
+            }
+
+            if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(1)) {
+                if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
+                    if (secondPanel.contains(epsilon)) {
+                        if (controller.idRequestingEsc()) {
+                            logger.debug("controller idRequestingEsc{}", controller.idRequestingEsc());
+                            System.exit(4);
+                        }
+                        if (controller.idRequestingUp()) {
+                            logger.debug("controller idRequestingUp{}", controller.idRequestingUp());
+                            deltaY = -2;
+                        }
+                        if (controller.idRequestingDown()) {
+                            logger.debug("controller idRequestingUp{}", controller.idRequestingDown());
+                            deltaY += 2;
+                        }
+                        if ((controller.idRequestingRight())) {
+                            logger.debug("controller idRequestingRight{}", controller.idRequestingRight());
+
+                            deltaX += 2;
+                        }
+                        if (controller.idRequestingLeft()) {
+                            logger.debug("controller idRequestingLeft{}", controller.idRequestingLeft());
+
+                            deltaX = -2;
+                        }
+
+                        if (!BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().get(1)) {
+                            if (gameObjects.get(0).getPosition().getX() < PanelsData.getInstance().getPanels().get(1).getX() + 5) {
+                                gameObjects.get(0).setPosition(new Position(secondPanel.getX() + 5, gameObjects.get(0).getPosition().getY()));
+                            }
+                            if (gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH > PanelsData.getInstance().getPanels().get(1).getRightX() - 5) {
+                                gameObjects.get(0).setPosition(new Position(secondPanel.getX() + secondPanel.width - 5 - EPSILON_WIDTH, gameObjects.get(0).getPosition().getY()));
+                            }
+                            if (gameObjects.get(0).getPosition().getY() + EPSILON_WIDTH > PanelsData.getInstance().getPanels().get(1).getDownY() - 5) {
+                                gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX(), PanelsData.getInstance().getPanels().get(1).getDownY() - 5 - EPSILON_WIDTH));
+                            }
+                            if (gameObjects.get(0).getPosition().getY() < PanelsData.getInstance().getPanels().get(1).getY() + 5) {
+                                gameObjects.get(0).setPosition(new Position(gameObjects.get(0).getPosition().getX(), PanelsData.getInstance().getPanels().get(1).getY() + 5));
+                            }
+                        }
+
+
+                    } else if (!(mainPanel.contains(epsilon) || secondPanel.contains(epsilon))) {
+
+                        if (gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH - Properties.getInstance().SECOND_FRAME_LOCATION_X + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2 <
+                                gameObjects.get(0).getPosition().getX() + EPSILON_WIDTH - STARTING_POINT.x + Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH)
+
+                            gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() - 1.8);
+                        gameObjects.get(0).getPosition()
+                                .setY(gameObjects.get(0).getPosition().getY() - 2);
+                        if (epsilon.intersects(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, 2)) {
+                            gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY() + 2.2);
+
+                        }
+                        if (epsilon.intersects(STARTING_POINT.x, STARTING_POINT.y, 2, Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT)) {
+                            gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() + 2.2);
+
+                        }
+                        if (epsilon.intersects(Properties.getInstance().SECOND_FRAME_LOCATION_X, Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, 2)) {
+                            gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY() + 2.2);
+
+                        }
+                        if (epsilon.intersects(Properties.getInstance().SECOND_FRAME_LOCATION_X, Properties.getInstance().SECOND_FRAME_LOCATION_Y, 2, Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2)) {
+                            gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() + 2.2);
+
+                        }
+
+                    } else if (mainPanel.contains(epsilon) && !secondPanel.contains(epsilon)) {
+                        BooleansOf_IsValidToShow.getInstance().getIsEpsilonIntoPanel().set(1, true);
+
+                        System.out.println(true + " " + temp3.x);
+                        if (controller.idRequestingEsc()) {
+                            System.exit(4);
+                        }
+                        if (controller.idRequestingUp()) {
+                            deltaY = -2;
+                        }
+                        if (controller.idRequestingDown()) {
+                            deltaY += 2;
+                        }
+                        if ((controller.idRequestingRight())) {
+                            deltaX += 2;
+                        }
+                        if (controller.idRequestingLeft()) {
+                            deltaX = -2;
+                        }
+
+
+                        if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(0).getRightX()) {
+                            ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getRightX() - EPSILON_WIDTH, ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() < panels.get(0).getX()) {
+                            ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() < panels.get(0).getY()) {
+                            ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getY()));
+                        }
+                        if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(0).getDownY()) {
+                            ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getDownY() - EPSILON_WIDTH));
+                        }
+
 
                     }
-                    if (epsilon.intersects(STARTING_POINT.x, STARTING_POINT.y, 2, Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT)) {
-                        gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() + 2.2);
-
-                    }
-                    if (epsilon.intersects(Properties.getInstance().THIRD_FRAME_LOCATION_X, Properties.getInstance().THIRD_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, 2)) {
-                        gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY() + 2.2);
-
-                    }
-                    if (epsilon.intersects(Properties.getInstance().THIRD_FRAME_LOCATION_X, Properties.getInstance().THIRD_FRAME_LOCATION_Y, 2, Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT / 2)) {
-                        gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX() + 2.2);
-
-                    }
-
-                } else if (mainPanel.contains(epsilon) && !thirdPanel.contains(epsilon)) {
-                    System.out.println(true + " " + temp3.x);
+                } else {
                     if (controller.idRequestingUp()) {
                         deltaY = -2;
                     }
@@ -219,7 +222,6 @@ public class MovementOfEpsilon {
                         deltaX = -2;
                     }
 
-
                     if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(0).getRightX()) {
                         ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getRightX() - EPSILON_WIDTH, ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
                     }
@@ -235,65 +237,37 @@ public class MovementOfEpsilon {
 
 
                 }
-            } else {
-                if (controller.idRequestingUp()) {
-                    deltaY = -2;
-                }
-                if (controller.idRequestingDown()) {
-                    deltaY += 2;
-                }
-                if ((controller.idRequestingRight())) {
-                    deltaX += 2;
-                }
-                if (controller.idRequestingLeft()) {
-                    deltaX = -2;
-                }
-
-                if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(0).getRightX()) {
-                    ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getRightX() - EPSILON_WIDTH, ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                }
-                if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() < panels.get(0).getX()) {
-                    ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                }
-                if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() < panels.get(0).getY()) {
-                    ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getY()));
-                }
-                if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(0).getDownY()) {
-                    ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getDownY() - EPSILON_WIDTH));
-                }
-
-
-            }
-            if (!mainPanel.intersects(thirdPanel)) {
-                if (!thirdPanel.contains(epsilon)) {
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(0).getRightX()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getRightX() - EPSILON_WIDTH, ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() < panels.get(0).getX()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(0).getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() < panels.get(0).getY()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(0).getDownY()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(0).getDownY() - EPSILON_WIDTH));
-                    }
-                } else if (!mainPanel.contains(epsilon)) {
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(1).getRightX()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(1).getRightX() - EPSILON_WIDTH, ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getX() < panels.get(1).getX()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(panels.get(1).getX(), ((EpsilonModel) gameObjects.get(0)).getPosition().getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() < panels.get(1).getY()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(1).getY()));
-                    }
-                    if (((EpsilonModel) gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(1).getDownY()) {
-                        ((EpsilonModel) gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(1).getDownY() - EPSILON_WIDTH));
+                if (!mainPanel.intersects(secondPanel)) {
+                    if (!secondPanel.contains(epsilon)) {
+                        if ((gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(0).getRightX()) {
+                            (gameObjects.get(0)).setPosition(new Position(panels.get(0).getRightX() - EPSILON_WIDTH, (gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getX() < panels.get(0).getX()) {
+                            (gameObjects.get(0)).setPosition(new Position(panels.get(0).getX(), (gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getY() < panels.get(0).getY()) {
+                            (gameObjects.get(0)).setPosition(new Position((gameObjects.get(0)).getPosition().getX(), panels.get(0).getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(0).getDownY()) {
+                            (gameObjects.get(0)).setPosition(new Position((gameObjects.get(0)).getPosition().getX(), panels.get(0).getDownY() - EPSILON_WIDTH));
+                        }
+                    } else if (!mainPanel.contains(epsilon)) {
+                        if ((gameObjects.get(0)).getPosition().getX() + EPSILON_WIDTH > panels.get(1).getRightX()) {
+                            (gameObjects.get(0)).setPosition(new Position(panels.get(1).getRightX() - EPSILON_WIDTH, (gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getX() < panels.get(1).getX()) {
+                            (gameObjects.get(0)).setPosition(new Position(panels.get(1).getX(), (gameObjects.get(0)).getPosition().getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getY() < panels.get(1).getY()) {
+                            (gameObjects.get(0)).setPosition(new Position((gameObjects.get(0)).getPosition().getX(), panels.get(1).getY()));
+                        }
+                        if ((gameObjects.get(0)).getPosition().getY() + EPSILON_WIDTH > panels.get(1).getDownY()) {
+                            (gameObjects.get(0)).setPosition(new Position(((EpsilonModel) gameObjects.get(0)).getPosition().getX(), panels.get(1).getDownY() - EPSILON_WIDTH));
+                        }
                     }
                 }
             }
-        }
+
 //        else if(!(mainPanel.contains(epsilon))){
 //            gameObjects.get(0).getPosition().setX(gameObjects.get(0).getPosition().getX()-1.8);
 //            gameObjects.get(0).getPosition().setY(gameObjects.get(0).getPosition().getY()-2);
