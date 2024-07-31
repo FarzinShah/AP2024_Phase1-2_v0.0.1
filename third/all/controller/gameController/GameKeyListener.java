@@ -85,18 +85,18 @@ public class GameKeyListener implements KeyListener {
         }
         if (e.getKeyCode() == KeyEvent.VK_R) {
             Properties.getInstance().play = true;
-            FunctionalMethods.loadGameStateWhenPaused(input);
+            FunctionalMethods.getInstance().loadGameStateWhenPaused(input);
 
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
             Properties.getInstance().play = false;
-            FunctionalMethods.saveGameStateWhenPaused();
+            FunctionalMethods.getInstance().saveGameStateWhenPaused();
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
-            FunctionalMethods.saveGameState();
+            FunctionalMethods.getInstance().saveGameState();
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
-            FunctionalMethods.loadGameState(input);
+            FunctionalMethods.getInstance().loadGameState(input);
         }
         if (e.getKeyCode() == KeyEvent.VK_V) {
             Properties.getInstance().play = false;

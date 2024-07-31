@@ -54,16 +54,27 @@ import static third.all.gameComponents.preGameComponent.Timer1.*;
 
 public class FunctionalMethods {
     private static final Logger logger = LoggerFactory.getLogger(FunctionalMethods.class);
-
     public static FunctionalMethods instance;
 
-    FunctionalMethods() {
+    public ArrayList<NormalEnemy> getNormalEnemies() {
+        return normalEnemies;
+    }
+
+    public void setNormalEnemies(ArrayList<NormalEnemy> normalEnemies) {
+        this.normalEnemies = normalEnemies;
+    }
+
+    private ArrayList<NormalEnemy> normalEnemies;
+
+
+    public FunctionalMethods() {
         Thread collisionThread = new Thread(new CollisionChecker());
         collisionThread.start();
+        this.normalEnemies = normalEnemies;
     }
 
 
-    public static void showOptionPane() {
+    public void showOptionPane() {
 
 //        try {
 //            Thread.sleep(1);
@@ -109,13 +120,13 @@ public class FunctionalMethods {
         optionFrame.setVisible(true);
     }
 
-    public static void saveGameState() {
+    public void saveGameState() {
         logger.debug("Game state is saved! :)))");
         NormalEnemyData omenoctEnemyData = new NormalEnemyData()
-                .setHP(Omenoct.getInstance().getHP())
-                .setSize(Omenoct.getInstance().getSize())
-                .setRadius(Omenoct.getInstance().getRadius())
-                .setLocation(Omenoct.getInstance().getLocation());
+                .setHP(normalEnemies.get(1).getHP())
+                .setSize(normalEnemies.get(1).getSize())
+                .setRadius(((Omenoct)normalEnemies.get(1)).getRadius())
+                .setLocation((normalEnemies.get(1)).getLocation());
         NormalEnemyData necropickEnemyData = new NormalEnemyData()
                 .setHP(Necropick.getInstance().getHP())
                 .setSize(Necropick.getInstance().getSize())
@@ -170,13 +181,13 @@ public class FunctionalMethods {
         }
     }
 
-    public static void saveGameStateWhenPaused() {
+    public void saveGameStateWhenPaused() {
         logger.debug("Game state is saved! :)))");
         NormalEnemyData omenoctEnemyData = new NormalEnemyData()
-                .setHP(Omenoct.getInstance().getHP())
-                .setSize(Omenoct.getInstance().getSize())
-                .setRadius(Omenoct.getInstance().getRadius())
-                .setLocation(Omenoct.getInstance().getLocation());
+                .setHP((normalEnemies.get(1)).getHP())
+                .setSize((normalEnemies.get(1)).getSize())
+                .setRadius(((Omenoct)normalEnemies.get(1)).getRadius())
+                .setLocation((normalEnemies.get(1)).getLocation());
         NormalEnemyData necropickEnemyData = new NormalEnemyData()
                 .setHP(Necropick.getInstance().getHP())
                 .setSize(Necropick.getInstance().getSize())
@@ -231,7 +242,7 @@ public class FunctionalMethods {
         }
     }
 
-    public static void loadGameState(Input input) {
+    public void loadGameState(Input input) {
         Gson gson = new Gson();
 
         try (FileReader reader = new FileReader(SAVING_DATA_PATH)) {
@@ -263,9 +274,9 @@ public class FunctionalMethods {
 
             }
 
-            Omenoct.getInstance().setLocation(gameState.omenoctEnemyData.location);
-            Omenoct.getInstance().setHP(gameState.omenoctEnemyData.HP);
-            Omenoct.getInstance().setSize(gameState.omenoctEnemyData.size);
+            (normalEnemies.get(1)).setLocation(gameState.omenoctEnemyData.location);
+            ((Omenoct)normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
+            (normalEnemies.get(1)).setSize(gameState.omenoctEnemyData.size);
             Necropick.getInstance().setSize(gameState.necropickEnemyData.size);
             Necropick.getInstance().setHP(gameState.necropickEnemyData.HP);
             Necropick.getInstance().setLocation(gameState.necropickEnemyData.location);
@@ -289,17 +300,15 @@ public class FunctionalMethods {
         }
     }
 
-    public static void loadGameStateWhenPaused(Input input) {
+    public void loadGameStateWhenPaused(Input input) {
         Gson gson = new Gson();
 
         try (FileReader reader = new FileReader(SAVING_DATA_PATH_WP)) {
             Type gameStateType = new TypeToken<GameState>() {
             }.getType();
-            Type omenoctEnemyDataType = new TypeToken<NormalEnemyData>() {
-            }.getType();
+
 
             GameState gameState = gson.fromJson(reader, gameStateType);
-            NormalEnemyData omenoctEnemyData = gson.fromJson(reader, omenoctEnemyDataType);
 
             elapsedTime = gameState.elapsedTime;
             timerOfGame.hours = gameState.hours;
@@ -324,9 +333,9 @@ public class FunctionalMethods {
 
             }
 
-            Omenoct.getInstance().setLocation(gameState.omenoctEnemyData.location);
-            Omenoct.getInstance().setHP(gameState.omenoctEnemyData.HP);
-            Omenoct.getInstance().setSize(gameState.omenoctEnemyData.size);
+            (normalEnemies.get(1)).setLocation(gameState.omenoctEnemyData.location);
+            ((Omenoct)normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
+            (normalEnemies.get(1)).setSize(gameState.omenoctEnemyData.size);
             Necropick.getInstance().setSize(gameState.necropickEnemyData.size);
             Necropick.getInstance().setHP(gameState.necropickEnemyData.HP);
             Necropick.getInstance().setLocation(gameState.necropickEnemyData.location);
@@ -350,8 +359,8 @@ public class FunctionalMethods {
         }
     }
 
-    public static void omenoct_shooter() {
-        bulletsOfOmenoct.add(new Bullet(Omenoct.getInstance().getLocation().x, Omenoct.getInstance().getLocation().y,
+    public void omenoct_shooter() {
+        bulletsOfOmenoct.add(new Bullet((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y,
                 (int) (gameObjects.get(0)).getPosition().getX(),
                 (int) (gameObjects.get(0)).getPosition().getY(), Color.ORANGE));
 
@@ -378,7 +387,7 @@ public class FunctionalMethods {
 
     }
 
-    public static void writOfAstrape() {
+    public void writOfAstrape() {
         Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         for (YellowEnemyModel yellowEnemyModel : yellowEnemies1) {
             double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
@@ -398,8 +407,8 @@ public class FunctionalMethods {
                 ((GreenEnemyModel) gameObject).setLifeValue(((GreenEnemyModel) gameObject).getLifeValue() - 2);
             }
         }
-        if (epsilon.intersects(Omenoct.getInstance().getRectangle())) {
-            Omenoct.getInstance().setHP(Omenoct.getInstance().getHP() - 2);
+        if (epsilon.intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
+            ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 2);
         }
         if (epsilon.intersects(Necropick.getInstance().getRectangle())) {
             Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 2);
@@ -419,7 +428,7 @@ public class FunctionalMethods {
     }
 
 
-    public static void writOfCerberus() {
+    public void writOfCerberus() {
         for (int j = 0; j < Cerberus.getInstance().size(); j++) {
             for (int i = 0; i < yellowEnemies1.size(); i++) {
                 if (Cerberus.getInstance().get(i).getRectangle().contains(yellowEnemies1.get(i).getBounds())) {
@@ -432,8 +441,8 @@ public class FunctionalMethods {
                     ((GreenEnemyModel) greenEnemies1.get(i)).setLifeValue(((GreenEnemyModel) greenEnemies1.get(i)).getLifeValue() - 10);
                 }
             }
-            if (Cerberus.getInstance().get(j).getRectangle().contains(Omenoct.getInstance().getRectangle())) {
-                Omenoct.getInstance().setHP(Omenoct.getInstance().getHP() - 10);
+            if (Cerberus.getInstance().get(j).getRectangle().contains(((Omenoct)normalEnemies.get(1)).getRectangle())) {
+                ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 10);
             }
             if (Cerberus.getInstance().get(j).getRectangle().contains(Necropick.getInstance().getRectangle())) {
                 Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 10);
@@ -533,7 +542,7 @@ public class FunctionalMethods {
     }
 
 
-    public static void checkCollisions() {
+    public void checkCollisions() {
         ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
         ArrayList<Collectable> collectablesToRemove = new ArrayList<>();
         Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
@@ -574,9 +583,9 @@ public class FunctionalMethods {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-                    if (bullet.getBounds().intersects(Omenoct.getInstance().getRectangle())) {
+                    if (bullet.getBounds().intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
                         bulletsToRemove.add(bullet);
-                        Omenoct.getInstance().setHP(Omenoct.getInstance().getHP() - 1);
+                        ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
                         if (Properties.getInstance().isValidToChiron) {
                             Properties.getInstance().HP += 3;
                         }
@@ -605,9 +614,9 @@ public class FunctionalMethods {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-                    if (bullet.getBounds().intersects(Omenoct.getInstance().getRectangle())) {
+                    if (bullet.getBounds().intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
                         bulletsToRemove.add(bullet);
-                        Omenoct.getInstance().setHP(Omenoct.getInstance().getHP() - 1);
+                        ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
                         if (Properties.getInstance().isValidToChiron) {
                             Properties.getInstance().HP += 3;
                         }
@@ -936,6 +945,14 @@ public class FunctionalMethods {
 
         }
 
+    }
+
+    public static FunctionalMethods getInstance() {
+        if (instance == null) {
+            instance = new FunctionalMethods();
+            return instance;
+        }
+        return instance;
     }
 
 }

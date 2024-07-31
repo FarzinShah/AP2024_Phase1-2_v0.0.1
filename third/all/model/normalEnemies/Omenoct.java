@@ -67,9 +67,9 @@ public class Omenoct extends NormalEnemy implements NormalEnemyModel {
         return octagon;
     }
 
-    public static void draw(Graphics g, ImageObserver i) {
+    public void draw(Graphics g, ImageObserver i) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-            g.drawImage(OMENOCT, Omenoct.getInstance().getLocation().x, Omenoct.getInstance().getLocation().y, Omenoct.getInstance().getSize() * 2, Omenoct.getInstance().getSize() * 2, i);
+            g.drawImage(OMENOCT, getLocation().x, getLocation().y, getSize() * 2, getSize() * 2, i);
         }
     }
 
@@ -89,7 +89,7 @@ public class Omenoct extends NormalEnemy implements NormalEnemyModel {
         this.HP = HP;
     }
 
-    public static Omenoct getInstance() {
+    public static Omenoct getInstance() { // todo: related to MVC problem it gonna out of work :(
         if (instance == null) {
             instance = new Omenoct();
             return instance;

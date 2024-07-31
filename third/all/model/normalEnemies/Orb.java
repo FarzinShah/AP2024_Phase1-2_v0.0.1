@@ -63,7 +63,7 @@ public class Orb extends NormalEnemy implements NormalEnemyModel {
         return instance;
     }
 
-    public static void draw(Graphics g, ImageObserver i) {
+    public void draw(Graphics g, ImageObserver i) {
         g.setColor(new Color(0x94676464, true));
         float[] dashingPattern1 = {5, 30};
         Stroke stroke1 = new BasicStroke(2f, BasicStroke.CAP_BUTT,

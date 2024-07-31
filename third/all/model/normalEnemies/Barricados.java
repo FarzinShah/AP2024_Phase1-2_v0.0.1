@@ -40,7 +40,7 @@ public class Barricados extends NormalEnemy implements NormalEnemyModel {
 
 
     @Override
-    int getHP() {
+    public int getHP() {
         return 0;
     }
 
@@ -52,7 +52,7 @@ public class Barricados extends NormalEnemy implements NormalEnemyModel {
         }
         return instance;
     }
-    public static void draw(Graphics g, ImageObserver i) {
+    public void draw(Graphics g, ImageObserver i) {
         if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(4)) {
             g.drawImage(BARRICADOS, Barricados.getInstance().getLocation().x, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize()+25, Barricados.getInstance().getSize()+25, i);
         }

@@ -17,8 +17,7 @@ public abstract class NormalEnemy {
 
     public abstract void setSize(int size);
 
-    public static void draw(Graphics g, ImageObserver i) {
-    }
 
-    abstract int getHP();
+
+    public abstract int getHP();
 }

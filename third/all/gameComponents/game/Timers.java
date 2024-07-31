@@ -44,7 +44,7 @@ public class Timers {
             }
         });
         attackOfOrbsOnEpsilon = new Timer(1000, e -> Properties.getInstance().HP -= 12);
-        shotTimer = new Timer(5000, e -> omenoct_shooter());
+        shotTimer = new Timer(5000, e -> FunctionalMethods.getInstance().omenoct_shooter());
 
         headShooter = new Timer(1000, e -> {
             if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(5) && Properties.getInstance().headShooterSecondCounter > 0) {

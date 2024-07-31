@@ -42,7 +42,7 @@ public class Necropick extends NormalEnemy {
         this.size = size;
     }
 
-    public static void draw(Graphics g, ImageObserver i) {
+    public void draw(Graphics g, ImageObserver i) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)) {
             g.drawImage(NECROPICK, Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, Necropick.getInstance().getSize(), Necropick.getInstance().getSize(), i);
         }

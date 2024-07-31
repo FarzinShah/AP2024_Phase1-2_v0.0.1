@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import static third.all.controller.Constants.*;
 
 import static third.all.data.Properties.*;
-import static third.all.gameComponents.game.FunctionalMethods.showOptionPane;
 import static third.all.gameComponents.game.GameLoop.*;
 import static third.all.gameComponents.game.Timers.*;
 import static third.all.gameComponents.preGameComponent.Settings.informationsOfSettings;
@@ -70,7 +69,6 @@ public class View extends JPanel implements Runnable {
 
     @Override
     protected void paintComponent(Graphics g) {
-
         if (HelpingBooleans.getInstance().isValidToShowStartingWelcome) {
             g.drawImage(Background_Starting, 250, 100, 1000, 570, this);
 
@@ -95,11 +93,16 @@ public class View extends JPanel implements Runnable {
         g.setColor(BLUE_BACKGROUND);
         showAlert(g);
 
-        Necropick.draw(g, this);
-        Omenoct.draw(g, this);
-        Wyrm.draw(g, this);
-        Barricados.draw(g, this);
-        Orb.draw(g, this);
+//        for (int i = 0; i < normalEnemies.size(); i++) {
+//            normalEnemies.get(i).draw(g,this);
+//        }
+
+//        Necropick.draw(g, this);
+        ((Omenoct)normalEnemies.get(1)).draw(g, this);
+//        Wyrm.draw(g, this);
+
+//        Barricados.draw(g, this);
+//        Orb.draw(g, this);
 
 
         if (BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
@@ -116,8 +119,6 @@ public class View extends JPanel implements Runnable {
         g.setColor(new Color(0, 0, 0, 60));
         g.fillRect(250, 250, 500, 500);
 //        g.setColor(Color.WHITE);
-
-
 
 
         // item pointer of mouse:
@@ -147,24 +148,7 @@ public class View extends JPanel implements Runnable {
             }
         }
         //Showing the scores:
-        g.setColor(new Color(0x0B0B7C));
-        g.fillRect(300 - 1 + (600 - 360), 15, 430, 40);
-        g.setColor(Color.white);
-
-        g.setFont(new Font("serif", Font.BOLD, 25));
-        (g).drawString("HP: " + Properties.getInstance().HP, 300 - 1 + (600 - 150), 40);
-        (g).drawString("XP: " + Properties.getInstance().XP, 300 - 1 + (600 - 250), 40);
-        (g).drawString("Wave: " + Properties.getInstance().WAVE, 300 - 1 + (600 - 25), 40);
-        (g).drawString("Head: " + Head.getInstance().getHP(), 50, 500);
-
-        g.setColor(Color.white);
-        g.setFont(new Font("serif", Font.BOLD, 25));
-        (g).drawString(timerOfGame.minutes_string + ":" + timerOfGame.seconds_string, 300 - 1 + (600 - 350), 40);
-        if (record != 0) {
-            g.setColor(Color.white);
-            g.setFont(new Font("serif", Font.BOLD, 25));
-            (g).drawString("Highest: " + record, 320, 30);
-        }
+        headerLauncher(g);
         // shots:
         shootsLauncher(g);
 
@@ -212,7 +196,7 @@ public class View extends JPanel implements Runnable {
     private void checkCollision() {
         Rectangle blueArea = redZoneRectangle;
         Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
-        Shape octagon = createOctagonShape(Omenoct.getInstance().getLocation().x + 25, Omenoct.getInstance().getLocation().y + 25, OMENOCT_SIZE + 2);
+        Shape octagon = createOctagonShape((normalEnemies.get(1)).getLocation().x + 25, (normalEnemies.get(1)).getLocation().y + 25, OMENOCT_SIZE + 2);
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
             if (shapeIntersects(epsilon, octagon)) {
                 Properties.getInstance().XP += 5;
@@ -230,7 +214,7 @@ public class View extends JPanel implements Runnable {
                 Thread redCharacterThread = new Thread(() -> {
                     try {
                         Thread.sleep(0); // Sleep for 30 seconds
-                        showOptionPane(); // Show the panel with buttons if collision happens with blue area
+                        FunctionalMethods.getInstance().showOptionPane(); // Show the panel with buttons if collision happens with blue area
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -436,8 +420,30 @@ public class View extends JPanel implements Runnable {
             }
         }
 
-        Archmire.draw(g,this);
-             if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
+//        Archmire.draw(g, this);
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
+
+    }
+
+    public void headerLauncher(Graphics g) {
+        g.setColor(new Color(0x0B0B7C));
+        g.fillRect(300 - 1 + (600 - 360), 15, 430, 40);
+        g.setColor(Color.white);
+
+        g.setFont(new Font("serif", Font.BOLD, 25));
+        (g).drawString("HP: " + Properties.getInstance().HP, 300 - 1 + (600 - 150), 40);
+        (g).drawString("XP: " + Properties.getInstance().XP, 300 - 1 + (600 - 250), 40);
+        (g).drawString("Wave: " + Properties.getInstance().WAVE, 300 - 1 + (600 - 25), 40);
+//        (g).drawString("Head: " + Head.getInstance().getHP(), 50, 500);
+
+        g.setColor(Color.white);
+        g.setFont(new Font("serif", Font.BOLD, 25));
+        (g).drawString(timerOfGame.minutes_string + ":" + timerOfGame.seconds_string, 300 - 1 + (600 - 350), 40);
+        if (record != 0) {
+            g.setColor(Color.white);
+            g.setFont(new Font("serif", Font.BOLD, 25));
+            (g).drawString("Highest: " + record, 320, 30);
+        }
 
     }
 

@@ -67,7 +67,7 @@ public class Wyrm extends NormalEnemy {
         return instance;
     }
 
-    public static void draw(Graphics g, ImageObserver i) {
+    public void draw(Graphics g, ImageObserver i) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
             g.drawImage(WYRM, Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y, Wyrm.getInstance().getSize() + 25, Wyrm.getInstance().getSize() + 25, i);
         }

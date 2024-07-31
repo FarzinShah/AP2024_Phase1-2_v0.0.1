@@ -47,11 +47,11 @@ public class Archmire extends NormalEnemy implements NormalEnemyModel {
     }
 
     @Override
-    int getHP() {
+    public int getHP() {
         return HP;
     }
 
-    public static void draw(Graphics g, ImageObserver i){
+    public void draw(Graphics g, ImageObserver i){
         g.setColor(new Color(0x44981062, true));
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
             synchronized (Archmire.getInstance().getTrails()) {

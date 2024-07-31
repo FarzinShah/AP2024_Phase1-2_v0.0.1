@@ -58,8 +58,6 @@ public class GameLoop implements ActionListener {
     boolean isInvisible = true;
     FunctionalMethods functionalMethod;
 
-
-    public Omenoct omenoct;
     public Necropick necropick;
     public Archmire archmire;
 
@@ -99,14 +97,14 @@ public class GameLoop implements ActionListener {
     public GameLoop() throws UnsupportedAudioFileException, IOException {
         frame = new MyFrame();
         ClipHandler.getInstance().playBackgroundMusic();
-
+        normalEnemiesLauncher();
         logger.info("GameLoop initialized.");
-        functionalMethod = new FunctionalMethods();
+        functionalMethod = FunctionalMethods.getInstance();
+        FunctionalMethods.getInstance().setNormalEnemies(normalEnemies);
         booleansOfEnemies = BooleansOfEnemies.getInstance();
         booleansOfIsValidToShow = BooleansOf_IsValidToShow.getInstance();
-        omenoct = Omenoct.getInstance();
-        omenoct.setLocation(OMENOCT_POSITION);
-        omenoct.setSize(OMENOCT_SIZE);
+        (normalEnemies.get(1)).setLocation(OMENOCT_POSITION);
+        (normalEnemies.get(1)).setSize(OMENOCT_SIZE);
         necropick = Necropick.getInstance();
         necropick.setLocation(NECROPICK_POSITION);
         necropick.setSize(NECROPICK_SIZE);
@@ -116,7 +114,6 @@ public class GameLoop implements ActionListener {
         yellowEnemies1 = new ArrayList<>();
         greenEnemies1 = new ArrayList<>();
         blackOrbPanels = new ArrayList<>();
-        normalEnemiesLauncher();
 
         input = new Input();
         view = new View(input, normalEnemies);
@@ -184,10 +181,10 @@ public class GameLoop implements ActionListener {
                         BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(2, true);
 //                    shotTimer.start();
                     }
-//                    if (spentMilliSecond == 2000) {
-//                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, true);
-//                        shotTimer.start();
-//                    }
+                    if (spentMilliSecond == 2000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, true);
+                        shotTimer.start();
+                    }
 
                     if (spentMilliSecond == 200000) {
                         BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(4, true);
@@ -265,7 +262,7 @@ public class GameLoop implements ActionListener {
                     }
                 }
                 if (Properties.getInstance().WAVE == 1 && Properties.getInstance().HP <= 0) {
-                    FunctionalMethods.loadGameState(input);
+                    FunctionalMethods.getInstance().loadGameState(input);
                 }
             }
             //Todo: Wave 2:
@@ -963,15 +960,15 @@ public class GameLoop implements ActionListener {
             timerOfGame.reset();
         }
 
-        if (omenoct.getHP() <= 0 && BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
+        if ((normalEnemies.get(1)).getHP() <= 0 && BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
             shotTimer.stop();
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x, omenoct.getLocation().y + 10, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x + 15, omenoct.getLocation().y + 10, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x + 30, omenoct.getLocation().y + 10, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x - 15, omenoct.getLocation().y + 10, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x - 30, omenoct.getLocation().y + 10, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x, omenoct.getLocation().y + 30, 10, Color.CYAN));
-            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(omenoct.getLocation().x, omenoct.getLocation().y + 50, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x, ( normalEnemies.get(1)).getLocation().y + 10, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x + 15, ( normalEnemies.get(1)).getLocation().y + 10, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x + 30, ( normalEnemies.get(1)).getLocation().y + 10, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x - 15, ( normalEnemies.get(1)).getLocation().y + 10, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x - 30, ( normalEnemies.get(1)).getLocation().y + 10, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x, ( normalEnemies.get(1)).getLocation().y + 30, 10, Color.CYAN));
+            CollectablesOfEnemies.getInstance().getCollectablesOfOmenoct().add(new Collectable(( normalEnemies.get(1)).getLocation().x, ( normalEnemies.get(1)).getLocation().y + 50, 10, Color.CYAN));
             BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(2, false);
 
             BooleansOfCollectibles.getInstance().getIsValidToCollect().set(2, true);
@@ -1064,8 +1061,8 @@ public class GameLoop implements ActionListener {
         }
 
 
-        FunctionalMethods.checkCollisions();
-        if (BooleansOfEnemies.getInstance().isWritOfAstrape()) FunctionalMethods.writOfAstrape();
+        FunctionalMethods.getInstance().checkCollisions();
+        if (BooleansOfEnemies.getInstance().isWritOfAstrape()) FunctionalMethods.getInstance().writOfAstrape();
 
 
 //        time.restart();
@@ -1378,52 +1375,52 @@ public class GameLoop implements ActionListener {
         //todo: Omenoct movement:
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
             Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) gameObjects.get(0).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
-            int leftDistance = (int) (omenoct.getLocation().x - panels.get(0).getX());
-            int rightDistance = panels.get(0).getRightX() - omenoct.getLocation().x;
-            int upperDistance = (int) (omenoct.getLocation().y - panels.get(0).getY());
-            int lowerDistance = panels.get(0).getDownY() - omenoct.getLocation().y;
+            int leftDistance = (int) ((normalEnemies.get(1)).getLocation().x - panels.get(0).getX());
+            int rightDistance = panels.get(0).getRightX() - ( normalEnemies.get(1)).getLocation().x;
+            int upperDistance = (int) (( normalEnemies.get(1)).getLocation().y - panels.get(0).getY());
+            int lowerDistance = panels.get(0).getDownY() - ( normalEnemies.get(1)).getLocation().y;
             int tempDistance = Math.min(Math.min(leftDistance, rightDistance), Math.min(upperDistance, lowerDistance));
 
             //todo: panel.get(1)
-            int leftDistance1 = (int) (omenoct.getLocation().x - panels.get(1).getX());
-            int rightDistance1 = panels.get(1).getRightX() - omenoct.getLocation().x;
-            int upperDistance1 = (int) (omenoct.getLocation().y - panels.get(1).getY());
-            int lowerDistance1 = panels.get(1).getDownY() - omenoct.getLocation().y;
+            int leftDistance1 = (int) ((normalEnemies.get(1)).getLocation().x - panels.get(1).getX());
+            int rightDistance1 = panels.get(1).getRightX() - (normalEnemies.get(1)).getLocation().x;
+            int upperDistance1 = (int) ((normalEnemies.get(1)).getLocation().y - panels.get(1).getY());
+            int lowerDistance1 = panels.get(1).getDownY() - (normalEnemies.get(1)).getLocation().y;
             int tempDistance1 = Math.min(Math.min(leftDistance1, rightDistance1), Math.min(upperDistance1, lowerDistance1));
 
-            if (shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle())) {
+            if (shapeIntersects(((Omenoct)normalEnemies.get(1)).getShape(), panels.get(0).getRectangle()) && shapeIntersects(((Omenoct)normalEnemies.get(1)).getShape(), panels.get(1).getRectangle())) {
 
                 if (leftDistance == tempDistance) {
-                    omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
+                    (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x - 1, (normalEnemies.get(1)).getLocation().y));
                 } else if (rightDistance == tempDistance) {
-                    omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
+                    (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x + 1, (normalEnemies.get(1)).getLocation().y));
                 } else if (upperDistance == tempDistance) {
-                    if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
+                    if ((normalEnemies.get(1)).getLocation().y - 8 > panels.get(0).getY()) {
+                        (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y - 1));
 
                     }
-                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
-                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
-                            if (omenoct.getLocation().x > epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                            } else if (omenoct.getLocation().x < epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                    if (!isEnteredToPanel2_Omenoct && (normalEnemies.get(1)).getLocation().y - 8 == panels.get(0).getY()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && (normalEnemies.get(1)).getLocation().y - 8 == panels.get(0).getY())) {
+                            if ((normalEnemies.get(1)).getLocation().x > epsilon.x) {
+                                (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x - 2, (normalEnemies.get(1)).getLocation().y));
+                            } else if ((normalEnemies.get(1)).getLocation().x < epsilon.x) {
+                                (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x + 2, (normalEnemies.get(1)).getLocation().y));
                             }
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - (double) (omenoct.getSize() / 2) < panels.get(0).getX()) {
-                            omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                        if ((normalEnemies.get(1)).getLocation().x - (double) ((normalEnemies.get(1)).getSize() / 2) < panels.get(0).getX()) {
+                            (normalEnemies.get(1)).setLocation(new Point((int) (panels.get(0).getX() + ((normalEnemies.get(1)).getSize() / 2)), (int) (normalEnemies.get(1)).getLocation().getY()));
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
-                            omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
+                        if ((normalEnemies.get(1)).getLocation().x + (2 * (normalEnemies.get(1)).getSize()) > panels.get(0).getRightX()) {
+                            (normalEnemies.get(1)).setLocation(new Point(panels.get(0).getRightX() - (2 * (normalEnemies.get(1)).getSize()), (int) (normalEnemies.get(1)).getLocation().getY()));
                         }
                     }
                     if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
                         if (!isEnteredToPanel2_Omenoct) {
-                            omenoct.setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
+                            (normalEnemies.get(1)).setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
                             isEnteredToPanel2_Omenoct = true;
                         }
 
@@ -1431,28 +1428,28 @@ public class GameLoop implements ActionListener {
 
 
                 } else {
-                    if (omenoct.getLocation().y + 8 < panels.get(0).getDownY()) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y + 1));
+                    if ((normalEnemies.get(1)).getLocation().y + 8 < panels.get(0).getDownY()) {
+                        (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y + 1));
                     }
-                    if (omenoct.getLocation().y + 8 == panels.get(0).getDownY()) {
-                        if (omenoct.getLocation().x > epsilon.x) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                        } else if (omenoct.getLocation().x < epsilon.x) {
-                            omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                    if ((normalEnemies.get(1)).getLocation().y + 8 == panels.get(0).getDownY()) {
+                        if ((normalEnemies.get(1)).getLocation().x > epsilon.x) {
+                            (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x - 2, (normalEnemies.get(1)).getLocation().y));
+                        } else if ((normalEnemies.get(1)).getLocation().x < epsilon.x) {
+                            (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x + 2, (normalEnemies.get(1)).getLocation().y));
                         }
                     }
-                    if (omenoct.getLocation().x - (double) (omenoct.getSize() / 2) < panels.get(0).getX()) {
-                        omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                    if ((normalEnemies.get(1)).getLocation().x - (double) ((normalEnemies.get(1)).getSize() / 2) < panels.get(0).getX()) {
+                        (normalEnemies.get(1)).setLocation(new Point((int) (panels.get(0).getX() + ((normalEnemies.get(1)).getSize() / 2)), (int) (normalEnemies.get(1)).getLocation().getY()));
                     }
-                    if (omenoct.getLocation().x + (omenoct.getSize() / 2) > panels.get(0).getRightX()) {
-                        omenoct.setLocation(new Point(panels.get(0).getRightX() - (omenoct.getSize() / 2), (int) omenoct.getLocation().getY()));
+                    if ((normalEnemies.get(1)).getLocation().x + ((normalEnemies.get(1)).getSize() / 2) > panels.get(0).getRightX()) {
+                        (normalEnemies.get(1)).setLocation(new Point(panels.get(0).getRightX() - ((normalEnemies.get(1)).getSize() / 2), (int) (normalEnemies.get(1)).getLocation().getY()));
                     }
                 }
 
 
-            } else if (shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && !shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
+            } else if (shapeIntersects(((Omenoct)normalEnemies.get(1)).getShape(), panels.get(1).getRectangle()) && !shapeIntersects(((Omenoct)normalEnemies.get(1)).getShape(), panels.get(0).getRectangle())) {
                 if (epsilon.intersects(panels.get(1).getRectangle()) && !epsilon.intersects(panels.get(0).getRectangle())) {
-                    omenoct.setLocation(new Point(epsilon.x, omenoct.getLocation().y));
+                    (normalEnemies.get(1)).setLocation(new Point(epsilon.x, (normalEnemies.get(1)).getLocation().y));
                 }
  /*               if (leftDistance1 == tempDistance1) {
                     omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
@@ -1479,60 +1476,60 @@ public class GameLoop implements ActionListener {
 //                            isEnteredToPanel1_Omenoct = true;
 //                        }
 //                    }
-            } else if (!shapeIntersects(omenoct.getShape(), panels.get(1).getRectangle()) && shapeIntersects(omenoct.getShape(), panels.get(0).getRectangle())) {
+            } else if (!shapeIntersects(((Omenoct) normalEnemies.get(1)).getShape(), panels.get(1).getRectangle()) && shapeIntersects(((Omenoct) normalEnemies.get(1)).getShape(), panels.get(0).getRectangle())) {
                 if (leftDistance == tempDistance) {
-                    omenoct.setLocation(new Point(omenoct.getLocation().x - 1, omenoct.getLocation().y));
+                    ( normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x - 1, (normalEnemies.get(1)).getLocation().y));
                 } else if (rightDistance == tempDistance) {
-                    if (omenoct.getLocation().y + omenoct.getSize() - 8 > panels.get(0).getRightX()) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x + 1, omenoct.getLocation().y));
+                    if (( normalEnemies.get(1)).getLocation().y + ( normalEnemies.get(1)).getSize() - 8 > panels.get(0).getRightX()) {
+                        ( normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x + 1, (normalEnemies.get(1)).getLocation().y));
                     }
-                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y + omenoct.getSize() - 8 == panels.get(0).getRightX()) {
-                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
-                            if (omenoct.getLocation().y > epsilon.y) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 2));
-                            } else if (omenoct.getLocation().y < epsilon.y) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y + 2));
+                    if (!isEnteredToPanel2_Omenoct && (normalEnemies.get(1)).getLocation().y + (normalEnemies.get(1)).getSize() - 8 == panels.get(0).getRightX()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && (normalEnemies.get(1)).getLocation().y - 8 == panels.get(0).getY())) {
+                            if ((normalEnemies.get(1)).getLocation().y > epsilon.y) {
+                                (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y - 2));
+                            } else if ((normalEnemies.get(1)).getLocation().y < epsilon.y) {
+                                (normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y + 2));
                             }
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().y - ((double) omenoct.getSize() / 2) < panels.get(0).getY()) {
-                            omenoct.setLocation(new Point((int) panels.get(0).getX(), (int) omenoct.getLocation().getY() + (omenoct.getSize() / 2)));
+                        if ((normalEnemies.get(1)).getLocation().y - ((double) (normalEnemies.get(1)).getSize() / 2) < panels.get(0).getY()) {
+                            ( normalEnemies.get(1)).setLocation(new Point((int) panels.get(0).getX(), (int) (normalEnemies.get(1)).getLocation().getY() + ((normalEnemies.get(1)).getSize() / 2)));
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().y + (2 * omenoct.getSize()) > panels.get(0).getDownY()) {
-                            omenoct.setLocation(new Point((int) panels.get(0).getX(), panels.get(0).getDownY() - (2 * omenoct.getSize())));
+                        if ((normalEnemies.get(1)).getLocation().y + (2 * (normalEnemies.get(1)).getSize()) > panels.get(0).getDownY()) {
+                            (normalEnemies.get(1)).setLocation(new Point((int) panels.get(0).getX(), panels.get(0).getDownY() - (2 * ( normalEnemies.get(1)).getSize())));
                         }
                     }
 
                 } else if (upperDistance == tempDistance) {
-                    if (omenoct.getLocation().y - 8 > panels.get(0).getY()) {
-                        omenoct.setLocation(new Point(omenoct.getLocation().x, omenoct.getLocation().y - 1));
+                    if ((normalEnemies.get(1)).getLocation().y - 8 > panels.get(0).getY()) {
+                        ( normalEnemies.get(1)).setLocation(new Point((normalEnemies.get(1)).getLocation().x, (normalEnemies.get(1)).getLocation().y - 1));
 
                     }
-                    if (!isEnteredToPanel2_Omenoct && omenoct.getLocation().y - 8 == panels.get(0).getY()) {
-                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && omenoct.getLocation().y - 8 == panels.get(0).getY())) {
-                            if (omenoct.getLocation().x > epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x - 2, omenoct.getLocation().y));
-                            } else if (omenoct.getLocation().x < epsilon.x) {
-                                omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
+                    if (!isEnteredToPanel2_Omenoct && ( normalEnemies.get(1)).getLocation().y - 8 == panels.get(0).getY()) {
+                        if ((panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().intersects(panels.get(0).getRectangle())) || (!panels.get(1).getRectangle().contains(epsilon) && ( normalEnemies.get(1)).getLocation().y - 8 == panels.get(0).getY())) {
+                            if ((normalEnemies.get(1)).getLocation().x > epsilon.x) {
+                                (normalEnemies.get(1)).setLocation(new Point(( normalEnemies.get(1)).getLocation().x - 2, ( normalEnemies.get(1)).getLocation().y));
+                            } else if ((normalEnemies.get(1)).getLocation().x < epsilon.x) {
+                                ( normalEnemies.get(1)).setLocation(new Point(( normalEnemies.get(1)).getLocation().x + 2, ( normalEnemies.get(1)).getLocation().y));
                             }
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - ((double) omenoct.getSize() / 2) < panels.get(0).getX()) {
-                            omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
+                        if (( normalEnemies.get(1)).getLocation().x - ((double) ( normalEnemies.get(1)).getSize() / 2) < panels.get(0).getX()) {
+                            ( normalEnemies.get(1)).setLocation(new Point((int) (panels.get(0).getX() + (( normalEnemies.get(1)).getSize() / 2)), (int) ( normalEnemies.get(1)).getLocation().getY()));
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x + (2 * omenoct.getSize()) > panels.get(0).getRightX()) {
-                            omenoct.setLocation(new Point(panels.get(0).getRightX() - (2 * omenoct.getSize()), (int) omenoct.getLocation().getY()));
+                        if (( normalEnemies.get(1)).getLocation().x + (2 * ( normalEnemies.get(1)).getSize()) > panels.get(0).getRightX()) {
+                            ( normalEnemies.get(1)).setLocation(new Point(panels.get(0).getRightX() - (2 * ( normalEnemies.get(1)).getSize()), (int) ( normalEnemies.get(1)).getLocation().getY()));
                         }
                     }
                     if (panels.get(0).getRectangle().intersects(panels.get(1).getRectangle()) && !panels.get(0).getRectangle().contains(epsilon) && panels.get(1).getRectangle().contains(epsilon)) {
                         if (!isEnteredToPanel2_Omenoct) {
-                            omenoct.setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
+                            ( normalEnemies.get(1)).setLocation(new Point(panels.get(0).getRightX(), (int) (panels.get(1).getY() + 5)));
                             isEnteredToPanel2_Omenoct = true;
                         }
 
@@ -1541,29 +1538,29 @@ public class GameLoop implements ActionListener {
                 }
 
             } else if (epsilon.intersects(panels.get(1).getRectangle()) && !epsilon.intersects(panels.get(0).getRectangle())) {
-                omenoct.setLocation(new Point(epsilon.x, omenoct.getLocation().y));
+                (normalEnemies.get(1)).setLocation(new Point(epsilon.x, (normalEnemies.get(1)).getLocation().y));
 
             }
-            if (!HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0 && omenoct.getLocation().x + omenoct.getSize() >= panels.get(1).getRightX() && panels.get(1).getRightX() + omenoct.getSize() >= panels.get(0).getRightX()) {
-                omenoct.setLocation(new Point(panels.get(1).getRightX() - 2 * omenoct.getSize(), omenoct.getLocation().y));
+            if (!HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0 && ( normalEnemies.get(1)).getLocation().x + (normalEnemies.get(1)).getSize() >= panels.get(1).getRightX() && panels.get(1).getRightX() + ( normalEnemies.get(1)).getSize() >= panels.get(0).getRightX()) {
+                (normalEnemies.get(1)).setLocation(new Point(panels.get(1).getRightX() - 2 * ( normalEnemies.get(1)).getSize(), ( normalEnemies.get(1)).getLocation().y));
 //                HelpingBooleans.getInstance().inPanel0 = true;
-                if (!panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
-                    omenoct.setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
+                if (!panels.get(1).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
+                    ( normalEnemies.get(1)).setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
 
                     HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0 = true;
                 }
             }
             if (HelpingBooleans.getInstance().isValidToMoveOmenoctInPanel0) {
-                omenoct.setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
+                (normalEnemies.get(1)).setLocation(new Point(epsilon.x, (int) (panels.get(0).getY() + 8)));
             }
 
-            if (panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
+            if (panels.get(0).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                 isEnteredToPanel1_Omenoct = true;
-            } else if (panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+            } else if (panels.get(1).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                 isEnteredToPanel2_Omenoct = true;
-            } else if (!panels.get(0).getRectangle().contains(omenoct.getRectangle())) {
+            } else if (!panels.get(0).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                 isEnteredToPanel1_Omenoct = false;
-            } else if (!panels.get(1).getRectangle().contains(omenoct.getRectangle())) {
+            } else if (!panels.get(1).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                 isEnteredToPanel2_Omenoct = false;
             }
 
@@ -1749,12 +1746,14 @@ public class GameLoop implements ActionListener {
     }
 
     public void normalEnemiesLauncher() {
+
         normalEnemies = new ArrayList<>();
-        normalEnemies.add(Necropick.getInstance());
-        normalEnemies.add(Omenoct.getInstance());
-        normalEnemies.addAll(Orb.getInstance());
-        normalEnemies.add(Archmire.getInstance());
-        normalEnemies.add(Wyrm.getInstance());
+        normalEnemies.add(0,Necropick.getInstance());
+        normalEnemies.add(1,new Omenoct());
+        normalEnemies.add(2,Wyrm.getInstance());
+
+//        normalEnemies.addAll(Orb.getInstance());
+//        normalEnemies.add(Archmire.getInstance());
     }
 
 }
