@@ -97,7 +97,7 @@ public class View extends JPanel implements Runnable {
 //            normalEnemies.get(i).draw(g,this);
 //        }
 
-//        Necropick.draw(g, this);
+       ((Necropick) normalEnemies.get(0)).draw(g, this);
         ((Omenoct)normalEnemies.get(1)).draw(g, this);
 //        Wyrm.draw(g, this);
 

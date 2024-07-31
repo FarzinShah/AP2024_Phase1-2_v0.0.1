@@ -44,7 +44,7 @@ public class Necropick extends NormalEnemy {
 
     public void draw(Graphics g, ImageObserver i) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)) {
-            g.drawImage(NECROPICK, Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, Necropick.getInstance().getSize(), Necropick.getInstance().getSize(), i);
+            g.drawImage(NECROPICK, getLocation().x, getLocation().y, getSize(), getSize(), i);
         }
     }
 
@@ -60,7 +60,7 @@ public class Necropick extends NormalEnemy {
         this.HP = HP;
     }
 
-    public static Necropick getInstance() {
+    public static Necropick getInstance() { // todo: Out of work - MVC issues
         if (instance == null) {
             instance = new Necropick();
             return instance;

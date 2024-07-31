@@ -34,7 +34,7 @@ public class Timers {
 
     public Timers() {
         timerOfGame = new Timer1();
-        necropickShower = new Timer(12000, e -> FunctionalMethods.necropickHide());
+        necropickShower = new Timer(12000, e -> FunctionalMethods.getInstance().necropickHide());
 //        necropickShower.start(); //todo: هرموقع وقتش شد استارتش کنم
         barricadosValidatorTimer = new Timer(120000, e -> {
             if (Properties.getInstance().barricadosMode == 1) {
@@ -68,7 +68,7 @@ public class Timers {
         });
 
 //        wyrmShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
-        necropickShooter = new Timer(1000, e -> FunctionalMethods.necropickShoot());
+        necropickShooter = new Timer(1000, e -> FunctionalMethods.getInstance().necropickShoot());
         orbitalMovement = new Timer(10, e -> {
             Properties.getInstance().angleOfOrbitProjectile += Properties.getInstance().speedOfOrbitProjectile;
             Properties.getInstance().angleOfOrbitWyrm += Properties.getInstance().speedOfOrbitWyrm;

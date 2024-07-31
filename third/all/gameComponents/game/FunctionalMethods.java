@@ -125,12 +125,12 @@ public class FunctionalMethods {
         NormalEnemyData omenoctEnemyData = new NormalEnemyData()
                 .setHP(normalEnemies.get(1).getHP())
                 .setSize(normalEnemies.get(1).getSize())
-                .setRadius(((Omenoct)normalEnemies.get(1)).getRadius())
+                .setRadius(((Omenoct) normalEnemies.get(1)).getRadius())
                 .setLocation((normalEnemies.get(1)).getLocation());
         NormalEnemyData necropickEnemyData = new NormalEnemyData()
-                .setHP(Necropick.getInstance().getHP())
-                .setSize(Necropick.getInstance().getSize())
-                .setLocation(Necropick.getInstance().getLocation());
+                .setHP((normalEnemies.get(0)).getHP())
+                .setSize((normalEnemies.get(0)).getSize())
+                .setLocation((normalEnemies.get(0)).getLocation());
         List<EnemyState> enemyStatesY = yellowEnemies1.stream()
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
@@ -186,12 +186,12 @@ public class FunctionalMethods {
         NormalEnemyData omenoctEnemyData = new NormalEnemyData()
                 .setHP((normalEnemies.get(1)).getHP())
                 .setSize((normalEnemies.get(1)).getSize())
-                .setRadius(((Omenoct)normalEnemies.get(1)).getRadius())
+                .setRadius(((Omenoct) normalEnemies.get(1)).getRadius())
                 .setLocation((normalEnemies.get(1)).getLocation());
         NormalEnemyData necropickEnemyData = new NormalEnemyData()
-                .setHP(Necropick.getInstance().getHP())
-                .setSize(Necropick.getInstance().getSize())
-                .setLocation(Necropick.getInstance().getLocation());
+                .setHP((normalEnemies.get(0)).getHP())
+                .setSize((normalEnemies.get(0)).getSize())
+                .setLocation((normalEnemies.get(0)).getLocation());
         List<EnemyState> enemyStatesY = yellowEnemies1.stream()
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
@@ -275,11 +275,11 @@ public class FunctionalMethods {
             }
 
             (normalEnemies.get(1)).setLocation(gameState.omenoctEnemyData.location);
-            ((Omenoct)normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
+            ((Omenoct) normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
             (normalEnemies.get(1)).setSize(gameState.omenoctEnemyData.size);
-            Necropick.getInstance().setSize(gameState.necropickEnemyData.size);
-            Necropick.getInstance().setHP(gameState.necropickEnemyData.HP);
-            Necropick.getInstance().setLocation(gameState.necropickEnemyData.location);
+            (normalEnemies.get(0)).setSize(gameState.necropickEnemyData.size);
+            ((Necropick) normalEnemies.get(0)).setHP(gameState.necropickEnemyData.HP);
+            (normalEnemies.get(0)).setLocation(gameState.necropickEnemyData.location);
             BooleansOf_IsValidToShow.setInstance(gameState.booleansOfIsValidToShow);
             BooleansOfEnemies.setInstance(gameState.booleansOfEnemies);
             BooleansOfCollectibles.setInstance(gameState.booleansOfCollectibles);
@@ -334,11 +334,11 @@ public class FunctionalMethods {
             }
 
             (normalEnemies.get(1)).setLocation(gameState.omenoctEnemyData.location);
-            ((Omenoct)normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
+            ((Omenoct) normalEnemies.get(1)).setHP(gameState.omenoctEnemyData.HP);
             (normalEnemies.get(1)).setSize(gameState.omenoctEnemyData.size);
-            Necropick.getInstance().setSize(gameState.necropickEnemyData.size);
-            Necropick.getInstance().setHP(gameState.necropickEnemyData.HP);
-            Necropick.getInstance().setLocation(gameState.necropickEnemyData.location);
+            (normalEnemies.get(0)).setSize(gameState.necropickEnemyData.size);
+            ((Necropick) normalEnemies.get(0)).setHP(gameState.necropickEnemyData.HP);
+            (normalEnemies.get(0)).setLocation(gameState.necropickEnemyData.location);
             BooleansOf_IsValidToShow.setInstance(gameState.booleansOfIsValidToShow);
             BooleansOfEnemies.setInstance(gameState.booleansOfEnemies);
             BooleansOfCollectibles.setInstance(gameState.booleansOfCollectibles);
@@ -407,14 +407,14 @@ public class FunctionalMethods {
                 ((GreenEnemyModel) gameObject).setLifeValue(((GreenEnemyModel) gameObject).getLifeValue() - 2);
             }
         }
-        if (epsilon.intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
-            ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 2);
+        if (epsilon.intersects(((Omenoct) normalEnemies.get(1)).getRectangle())) {
+            ((Omenoct) normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 2);
         }
-        if (epsilon.intersects(Necropick.getInstance().getRectangle())) {
-            Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 2);
+        if (epsilon.intersects(((Necropick) normalEnemies.get(0)).getRectangle())) {
+            ((Necropick) normalEnemies.get(0)).setHP((normalEnemies.get(0)).getHP() - 2);
         }
-        if (epsilon.intersects(Necropick.getInstance().getRectangle())) {
-            Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 2);
+        if (epsilon.intersects(((Necropick) normalEnemies.get(0)).getRectangle())) {
+            ((Necropick) normalEnemies.get(0)).setHP((normalEnemies.get(0)).getHP() - 2);
         }
         if (epsilon.intersects(Wyrm.getInstance().getRectangle())) {
             Wyrm.getInstance().setHP(Wyrm.getInstance().getHP() - 2);
@@ -441,11 +441,11 @@ public class FunctionalMethods {
                     ((GreenEnemyModel) greenEnemies1.get(i)).setLifeValue(((GreenEnemyModel) greenEnemies1.get(i)).getLifeValue() - 10);
                 }
             }
-            if (Cerberus.getInstance().get(j).getRectangle().contains(((Omenoct)normalEnemies.get(1)).getRectangle())) {
-                ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 10);
+            if (Cerberus.getInstance().get(j).getRectangle().contains(((Omenoct) normalEnemies.get(1)).getRectangle())) {
+                ((Omenoct) normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 10);
             }
-            if (Cerberus.getInstance().get(j).getRectangle().contains(Necropick.getInstance().getRectangle())) {
-                Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 10);
+            if (Cerberus.getInstance().get(j).getRectangle().contains(((Necropick) normalEnemies.get(0)).getRectangle())) {
+                ((Necropick) normalEnemies.get(0)).setHP((normalEnemies.get(0)).getHP() - 10);
             }
 
         }
@@ -502,12 +502,12 @@ public class FunctionalMethods {
     }
 
 
-    public static void necropickShoot() {
+    public void necropickShoot() {
         int[] dx = {1, 1, 0, -1, -1, -1, 0, 1};
         int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
 
         for (int i = 0; i < 8; i++) {
-            bulletsOfNecropick.add(new Bullet(Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, dx[i], dy[i]));
+            bulletsOfNecropick.add(new Bullet((normalEnemies.get(0)).getLocation().x, (normalEnemies.get(0)).getLocation().y, dx[i], dy[i]));
         }
 
     }
@@ -583,9 +583,9 @@ public class FunctionalMethods {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-                    if (bullet.getBounds().intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
+                    if (bullet.getBounds().intersects(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                         bulletsToRemove.add(bullet);
-                        ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
+                        ((Omenoct) normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
                         if (Properties.getInstance().isValidToChiron) {
                             Properties.getInstance().HP += 3;
                         }
@@ -593,9 +593,9 @@ public class FunctionalMethods {
 
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)) {
-                    if (shapeIntersects(bullet.getBounds(), Necropick.getInstance().getRectangle())) {
+                    if (shapeIntersects(bullet.getBounds(), ((Necropick) normalEnemies.get(0)).getRectangle())) {
                         bulletsToRemove.add(bullet);
-                        Necropick.getInstance().setHP(Necropick.getInstance().getHP() - 1);
+                        ((Necropick) normalEnemies.get(0)).setHP((normalEnemies.get(0)).getHP() - 1);
                         if (Properties.getInstance().isValidToChiron) {
                             Properties.getInstance().HP += 3;
                         }
@@ -614,9 +614,9 @@ public class FunctionalMethods {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-                    if (bullet.getBounds().intersects(((Omenoct)normalEnemies.get(1)).getRectangle())) {
+                    if (bullet.getBounds().intersects(((Omenoct) normalEnemies.get(1)).getRectangle())) {
                         bulletsToRemove.add(bullet);
-                        ((Omenoct)normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
+                        ((Omenoct) normalEnemies.get(1)).setHP((normalEnemies.get(1)).getHP() - 1);
                         if (Properties.getInstance().isValidToChiron) {
                             Properties.getInstance().HP += 3;
                         }
@@ -913,12 +913,12 @@ public class FunctionalMethods {
     }
 
 
-    public static void necropickHide() {
+    public void necropickHide() {
         Timer colorChangeTimer = new Timer(4000, e -> {
             if (isNecropickInRightRange()) {
-                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
+                (normalEnemies.get(0)).setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
             } else if (isNecropickInLeftRange()) {
-                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
+                (normalEnemies.get(0)).setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
 
             }
             necropick_isVisible = true;

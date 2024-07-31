@@ -58,7 +58,6 @@ public class GameLoop implements ActionListener {
     boolean isInvisible = true;
     FunctionalMethods functionalMethod;
 
-    public Necropick necropick;
     public Archmire archmire;
 
 
@@ -105,9 +104,8 @@ public class GameLoop implements ActionListener {
         booleansOfIsValidToShow = BooleansOf_IsValidToShow.getInstance();
         (normalEnemies.get(1)).setLocation(OMENOCT_POSITION);
         (normalEnemies.get(1)).setSize(OMENOCT_SIZE);
-        necropick = Necropick.getInstance();
-        necropick.setLocation(NECROPICK_POSITION);
-        necropick.setSize(NECROPICK_SIZE);
+        ( normalEnemies.get(0)).setLocation(NECROPICK_POSITION);
+        ( normalEnemies.get(0)).setSize(NECROPICK_SIZE);
         archmire = Archmire.getInstance();
         archmire.setLocation(ARCHMIRE_POSITION);
         archmire.setSize(ARCHMIRE_SIZE);
@@ -186,9 +184,13 @@ public class GameLoop implements ActionListener {
                         shotTimer.start();
                     }
 
-                    if (spentMilliSecond == 200000) {
-                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(4, true);
+                    if (spentMilliSecond == 5000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(1, true);
+                        necropickShower.start();
+                        necropickShooter.start();
                     }
+//                    if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)){
+//                    }
 
 //                    if (spentMilliSecond == 2000) {
 //                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(6, true);
@@ -1748,12 +1750,12 @@ public class GameLoop implements ActionListener {
     public void normalEnemiesLauncher() {
 
         normalEnemies = new ArrayList<>();
-        normalEnemies.add(0,Necropick.getInstance());
+        normalEnemies.add(0,new Necropick());
         normalEnemies.add(1,new Omenoct());
         normalEnemies.add(2,Wyrm.getInstance());
+        normalEnemies.add(3,Archmire.getInstance());
 
 //        normalEnemies.addAll(Orb.getInstance());
-//        normalEnemies.add(Archmire.getInstance());
     }
 
 }
