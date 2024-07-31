@@ -8,7 +8,7 @@ import static third.all.controller.Constants.EPSILON_LENGTH;
 import static third.all.controller.Constants.EPSILON_WIDTH;
 import static third.all.gameComponents.game.GameLoop.gameObjects;
 
-public class Cerberus {
+public class Cerberus  {
     public static ArrayList<Cerberus> instance;
     private int x, y, size;
 

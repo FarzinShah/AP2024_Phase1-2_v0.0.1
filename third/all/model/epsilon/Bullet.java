@@ -5,7 +5,7 @@ import third.all.data.PanelsData;
 import java.awt.*;
 
 import static third.all.controller.Constants.COLOR1;
-import static third.all.gameComponents.game.MyPanel.panels;
+import static third.all.gameComponents.game.View.panels;
 
 public class Bullet {
     private int x, y;

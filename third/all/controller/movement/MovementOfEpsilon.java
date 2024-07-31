@@ -12,7 +12,7 @@ import java.awt.*;
 
 import static third.all.controller.Constants.*;
 import static third.all.gameComponents.game.GameLoop.gameObjects;
-import static third.all.gameComponents.game.MyPanel.panels;
+import static third.all.gameComponents.game.View.panels;
 
 public class MovementOfEpsilon {
     private static final Logger logger = LoggerFactory.getLogger(MovementOfEpsilon.class);

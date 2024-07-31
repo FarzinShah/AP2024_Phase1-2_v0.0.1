@@ -12,7 +12,7 @@ import java.awt.event.MouseMotionListener;
 
 import static third.all.data.Properties.bullets;
 import static third.all.gameComponents.game.GameLoop.*;
-import static third.all.gameComponents.game.MyPanel.timer1Starter;
+import static third.all.gameComponents.game.View.timer1Starter;
 
 public class GameMouseHandler implements MouseListener, MouseMotionListener {
     @Override

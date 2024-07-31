@@ -7,7 +7,7 @@ import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.RIGHT_HAND;
 
-public class RightHand implements Boss{
+public class RightHand implements Boss {
     public static RightHand instance;
     private Point location;
     private int size;
@@ -46,26 +46,28 @@ public class RightHand implements Boss{
         this.HP = HP;
         return this;
     }
+
     @Override
-    public Rectangle getRectangle(){
-        return new Rectangle(location.x,location.y,size,size);
+    public Rectangle getRectangle() {
+        return new Rectangle(location.x, location.y, size, size);
     }
 
     @Override
     public void draw(Graphics g, ImageObserver i) {
-        if(HP>0)
+        if (HP > 0)
             g.drawImage(RIGHT_HAND, RightHand.getInstance().getLocation().x, RightHand.getInstance().getLocation().y, RightHand.getInstance().getSize(), RightHand.getInstance().getSize(), i);
 
     }
 
-    public static RightHand getInstance(){
-        if(instance==null) {
-            instance = new RightHand(Properties.getInstance().locationOfRightHand,275, Properties.getInstance().handsOfBossHP);
+    public static RightHand getInstance() {
+        if (instance == null) {
+            instance = new RightHand(Properties.getInstance().locationOfRightHand, 275, Properties.getInstance().handsOfBossHP);
             return instance;
         }
         return instance;
     }
-    public static void setInstance(RightHand instance1){
+
+    public static void setInstance(RightHand instance1) {
         instance = instance1;
     }
 }

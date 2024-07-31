@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import third.all.controller.componentController.GreenEnemyController;
 import third.all.controller.componentController.Input;
+import third.all.controller.componentController.TKM2_Item_Model;
 import third.all.controller.componentController.YellowEnemyController;
 import third.all.controller.entity.EpsilonModel;
 import third.all.controller.entity.GreenEnemyModel;
@@ -40,12 +42,14 @@ import java.util.stream.Collectors;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 import static third.all.controller.Constants.*;
-import static third.all.data.booleans.Booleans.isCollidedY;
-import static third.all.data.booleans.Booleans.shapeIntersects;
+import static third.all.controller.Variables.rng;
 import static third.all.data.Properties.*;
+import static third.all.data.booleans.Booleans.*;
+import static third.all.data.booleans.Booleans.showOfCollectiblesHelperY;
 import static third.all.gameComponents.game.GameLoop.*;
 import static third.all.gameComponents.game.Timers.addBlackOrbsTimer;
 import static third.all.gameComponents.game.Timers.timerOfGame;
+import static third.all.gameComponents.game.View.panels;
 import static third.all.gameComponents.preGameComponent.Timer1.*;
 
 public class FunctionalMethods {
@@ -92,7 +96,7 @@ public class FunctionalMethods {
         button2.addActionListener(e -> {
             System.out.println("Button 2 pressed");
             Properties.getInstance().play = true;
-            Properties.getInstance().XP +=  (0.1 * Properties.getInstance().PR);
+            Properties.getInstance().XP += (0.1 * Properties.getInstance().PR);
             optionFrame.dispose();
 
         });
@@ -120,7 +124,7 @@ public class FunctionalMethods {
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
                         .setPosY(shot.getPosition().getY())
-                        .setRadius(( shot).getRadius())
+                        .setRadius((shot).getRadius())
                         .build())
                 .collect(Collectors.toList());
 
@@ -181,7 +185,7 @@ public class FunctionalMethods {
                 .map(shot -> new EnemyState.Builder()
                         .setPosX(shot.getPosition().getX())
                         .setPosY(shot.getPosition().getY())
-                        .setRadius(( shot).getRadius())
+                        .setRadius((shot).getRadius())
                         .build())
                 .collect(Collectors.toList());
 
@@ -233,11 +237,8 @@ public class FunctionalMethods {
         try (FileReader reader = new FileReader(SAVING_DATA_PATH)) {
             Type gameStateType = new TypeToken<GameState>() {
             }.getType();
-            Type omenoctEnemyDataType = new TypeToken<NormalEnemyData>() {
-            }.getType();
 
             GameState gameState = gson.fromJson(reader, gameStateType);
-            NormalEnemyData omenoctEnemyData = gson.fromJson(reader, omenoctEnemyDataType);
 
             elapsedTime = gameState.elapsedTime;
             timerOfGame.hours = gameState.hours;
@@ -256,9 +257,9 @@ public class FunctionalMethods {
                 yellowEnemies1.get(i).getMovementOfYellowEnemy().setVector1(gameState.enemyDirStateList.stream()
                         .map((state -> state.dir))
                         .collect(Collectors.toList()).get(i));
-                ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                 if (isCollidedY.get(i))
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
             }
 
@@ -317,9 +318,9 @@ public class FunctionalMethods {
                 yellowEnemies1.get(i).getMovementOfYellowEnemy().setVector1(gameState.enemyDirStateList.stream()
                         .map((state -> state.dir))
                         .collect(Collectors.toList()).get(i));
-                ( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
+                (yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().normalize();
                 if (isCollidedY.get(i))
-                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                    yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
 
             }
 
@@ -378,13 +379,13 @@ public class FunctionalMethods {
     }
 
     public static void writOfAstrape() {
-        Rectangle epsilon = new Rectangle((int) ( gameObjects.get(0)).getPosition().getX(), (int) ( gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
+        Rectangle epsilon = new Rectangle((int) (gameObjects.get(0)).getPosition().getX(), (int) (gameObjects.get(0)).getPosition().getY(), EPSILON_WIDTH, EPSILON_LENGTH);
         for (YellowEnemyModel yellowEnemyModel : yellowEnemies1) {
             double centerOfEpsilonX = gameObjects.get(0).getPosition().getX() + ((EpsilonModel) gameObjects.get(0)).getRadius();
             double centerOfEnemyX = yellowEnemyModel.getPosition().getX() + (yellowEnemyModel).getRadius();
             double centerOfEpsilonY = gameObjects.get(0).getPosition().getY() + ((EpsilonModel) gameObjects.get(0)).getRadius();
             double centerOfEnemyY = yellowEnemyModel.getPosition().getY() + (yellowEnemyModel).getRadius();
-            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + ( yellowEnemyModel).getRadius())) {
+            if (Math.sqrt(((centerOfEpsilonX - centerOfEnemyX) * (centerOfEpsilonX - centerOfEnemyX)) + ((centerOfEpsilonY - centerOfEnemyY) * (centerOfEpsilonY - centerOfEnemyY))) < (((EpsilonModel) gameObjects.get(0)).getRadius() + (yellowEnemyModel).getRadius())) {
                 yellowEnemyModel.setLifeValue(yellowEnemyModel.getLifeValue() - 2);
             }
         }
@@ -637,19 +638,6 @@ public class FunctionalMethods {
 
             }
 
-           /* todo:these were for phase1:
-           for (int i = 3; i < 5; i++) {
-                if(bullet.getBounds().intersects(getBoundsGreenEnemy(i))){
-                    bulletsToRemove.add(bullet);
-                    ((GreenEnemyModel)gameObjects.get(i)).setLifeValue(((GreenEnemyModel)gameObjects.get(i)).getLifeValue()-1);
-                }
-            }
-            for (int i = 1; i < 3; i++) {
-                if(bullet.getBounds().intersects(getBoundsYellowEnemy(i))){
-                    bulletsToRemove.add(bullet);
-                    ((YellowEnemyModel)gameObjects.get(i)).setLifeValue(((YellowEnemyModel)gameObjects.get(i)).getLifeValue()-1);
-                }
-            }*/
         }
 
         for (Bullet bullet : bulletsOfOmenoct) {
@@ -890,6 +878,64 @@ public class FunctionalMethods {
                 }
             }
         }
+    }
+
+    public static void launchCollectibles() {
+        showOfCollectiblesG = new ArrayList<>();
+        showOfCollectiblesHelperG = new ArrayList<>();
+        showOfCollectiblesHelperY = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            showOfCollectiblesG.add(i, false);
+            showOfCollectiblesHelperG.add(i, true);
+            showOfCollectiblesHelperY.add(i, true);
+            BooleansOfCollectibles.getInstance().getIsValidYEtoCollect().add(i, true);
+            BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().add(i, true);
+
+        }
+        collectibleItems = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            collectibleItems.add(i, new TKM2_Item_Model(new Position(-1, -1)));
+        }
+        collectibleItemsG = new ArrayList<>();
+
+        for (int i = 0; i < 100; i++) {
+            collectibleItemsG.add(i, new TKM2_Item_Model(new Position(-1, -1)));
+        }
+    }
+
+
+    public static void necropickHide() {
+        Timer colorChangeTimer = new Timer(4000, e -> {
+            if (isNecropickInRightRange()) {
+                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
+            } else if (isNecropickInLeftRange()) {
+                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
+
+            }
+            necropick_isVisible = true;
+        });
+        necropick_isVisible = false;
+        colorChangeTimer.setRepeats(false);
+        colorChangeTimer.start();
+    }
+
+    public static boolean isNecropickInRightRange() {
+        return (gameObjects.get(0)).getPosition().getX() + 200 < panels.get(0).getRightX();
+    }
+
+    public static boolean isNecropickInLeftRange() {
+        return (gameObjects.get(0)).getPosition().getX() - 200 < panels.get(0).getX();
+    }
+
+    public static void launchP1Enemies(Input input) {
+        for (int i = 0; i < 2; i++) { // 10
+            gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
+        }
+        for (int i = 0; i < 2; i++) { //
+            gameObjects.add(new GreenEnemyModel(new GreenEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
+
+        }
+
     }
 
 }

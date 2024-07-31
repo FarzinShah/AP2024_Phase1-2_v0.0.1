@@ -18,7 +18,6 @@ import third.all.data.Properties;
 
 import third.all.data.booleans.*;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
-import third.all.gameComponents.preGameComponent.Timer1;
 import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
@@ -42,14 +41,14 @@ import java.util.concurrent.Executors;
 import static third.all.controller.Constants.*;
 import static third.all.controller.Variables.rng;
 import static third.all.data.Properties.*;
-import static third.all.gameComponents.game.MyPanel.*;
+import static third.all.gameComponents.game.View.*;
 import static third.all.gameComponents.preGameComponent.Timer1.*;
 import static third.all.data.booleans.Booleans.*;
 import static third.all.gameComponents.game.Timers.*;
 
 
 public class GameLoop implements ActionListener {
-    MyPanel panel;
+    View view;
     MyFrame frame;
     private static final Logger logger = LoggerFactory.getLogger(GameLoop.class);
 
@@ -58,7 +57,6 @@ public class GameLoop implements ActionListener {
 
     boolean isInvisible = true;
     FunctionalMethods functionalMethod;
-    boolean boo = true;
 
 
     public Omenoct omenoct;
@@ -66,10 +64,6 @@ public class GameLoop implements ActionListener {
     public Archmire archmire;
 
 
-    public static boolean isValid7 = false;
-    public static boolean isValid8 = true;
-
-    public static boolean isValidStore = true;
     public static ArrayList<GameObject> gameObjects;
     public static List<YellowEnemyModel> yellowEnemies1;
     public static ArrayList<GameObject> greenEnemies1;
@@ -99,13 +93,14 @@ public class GameLoop implements ActionListener {
     GameKeyListener gameKeyListener;
     GameMouseHandler gameMouseHandler;
     Timers timerController;
+    ArrayList<NormalEnemy> normalEnemies;
 
 
     public GameLoop() throws UnsupportedAudioFileException, IOException {
         frame = new MyFrame();
         ClipHandler.getInstance().playBackgroundMusic();
 
-        logger.info("GameFrame initialized.");
+        logger.info("GameLoop initialized.");
         functionalMethod = new FunctionalMethods();
         booleansOfEnemies = BooleansOfEnemies.getInstance();
         booleansOfIsValidToShow = BooleansOf_IsValidToShow.getInstance();
@@ -121,94 +116,40 @@ public class GameLoop implements ActionListener {
         yellowEnemies1 = new ArrayList<>();
         greenEnemies1 = new ArrayList<>();
         blackOrbPanels = new ArrayList<>();
+        normalEnemiesLauncher();
 
         input = new Input();
-        panel = new MyPanel(input);
+        view = new View(input, normalEnemies);
         timerController = new Timers();
 
-
-//        shotTimer.start(); //todo: هرموقع وقتش شد استارتش کنم
-
-        necropickShower = new Timer(12000, e -> necropickHide());
-//        necropickShower.start(); //todo: هرموقع وقتش شد استارتش کنم
-
-
-        timerOfGame = new Timer1();
         targetWithMouse = new TargetWithMouse(new Point2D.Double(0, 0));
         twm_item_model = new TWM_Item_Model(new Point2D.Double(rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0), rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0)));
-        panel.setTwm_item_model1(twm_item_model);
+        view.setTwm_item_model1(twm_item_model);
         gameObjects = new ArrayList<>();
 
         frame.setUndecorated(true);
         frame.setBackground(new Color(0, 0, 0, 0)); // todo: همینه که کار رو درمیاره :)))))))
         frame.setVisible(true);
-        frame.add(panel);
+        frame.add(view);
+        FunctionalMethods.launchCollectibles();
 
-        showOfCollectiblesG = new ArrayList<>();
-        showOfCollectiblesHelperG = new ArrayList<>();
-        showOfCollectiblesHelperY = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            showOfCollectiblesG.add(i, false);
-            showOfCollectiblesHelperG.add(i, true);
-            showOfCollectiblesHelperY.add(i, true);
-            BooleansOfCollectibles.getInstance().getIsValidYEtoCollect().add(i, true);
-            BooleansOfCollectibles.getInstance().getIsValidOrbToCollect().add(i, true);
-
-        }
-
-
-//        Arrays.fill(showOfCollectibles, false);
-        collectibleItems = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            collectibleItems.add(i, new TKM2_Item_Model(new Position(-1, -1)));
-        }
-        collectibleItemsG = new ArrayList<>();
-
-        for (int i = 0; i < 100; i++) {
-            collectibleItemsG.add(i, new TKM2_Item_Model(new Position(-1, -1)));
-        }
         gameKeyListener = new GameKeyListener(input);
-        panel.addKeyListener(gameKeyListener);
+        view.addKeyListener(gameKeyListener);
 
         int delay = 0;
         time = new Timer(delay, this);
         time.start();
         timer1 = new Timer(0, this);
         gameMouseHandler = new GameMouseHandler();
-        panel.addMouseListener(gameMouseHandler);
-        panel.addMouseMotionListener(gameMouseHandler);
-        panel.addMouseListener(targetWithMouse);
-        panel.addMouseMotionListener(targetWithMouse);
-
-
-        frame.setBounds(0, 0, 1440, 720); // todo:
-
+        view.addMouseListener(gameMouseHandler);
+        view.addMouseMotionListener(gameMouseHandler);
+        view.addMouseListener(targetWithMouse);
+        view.addMouseMotionListener(targetWithMouse);
+        frame.setBounds(0, 0, 1440, 720);
         properties = Properties.getInstance();
         gameObjects.add(new EpsilonModel(new EpsilonController(input), 230, 330));
-
-
-        for (int i = 0; i < 2; i++) { // 10
-            gameObjects.add(new YellowEnemyModel(new YellowEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
-        }
-        for (int i = 0; i < 2; i++) { //
-            gameObjects.add(new GreenEnemyModel(new GreenEnemyController(input), 20, rng(-300, -10), rng(100, 200))); // این posX و posY نقطه گوشه بالا چپ رو معلوم میکنن.
-
-        }
-
-
-        for (int i = 0; i < 100; i++) {
-            isCollidedY.add(i, false);
-        }
-        for (int i = 0; i < 100; i++) {
-            isCollidedG.add(i, false);
-        }
-        for (int i = 0; i < 100; i++) {
-            isCollided.add(i, false);
-        }
-        for (int i = 0; i < 100; i++) {
-            isCollidedEnemies.add(i, false);
-        }
-
+        FunctionalMethods.launchP1Enemies(input); //todo: no attention needed!
+        Booleans.launchIsCollided();
         startGameLoop();
 
     }
@@ -546,7 +487,6 @@ public class GameLoop implements ActionListener {
             }
 
 
-
             //Todo: BossFight
             if (Properties.getInstance().WAVE == 6) {
                 if (!HelpingBooleans.getInstance().isBossPanelLaunched) {
@@ -588,7 +528,7 @@ public class GameLoop implements ActionListener {
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToAttackBoss().get(0)) {
 
                     if (!HelpingBooleans.getInstance().isSqueezedFinished) {
-                        if (LeftHand.getInstance().getLocation().x + (double)(2 * LeftHand.getInstance().getSize() / 5) > PanelsData.getInstance().getBossPanel().getX()) {
+                        if (LeftHand.getInstance().getLocation().x + (double) (2 * LeftHand.getInstance().getSize() / 5) > PanelsData.getInstance().getBossPanel().getX()) {
                             LeftHand.getInstance().setLocation(new Point(LeftHand.getInstance().getLocation().x - 1, LeftHand.getInstance().getLocation().y));
                         } else {
                             HelpingBooleans.getInstance().isSqueezed = true;
@@ -1086,7 +1026,7 @@ public class GameLoop implements ActionListener {
         if (isInvisible && ((EpsilonModel) gameObjects.get(0)).sizeOfEpsilon.getWidth() >= PANEL_SIZE.getWidth()) {
             Properties.getInstance().play = false;
             if (isValid8) {
-                panel.setVisible(false);
+                view.setVisible(false);
 //                frame.dispose();
                 disposer();
                 new GameOverFrame();
@@ -1129,7 +1069,7 @@ public class GameLoop implements ActionListener {
 
 
 //        time.restart();
-        panel.repaint();
+        view.repaint();
         frame.repaint();
     }
 
@@ -1140,18 +1080,6 @@ public class GameLoop implements ActionListener {
 
         if (Properties.getInstance().play) update();
     }
-
-
-/* // todo: these were for phase1
-    public void setDefaultShots() {
-        for (int i = 0; i < numberOfShots; i++) {
-            shotsOfEpsilons.add(i, new ShotOfEpsilon(-1, 2, 100000000 + 15, 1000000000));  // برای مقدار واقعی، dir ها رو یه منفی ضرب کن
-        }
-        for (int i = 0; i < numberOfShots; i++) {
-            validShots.add(i, false);
-        }
-    }
-*/
 
     public static GameLoop getINSTANCE() {
         if (INSTANCE == null) {
@@ -1186,34 +1114,10 @@ public class GameLoop implements ActionListener {
         timer1.stop();
         timerOfGame.reset();
         timerOfGame.stop();
-        panel.removeAll();
+        view.removeAll();
 
         Properties.getInstance().HP = 100;
         Properties.getInstance().XP = 0.0;
-    }
-
-
-    private void necropickHide() {
-        Timer colorChangeTimer = new Timer(4000, e -> {
-            if (isNecropickInRightRange()) {
-                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() + 200), (int) (gameObjects.get(0)).getPosition().getY()));
-            } else if (isNecropickInLeftRange()) {
-                Necropick.getInstance().setLocation(new Point((int) ((gameObjects.get(0)).getPosition().getX() - 200), (int) (gameObjects.get(0)).getPosition().getY()));
-
-            }
-            necropick_isVisible = true;
-        });
-        necropick_isVisible = false;
-        colorChangeTimer.setRepeats(false);
-        colorChangeTimer.start();
-    }
-
-    public boolean isNecropickInRightRange() {
-        return (gameObjects.get(0)).getPosition().getX() + 200 < panels.get(0).getRightX();
-    }
-
-    public boolean isNecropickInLeftRange() {
-        return (gameObjects.get(0)).getPosition().getX() - 200 < panels.get(0).getX();
     }
 
     public void isValidToShowYE() {
@@ -1346,7 +1250,7 @@ public class GameLoop implements ActionListener {
                 for (int i = 0; i < yellowEnemies1.size(); i++) {
                     if (i == j) {
                         ACCELERATION_OF_YELLOW_ENEMIES = 2;
-                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -( yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
+                        yellowEnemies1.get(i).getPosition().applyOfYellowEnemy(new MovementOfYellowEnemy(0, -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getX(), -(yellowEnemies1.get(i)).getMovementOfYellowEnemy().getVector1().getY()));
                     }
                 }
 
@@ -1508,7 +1412,7 @@ public class GameLoop implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - (double)(omenoct.getSize() / 2) < panels.get(0).getX()) {
+                        if (omenoct.getLocation().x - (double) (omenoct.getSize() / 2) < panels.get(0).getX()) {
                             omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                         }
                     }
@@ -1537,7 +1441,7 @@ public class GameLoop implements ActionListener {
                             omenoct.setLocation(new Point(omenoct.getLocation().x + 2, omenoct.getLocation().y));
                         }
                     }
-                    if (omenoct.getLocation().x - (double)(omenoct.getSize() / 2) < panels.get(0).getX()) {
+                    if (omenoct.getLocation().x - (double) (omenoct.getSize() / 2) < panels.get(0).getX()) {
                         omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                     }
                     if (omenoct.getLocation().x + (omenoct.getSize() / 2) > panels.get(0).getRightX()) {
@@ -1592,7 +1496,7 @@ public class GameLoop implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().y - ((double)omenoct.getSize() / 2) < panels.get(0).getY()) {
+                        if (omenoct.getLocation().y - ((double) omenoct.getSize() / 2) < panels.get(0).getY()) {
                             omenoct.setLocation(new Point((int) panels.get(0).getX(), (int) omenoct.getLocation().getY() + (omenoct.getSize() / 2)));
                         }
                     }
@@ -1617,7 +1521,7 @@ public class GameLoop implements ActionListener {
                         }
                     }
                     if (panels.get(0).getRectangle().contains(epsilon)) {
-                        if (omenoct.getLocation().x - ((double)omenoct.getSize() / 2) < panels.get(0).getX()) {
+                        if (omenoct.getLocation().x - ((double) omenoct.getSize() / 2) < panels.get(0).getX()) {
                             omenoct.setLocation(new Point((int) (panels.get(0).getX() + (omenoct.getSize() / 2)), (int) omenoct.getLocation().getY()));
                         }
                     }
@@ -1745,7 +1649,7 @@ public class GameLoop implements ActionListener {
     public void funcOfBarricados() {
         Rectangle epsilon = gameObjects.get(0).getBounds();
         Rectangle edge1 = new Rectangle(Barricados.getInstance().getLocation().x - 20, Barricados.getInstance().getLocation().y, Barricados.getInstance().getSize() + 35, 1);
-        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x - 30, Barricados.getInstance().getLocation().y - (EPSILON_LENGTH / 2), 1, Barricados.getInstance().getSize() -(EPSILON_LENGTH / 2) + 60);
+        Rectangle edge2 = new Rectangle(Barricados.getInstance().getLocation().x - 30, Barricados.getInstance().getLocation().y - (EPSILON_LENGTH / 2), 1, Barricados.getInstance().getSize() - (EPSILON_LENGTH / 2) + 60);
         Rectangle edge3 = new Rectangle(Barricados.getInstance().getLocation().x + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getLocation().y, 1, Barricados.getInstance().getSize() + 20);
         Rectangle edge4 = new Rectangle(Barricados.getInstance().getLocation().x - 10, Barricados.getInstance().getLocation().y + Barricados.getInstance().getSize() + 25, Barricados.getInstance().getSize() + 45, 1);
 
@@ -1772,7 +1676,7 @@ public class GameLoop implements ActionListener {
     }
 
     public void laserOfBlackOrbs() {
-        if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(5)) {
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(5)) {
             Rectangle epsilon = gameObjects.get(0).getBounds();
             float thickness = 10.0f;
             BasicStroke stroke = new BasicStroke(thickness);
@@ -1842,6 +1746,15 @@ public class GameLoop implements ActionListener {
 
 
         executor.shutdown();
+    }
+
+    public void normalEnemiesLauncher() {
+        normalEnemies = new ArrayList<>();
+        normalEnemies.add(Necropick.getInstance());
+        normalEnemies.add(Omenoct.getInstance());
+        normalEnemies.addAll(Orb.getInstance());
+        normalEnemies.add(Archmire.getInstance());
+        normalEnemies.add(Wyrm.getInstance());
     }
 
 }

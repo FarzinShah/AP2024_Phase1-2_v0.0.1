@@ -1,8 +1,15 @@
 package third.all.model.normalEnemies;
+
+import third.all.data.booleans.BooleansOf_IsValidToShow;
+
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.awt.image.ImageObserver;
 
-public class Omenoct implements NormalEnemyModel{
+import static third.all.controller.Constants.NECROPICK;
+import static third.all.controller.Constants.OMENOCT;
+
+public class Omenoct extends NormalEnemy implements NormalEnemyModel {
     public static Omenoct instance;
     private Point location;
     private int size;
@@ -14,28 +21,33 @@ public class Omenoct implements NormalEnemyModel{
         this.size = size;
     }
 
-    public Omenoct(){}
+    public Omenoct() {
+    }
 
     @Override
     public Point getLocation() {
         return location;
     }
+
     @Override
     public void setLocation(Point location) {
         this.location = location;
     }
+
     @Override
     public int getSize() {
         return size;
     }
+
     @Override
     public void setSize(int size) {
         this.size = size;
     }
 
-    public Rectangle getRectangle(){
-        return new Rectangle(location.x,location.y,size,size);
+    public Rectangle getRectangle() {
+        return new Rectangle(location.x, location.y, size, size);
     }
+
     public Shape getShape() {
         Path2D.Double octagon = new Path2D.Double();
         double angleStep = Math.PI / 4;
@@ -55,6 +67,11 @@ public class Omenoct implements NormalEnemyModel{
         return octagon;
     }
 
+    public static void draw(Graphics g, ImageObserver i) {
+        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
+            g.drawImage(OMENOCT, Omenoct.getInstance().getLocation().x, Omenoct.getInstance().getLocation().y, Omenoct.getInstance().getSize() * 2, Omenoct.getInstance().getSize() * 2, i);
+        }
+    }
 
     public int getRadius() {
         return radius;
@@ -72,8 +89,8 @@ public class Omenoct implements NormalEnemyModel{
         this.HP = HP;
     }
 
-    public static Omenoct getInstance(){
-        if(instance==null) {
+    public static Omenoct getInstance() {
+        if (instance == null) {
             instance = new Omenoct();
             return instance;
         }

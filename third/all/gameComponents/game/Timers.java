@@ -33,6 +33,9 @@ public class Timers {
     public static Timer attackOfOrbsOnEpsilon;
 
     public Timers() {
+        timerOfGame = new Timer1();
+        necropickShower = new Timer(12000, e -> FunctionalMethods.necropickHide());
+//        necropickShower.start(); //todo: هرموقع وقتش شد استارتش کنم
         barricadosValidatorTimer = new Timer(120000, e -> {
             if (Properties.getInstance().barricadosMode == 1) {
                 BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().set(6, false);

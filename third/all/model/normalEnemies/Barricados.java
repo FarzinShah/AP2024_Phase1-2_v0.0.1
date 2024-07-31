@@ -7,7 +7,7 @@ import java.awt.image.ImageObserver;
 
 import static third.all.controller.Constants.BARRICADOS;
 
-public class Barricados implements NormalEnemyModel {
+public class Barricados extends NormalEnemy implements NormalEnemyModel {
     public static Barricados instance;
     private Point location;
     private int size;
@@ -38,6 +38,11 @@ public class Barricados implements NormalEnemyModel {
         this.size = size;
     }
 
+
+    @Override
+    int getHP() {
+        return 0;
+    }
 
 
     public static Barricados getInstance(){

@@ -97,6 +97,9 @@ public class Booleans {
     public static LinkedList<Boolean> isCollided = new LinkedList<>();
     public static LinkedList<Boolean> isCollidedEnemies = new LinkedList<>();
 
+    public static boolean isValid7 = false;
+    public static boolean isValid8 = true;
+    public static boolean isValidStore = true;
 
 
 
@@ -105,6 +108,23 @@ public class Booleans {
         Area area2 = new Area(s2);
         area1.intersect(area2);
         return !area1.isEmpty();
+    }
+
+    public static void launchIsCollided(){
+
+        for (int i = 0; i < 100; i++) {
+            isCollidedY.add(i, false);
+        }
+        for (int i = 0; i < 100; i++) {
+            isCollidedG.add(i, false);
+        }
+        for (int i = 0; i < 100; i++) {
+            isCollided.add(i, false);
+        }
+        for (int i = 0; i < 100; i++) {
+            isCollidedEnemies.add(i, false);
+        }
+
     }
 
 

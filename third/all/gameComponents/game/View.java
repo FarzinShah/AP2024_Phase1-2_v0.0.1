@@ -32,7 +32,7 @@ import static third.all.gameComponents.preGameComponent.Settings.informationsOfS
 import static third.all.gameComponents.preGameComponent.Timer1.elapsedTime;
 import static third.all.data.booleans.Booleans.*;
 
-public class MyPanel extends JPanel implements Runnable {
+public class View extends JPanel implements Runnable {
     public static boolean timer1Starter = false;
     private final Color backGround = Color.BLACK;
     private final Color backGroundTest = Color.GRAY;
@@ -46,15 +46,17 @@ public class MyPanel extends JPanel implements Runnable {
     public static ArrayList<Panel> panels;
     private Panel redZone;
     private Rectangle redZoneRectangle;
+    private ArrayList<NormalEnemy> normalEnemies;
 
 
-    public MyPanel(Input input) {
+    public View(Input input, ArrayList<NormalEnemy> normalEnemies) {
         panels = new ArrayList<>();
+        this.normalEnemies = normalEnemies;
 
 
         redZone = PanelsData.getInstance().getRedZone();
         redZoneRectangle = new Rectangle((int) redZone.getX(), (int) redZone.getY(), (int) redZone.getWidth(), (int) redZone.getHeight());
-        panels.add(0, new Panel( STARTING_POINT.x,  STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
+        panels.add(0, new Panel(STARTING_POINT.x, STARTING_POINT.y, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH, (int) Properties.getInstance().GLASS_FRAME_DIMENSION_HEIGHT));
         panels.add(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
         Thread gameThread = new Thread(this);
         gameThread.start();
@@ -93,19 +95,12 @@ public class MyPanel extends JPanel implements Runnable {
         g.setColor(BLUE_BACKGROUND);
         showAlert(g);
 
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)) {
-            g.drawImage(NECROPICK, Necropick.getInstance().getLocation().x, Necropick.getInstance().getLocation().y, Necropick.getInstance().getSize(), Necropick.getInstance().getSize(), this);
-        }
+        Necropick.draw(g, this);
+        Omenoct.draw(g, this);
+        Wyrm.draw(g, this);
+        Barricados.draw(g, this);
+        Orb.draw(g, this);
 
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
-            g.drawImage(OMENOCT, Omenoct.getInstance().getLocation().x, Omenoct.getInstance().getLocation().y, Omenoct.getInstance().getSize() * 2, Omenoct.getInstance().getSize() * 2, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-            Wyrm.draw(g, this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(4)) {
-            Barricados.draw(g, this);
-        }
 
         if (BooleansOf_IsValidToShow.getInstance().isValidToShowBossPanel()) {
             RightHand.getInstance().draw(g, this);
@@ -121,18 +116,8 @@ public class MyPanel extends JPanel implements Runnable {
         g.setColor(new Color(0, 0, 0, 60));
         g.fillRect(250, 250, 500, 500);
 //        g.setColor(Color.WHITE);
-        g.setColor(new Color(0x94676464, true));
-        float[] dashingPattern1 = {5, 30};
-        Stroke stroke1 = new BasicStroke(2f, BasicStroke.CAP_BUTT,
-                BasicStroke.JOIN_MITER, 1.0f, dashingPattern1, 2.0f);
 
-        ((Graphics2D) g).setStroke(stroke1);
 
-        g.drawLine(100, 100, 400, 400);
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowBlackOrbPanels().get(5)) {
-            Orb.draw(g, this);
-        }
-//        ((Graphics2D) g).fill(createOctagonShape(OMENOCT_POSITION.x+25,OMENOCT_POSITION.y+25,OMENOCT_SIZE+2));
 
 
         // item pointer of mouse:
@@ -329,7 +314,7 @@ public class MyPanel extends JPanel implements Runnable {
     }
 
 
-    public void panelLauncher(Graphics g){
+    public void panelLauncher(Graphics g) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowPanels().get(2)) {
             synchronized (PanelsData.getInstance().getPanels().get(1)) {
                 PanelsData.getInstance().getPanels().set(1, new Panel((int) Properties.getInstance().SECOND_FRAME_LOCATION_X, (int) Properties.getInstance().SECOND_FRAME_LOCATION_Y, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2, Properties.getInstance().GLASS_FRAME_DIMENSION_WIDTH / 2));
@@ -388,7 +373,8 @@ public class MyPanel extends JPanel implements Runnable {
 
 
     }
-    public void shootsLauncher(Graphics g){
+
+    public void shootsLauncher(Graphics g) {
         synchronized (backGroundTest) {
             for (Bullet bullet : bullets) {
                 bullet.draw(g);
@@ -449,16 +435,9 @@ public class MyPanel extends JPanel implements Runnable {
                 collectable.draw(g);
             }
         }
-        g.setColor(new Color(0x44981062, true));
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
-            synchronized (Archmire.getInstance().getTrails()) {
-                for (Point trail : Archmire.getInstance().getTrails()) {
-                    g.fillOval(trail.x, trail.y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize());
-                }
-            }
-            g.drawImage(ARCHMIRE, Archmire.getInstance().getLocation().x, Archmire.getInstance().getLocation().y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize(), this);
-        }
-        if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
+
+        Archmire.draw(g,this);
+             if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) Cerberus.draw(g);
 
     }
 
