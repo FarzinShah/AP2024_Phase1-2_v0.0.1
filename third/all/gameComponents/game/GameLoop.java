@@ -22,7 +22,7 @@ import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
-import third.all.model.epsilon.Bullet;
+import third.all.model.epsilonTools.Bullet;
 import third.all.model.normalEnemies.*;
 
 
@@ -57,8 +57,6 @@ public class GameLoop implements ActionListener {
 
     boolean isInvisible = true;
     FunctionalMethods functionalMethod;
-
-    public Archmire archmire;
 
 
     public static ArrayList<GameObject> gameObjects;
@@ -106,9 +104,8 @@ public class GameLoop implements ActionListener {
         (normalEnemies.get(1)).setSize(OMENOCT_SIZE);
         ( normalEnemies.get(0)).setLocation(NECROPICK_POSITION);
         ( normalEnemies.get(0)).setSize(NECROPICK_SIZE);
-        archmire = Archmire.getInstance();
-        archmire.setLocation(ARCHMIRE_POSITION);
-        archmire.setSize(ARCHMIRE_SIZE);
+        ( normalEnemies.get(3)).setLocation(ARCHMIRE_POSITION);
+        ( normalEnemies.get(3)).setSize(ARCHMIRE_SIZE);
         yellowEnemies1 = new ArrayList<>();
         greenEnemies1 = new ArrayList<>();
         blackOrbPanels = new ArrayList<>();
@@ -116,6 +113,7 @@ public class GameLoop implements ActionListener {
         input = new Input();
         view = new View(input, normalEnemies);
         timerController = new Timers();
+        timerController.setArchmire(((Archmire) normalEnemies.get(3)));
 
         targetWithMouse = new TargetWithMouse(new Point2D.Double(0, 0));
         twm_item_model = new TWM_Item_Model(new Point2D.Double(rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0), rng(STARTING_POINT.x + 50.0, STARTING_POINT.y + 300.0)));
@@ -192,9 +190,9 @@ public class GameLoop implements ActionListener {
 //                    if(BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(1)){
 //                    }
 
-//                    if (spentMilliSecond == 2000) {
-//                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(6, true);
-//                    }
+                    if (spentMilliSecond == 2000) {
+                        BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(0, true);
+                    }
 //                    if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(6)) {
 //                        writOfCerberus();
 //                    }
@@ -1573,14 +1571,14 @@ public class GameLoop implements ActionListener {
     public void movementOfArchmire() {
         //TODO: Archmire movement:
         if (booleansOfIsValidToShow.getIsValidToShowEnemies().get(0)) {
-            if (archmire.getLocation().x < panels.get(0).getRightX() - archmire.getSize() - 50 && isRightMoveArchmire) {
-                archmire.setLocation(new Point(archmire.getLocation().x + 1, archmire.getLocation().y));
-            } else if (archmire.getLocation().x == panels.get(0).getRightX() - archmire.getSize() - 50) {
+            if (( normalEnemies.get(3)).getLocation().x < panels.get(0).getRightX() - ( normalEnemies.get(3)).getSize() - 50 && isRightMoveArchmire) {
+                ( normalEnemies.get(3)).setLocation(new Point(( normalEnemies.get(3)).getLocation().x + 1, ( normalEnemies.get(3)).getLocation().y));
+            } else if (( normalEnemies.get(3)).getLocation().x == panels.get(0).getRightX() - ( normalEnemies.get(3)).getSize() - 50) {
                 isRightMoveArchmire = false;
-            } else if (archmire.getLocation().x > panels.get(0).getX() && !isRightMoveArchmire) {
-                archmire.setLocation(new Point(archmire.getLocation().x - 1, archmire.getLocation().y));
+            } else if (( normalEnemies.get(3)).getLocation().x > panels.get(0).getX() && !isRightMoveArchmire) {
+                ( normalEnemies.get(3)).setLocation(new Point(( normalEnemies.get(3)).getLocation().x - 1, ( normalEnemies.get(3)).getLocation().y));
 
-            } else if (archmire.getLocation().x == panels.get(0).getX()) isRightMoveArchmire = true;
+            } else if (( normalEnemies.get(3)).getLocation().x == panels.get(0).getX()) isRightMoveArchmire = true;
         }
 
 
@@ -1610,38 +1608,39 @@ public class GameLoop implements ActionListener {
     public void movementOfWyrm() {
         //todo: Wyrm
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-            double distanceX = (int) (gameObjects.get(0).getPosition().getX() - Wyrm.getInstance().getLocation().x);
-            double distanceY = (int) (gameObjects.get(0).getPosition().getY() - Wyrm.getInstance().getLocation().y);
+            double distanceX = (int) (gameObjects.get(0).getPosition().getX() - (normalEnemies.get(2)).getLocation().x);
+            double distanceY = (int) (gameObjects.get(0).getPosition().getY() - (normalEnemies.get(2)).getLocation().y);
             double oDistance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             if (HelpingBooleans.getInstance().isOnOrbitWyrm) {
                 int secX = (int) (gameObjects.get(0).getPosition().getX() + Properties.getInstance().radiusOfOrbitWyrm * Math.cos(Math.toRadians(Properties.getInstance().angleOfOrbitWyrm)));
                 int secY = (int) (gameObjects.get(0).getPosition().getY() + (Properties.getInstance().constantOfOrbitalMovement) * Properties.getInstance().radiusOfOrbitWyrm * Math.sin(Math.toRadians(Properties.getInstance().angleOfOrbitWyrm)));
 
-                Wyrm.getInstance().setLocation(new Point(secX, secY));
+                (normalEnemies.get(2)).setLocation(new Point(secX, secY));
 
             }
             if (oDistance > 150) {
-                Wyrm.getInstance().setLocation(new Point(Wyrm.getInstance().getLocation().x - 3, Wyrm.getInstance().getLocation().y));
+                (normalEnemies.get(2)).setLocation(new Point((normalEnemies.get(2)).getLocation().x - 3,(normalEnemies.get(2)).getLocation().y));
 
             } else if (oDistance < 150) {
-                Wyrm.getInstance().setValidToShoot(true);
+               HelpingBooleans.getInstance().isValidToShootWyrm = true;
                 HelpingBooleans.getInstance().isOnOrbitWyrm = true;
             }
         }
 
-        if (Wyrm.getInstance().isValidToShoot()) {
+        if (HelpingBooleans.getInstance().isValidToShootWyrm) {
             wyrmShooter.start();
         }
 
-        if (Wyrm.getInstance().getHP() <= 0) {
+        if ((normalEnemies.get(2)).getHP() <= 0) {
             BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().set(3, false);
             if (BooleansOfCollectibles.getInstance().isValidToCollectWyrm()) {
-                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
-                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable(Wyrm.getInstance().getLocation().x - 20, Wyrm.getInstance().getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable((normalEnemies.get(2)).getLocation().x, (normalEnemies.get(2)).getLocation().y + 10, 10, Color.LIGHT_GRAY));
+                CollectablesOfEnemies.getInstance().getCollectablesOfOrbs().add(new Collectable((normalEnemies.get(2)).getLocation().x - 20, (normalEnemies.get(2)).getLocation().y + 10, 10, Color.LIGHT_GRAY));
                 BooleansOfCollectibles.getInstance().setValidToCollectWyrm(false);
             }
             wyrmShooter.stop();
         }
+
 
     }
 
@@ -1752,8 +1751,8 @@ public class GameLoop implements ActionListener {
         normalEnemies = new ArrayList<>();
         normalEnemies.add(0,new Necropick());
         normalEnemies.add(1,new Omenoct());
-        normalEnemies.add(2,Wyrm.getInstance());
-        normalEnemies.add(3,Archmire.getInstance());
+        normalEnemies.add(2,new Wyrm(new Point(1200, 200), 12));
+        normalEnemies.add(3,new Archmire());
 
 //        normalEnemies.addAll(Orb.getInstance());
     }

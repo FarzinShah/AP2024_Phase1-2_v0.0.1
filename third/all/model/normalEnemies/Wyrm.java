@@ -1,6 +1,7 @@
 package third.all.model.normalEnemies;
 
 import third.all.data.booleans.BooleansOf_IsValidToShow;
+import third.all.data.booleans.HelpingBooleans;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -12,13 +13,12 @@ public class Wyrm extends NormalEnemy {
     private Point location;
     private int size;
     private int HP;
-    private boolean isValidToShoot;
 
-    Wyrm(Point location, int HP) {
+    public Wyrm(Point location, int HP) {
         size = 50;
         this.location = location;
         this.HP = HP;
-        isValidToShoot = false;
+        HelpingBooleans.getInstance().isValidToShootWyrm = false;
     }
 
     @Override
@@ -51,15 +51,7 @@ public class Wyrm extends NormalEnemy {
         this.HP = HP;
     }
 
-    public boolean isValidToShoot() {
-        return isValidToShoot;
-    }
-
-    public void setValidToShoot(boolean validToShoot) {
-        isValidToShoot = validToShoot;
-    }
-
-    public static Wyrm getInstance() {
+    public static Wyrm getInstance() { //todo: -Out of work: MVC
         if (instance == null) {
             instance = new Wyrm(new Point(1200, 200), 12);
             return instance;
@@ -69,7 +61,7 @@ public class Wyrm extends NormalEnemy {
 
     public void draw(Graphics g, ImageObserver i) {
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-            g.drawImage(WYRM, Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y, Wyrm.getInstance().getSize() + 25, Wyrm.getInstance().getSize() + 25, i);
+            g.drawImage(WYRM, getLocation().x, getLocation().y, getSize() + 25, getSize() + 25, i);
         }
     }
 

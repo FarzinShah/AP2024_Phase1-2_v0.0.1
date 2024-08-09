@@ -18,14 +18,14 @@ public class PanelsData {
     private Panel wyrm;
     private Panel barricados;
     private Panel bossPanel;
-
-
+//    private Wyrm wyrm1;
 
     public PanelsData(){
         panels = new ArrayList<>();
         blackOrbPanels = new ArrayList<>();
+
         redZone = new Panel((int)rng(STARTING_POINT.x,STARTING_POINT.x+300),(int)rng(STARTING_POINT.y,STARTING_POINT.y+300),60,60);
-        wyrm = new Panel(Wyrm.getInstance().getLocation().x,Wyrm.getInstance().getLocation().y,80,80);
+        wyrm = new Panel(1200,200,80,80);
         barricados = new Panel(Barricados.getInstance().getLocation().x,Barricados.getInstance().getLocation().y,80,80);
         bossPanel = new Panel(Properties.getInstance().locationOfBossPanel.x,Properties.getInstance().locationOfBossPanel.y,Properties
                 .getInstance().sizeOfBossPanel.getWidth(),Properties.getInstance().sizeOfBossPanel.getHeight());
@@ -92,6 +92,14 @@ public class PanelsData {
         this.bossPanel = bossPanel;
         return this;
     }
+
+//    public Wyrm getWyrm1() {
+//        return wyrm1;
+//    }
+//
+//    public void setWyrm1(Wyrm wyrm1) {
+//        this.wyrm1 = wyrm1;
+//    }
 
     public static PanelsData getInstance(){
         if(instance==null) {

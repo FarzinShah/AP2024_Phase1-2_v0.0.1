@@ -10,7 +10,7 @@ import third.all.controller.movement.MovementOfYellowEnemy;
 import third.all.controller.movement.Position;
 import third.all.controller.movement.Vector2D;
 import third.all.data.Properties;
-import third.all.model.epsilon.ShotOfEpsilon_P1;
+import third.all.model.epsilonTools.ShotOfEpsilon_P1;
 import third.all.gameComponents.preGameComponent.GameOverFrame;
 import third.all.gameComponents.preGameComponent.InformationsOfSettings;
 import third.all.gameComponents.preGameComponent.MapGenerator;
@@ -36,7 +36,7 @@ import static third.all.gameComponents.preGameComponent.Timer1.*;
 
 
 public class GameFrame implements KeyListener, ActionListener, MouseMotionListener, MouseListener {
-    public MyPanel panel;
+    public View panel;
     public MyFrame frame;
     public static boolean play = false; // for starting
     public static GameFrame INSTANCE;
@@ -283,7 +283,7 @@ public class GameFrame implements KeyListener, ActionListener, MouseMotionListen
             }
         }
 
-        MyPanel.laserOption(g, lineShower, gameObjects, startX, startY, getGameObjects());
+        View.laserOption(g, lineShower, gameObjects, startX, startY, getGameObjects());
 
         // The Epsilon:
 

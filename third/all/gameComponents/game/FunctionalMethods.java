@@ -21,7 +21,7 @@ import third.all.data.booleans.HelpingBooleans;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
-import third.all.model.epsilon.Bullet;
+import third.all.model.epsilonTools.Bullet;
 import third.all.model.normalEnemies.*;
 
 import javax.sound.sampled.*;
@@ -366,8 +366,8 @@ public class FunctionalMethods {
 
     }
 
-    public static void wyrmShoot() {
-        bulletsOfWyrm.add(new Bullet(Wyrm.getInstance().getLocation().x + 10, Wyrm.getInstance().getLocation().y,
+    public void wyrmShoot() {
+        bulletsOfWyrm.add(new Bullet((normalEnemies.get(2)).getLocation().x + 10, normalEnemies.get(2).getLocation().y,
                 (int) (gameObjects.get(0)).getPosition().getX(),
                 (int) (gameObjects.get(0)).getPosition().getY(), Color.MAGENTA));
 
@@ -416,8 +416,8 @@ public class FunctionalMethods {
         if (epsilon.intersects(((Necropick) normalEnemies.get(0)).getRectangle())) {
             ((Necropick) normalEnemies.get(0)).setHP((normalEnemies.get(0)).getHP() - 2);
         }
-        if (epsilon.intersects(Wyrm.getInstance().getRectangle())) {
-            Wyrm.getInstance().setHP(Wyrm.getInstance().getHP() - 2);
+        if (epsilon.intersects(((Wyrm)normalEnemies.get(2)).getRectangle())) {
+            ((Wyrm)normalEnemies.get(2)).setHP((normalEnemies.get(2)).getHP() - 2);
         }
         for (int i = 0; i < Orb.getInstance().size(); i++) {
             if (epsilon.intersects(Orb.getInstance().get(i).getRectangle())) {
@@ -579,7 +579,7 @@ public class FunctionalMethods {
                     bulletsToRemove.add(bullet);
                     (yellowEnemies1.get(i)).setLifeValue((yellowEnemies1.get(i)).getLifeValue() - 1);
                 }
-                if (Wyrm.getInstance().getRectangle().contains(yellowEnemies1.get(i).getBounds())) {
+                if (((Wyrm)normalEnemies.get(2)).getRectangle().contains(yellowEnemies1.get(i).getBounds())) {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
@@ -610,7 +610,7 @@ public class FunctionalMethods {
                     bulletsToRemove.add(bullet);
                     ((GreenEnemyModel) greenEnemies1.get(i)).setLifeValue(((GreenEnemyModel) greenEnemies1.get(i)).getLifeValue() - 1);
                 }
-                if (Wyrm.getInstance().getRectangle().contains(greenEnemies1.get(i).getBounds())) {
+                if (((Wyrm)normalEnemies.get(2)).getRectangle().contains(greenEnemies1.get(i).getBounds())) {
                     (Properties.getInstance().constantOfOrbitalMovement) *= -1;
                 }
                 if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(2)) {
@@ -637,9 +637,9 @@ public class FunctionalMethods {
             }
 
             if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
-                if (bullet.getBounds().intersects(Wyrm.getInstance().getRectangle())) {
+                if (bullet.getBounds().intersects(((Wyrm)normalEnemies.get(2)).getRectangle())) {
                     bulletsToRemove.add(bullet);
-                    Wyrm.getInstance().setHP(Wyrm.getInstance().getHP() - 1);
+                    ((Wyrm)normalEnemies.get(2)).setHP((normalEnemies.get(2)).getHP() - 1);
                     if (Properties.getInstance().isValidToChiron) {
                         Properties.getInstance().HP += 3;
                     }

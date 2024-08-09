@@ -1,4 +1,4 @@
-package third.all.model.epsilon;
+package third.all.model.epsilonTools;
 
 import third.all.data.PanelsData;
 

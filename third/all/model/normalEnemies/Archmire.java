@@ -54,12 +54,12 @@ public class Archmire extends NormalEnemy implements NormalEnemyModel {
     public void draw(Graphics g, ImageObserver i){
         g.setColor(new Color(0x44981062, true));
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
-            synchronized (Archmire.getInstance().getTrails()) {
-                for (Point trail : Archmire.getInstance().getTrails()) {
-                    g.fillOval(trail.x, trail.y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize());
+            synchronized (getTrails()) {
+                for (Point trail : getTrails()) {
+                    g.fillOval(trail.x, trail.y, getSize(), getSize());
                 }
             }
-            g.drawImage(ARCHMIRE, Archmire.getInstance().getLocation().x, Archmire.getInstance().getLocation().y, Archmire.getInstance().getSize(), Archmire.getInstance().getSize(), i);
+            g.drawImage(ARCHMIRE, getLocation().x, getLocation().y, getSize(), getSize(), i);
         }
 
     }

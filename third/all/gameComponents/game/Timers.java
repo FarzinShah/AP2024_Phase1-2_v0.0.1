@@ -31,6 +31,7 @@ public class Timers {
     public static Timer headShooter;
     public static Timer acesoTimer;
     public static Timer attackOfOrbsOnEpsilon;
+    private Archmire archmire;
 
     public Timers() {
         timerOfGame = new Timer1();
@@ -63,8 +64,7 @@ public class Timers {
 //                if (Wyrm.getInstance().getHP() <= 0) wyrmShooter.stop();
         });
         wyrmShooter = new Timer(700, e -> {
-            if (Wyrm.getInstance().isValidToShoot()) wyrmShoot();
-            if (Wyrm.getInstance().getHP() <= 0) wyrmShooter.stop();
+            if (HelpingBooleans.getInstance().isValidToShootWyrm) FunctionalMethods.getInstance().wyrmShoot();
         });
 
 //        wyrmShooter.start(); //todo: هرموقع وقتش شد استارتش کنم
@@ -81,9 +81,9 @@ public class Timers {
         });
         orbitalMovement.start();
         archmirePrintTimer = new Timer(500, e -> {
-            if (Archmire.getInstance().getTrails().size() > 2) {
-                Archmire.getInstance().getTrails().remove(0);
-                Archmire.getInstance().getTrails().remove(0);
+            if (archmire.getTrails().size() > 2) {
+                archmire.getTrails().remove(0);
+                archmire.getTrails().remove(0);
 
             }
             if (!BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(0)) {
@@ -94,7 +94,7 @@ public class Timers {
             BooleansOf_IsValidToShow.getInstance().setValidToAttackCerberus(true);
             HelpingBooleans.getInstance().cerberusBool = true;
         });
-        addArchmirePrintTimer = new Timer(250, e -> Archmire.getInstance().getTrails().add(new Point(Archmire.getInstance().getLocation().x, Archmire.getInstance().getLocation().y)));
+        addArchmirePrintTimer = new Timer(250, e -> archmire.getTrails().add(new Point(archmire.getLocation().x, archmire.getLocation().y)));
 
         addBlackOrbsTimer = new Timer(1000, e -> {
             Properties.getInstance().boHelper[0] -= 1000;
@@ -117,5 +117,11 @@ public class Timers {
 
     }
 
+    public Archmire getArchmire() {
+        return archmire;
+    }
 
+    public void setArchmire(Archmire archmire) {
+        this.archmire = archmire;
+    }
 }

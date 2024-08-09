@@ -1,7 +1,7 @@
 package third.all.data;
 
 import third.all.controller.movement.Position;
-import third.all.model.epsilon.Bullet;
+import third.all.model.epsilonTools.Bullet;
 
 import java.awt.*;
 import java.util.ArrayList;

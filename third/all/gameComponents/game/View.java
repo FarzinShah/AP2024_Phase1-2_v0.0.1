@@ -13,7 +13,7 @@ import third.all.model.boss.Fist;
 import third.all.model.boss.Head;
 import third.all.model.boss.LeftHand;
 import third.all.model.boss.RightHand;
-import third.all.model.epsilon.Bullet;
+import third.all.model.epsilonTools.Bullet;
 import third.all.model.normalEnemies.*;
 
 import javax.swing.*;
@@ -99,7 +99,8 @@ public class View extends JPanel implements Runnable {
 
        ((Necropick) normalEnemies.get(0)).draw(g, this);
         ((Omenoct)normalEnemies.get(1)).draw(g, this);
-//        Wyrm.draw(g, this);
+        ((Wyrm)normalEnemies.get(2)).draw(g, this);
+        ((Archmire) normalEnemies.get(3)).draw(g,this);
 
 //        Barricados.draw(g, this);
 //        Orb.draw(g, this);
@@ -116,8 +117,8 @@ public class View extends JPanel implements Runnable {
 
 //        g.drawImage(BEAUTIFUL_HEART,600,200,50,50,this);
 
-        g.setColor(new Color(0, 0, 0, 60));
-        g.fillRect(250, 250, 500, 500);
+//        g.setColor(new Color(0, 0, 0, 60));
+//        g.fillRect(250, 250, 500, 500);
 //        g.setColor(Color.WHITE);
 
 
@@ -308,7 +309,7 @@ public class View extends JPanel implements Runnable {
         }
         if (BooleansOf_IsValidToShow.getInstance().getIsValidToShowEnemies().get(3)) {
             synchronized (PanelsData.getInstance().getWyrm()) {
-                PanelsData.getInstance().setWyrm(new Panel(Wyrm.getInstance().getLocation().x, Wyrm.getInstance().getLocation().y, 80, 80));
+                PanelsData.getInstance().setWyrm(new Panel((normalEnemies.get(2)).getLocation().x, (normalEnemies.get(2)).getLocation().y, 80, 80));
                 PanelsData.getInstance().getWyrm().drawWym(g);
             }
         }

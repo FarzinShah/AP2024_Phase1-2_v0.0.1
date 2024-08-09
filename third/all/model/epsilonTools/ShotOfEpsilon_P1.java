@@ -1,4 +1,4 @@
-package third.all.model.epsilon;
+package third.all.model.epsilonTools;
 
 public class ShotOfEpsilon_P1 {
     private double dirX;

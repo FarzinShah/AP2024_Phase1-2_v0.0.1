@@ -9,6 +9,8 @@ public class HelpingBooleans {
     public boolean isValidToShowStartingWelcome = true;
     public boolean isEpsilonValidToMove = true;
     public boolean isValidToLargerMainPanel = false;
+    public boolean isValidToShootWyrm;
+
 
     // todo: BossFight:
     public boolean isValidToPlayBossMusic = true;
